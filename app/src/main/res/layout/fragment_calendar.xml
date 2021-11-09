@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="30dp"
+    android:layout_height="match_parent"
+    android:id = "@+id/fragment_root">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:paddingBottom="20dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <TextView
+                style = "@style/CalendarText"
+                android:textColor="@color/calendar_weekend"
+                android:text = "@string/calendar_sunday"/>
+            <TextView
+                style="@style/CalendarText"
+                android:textColor="@color/calendar_week"
+                android:text = "@string/calendar_monday"/>
+            <TextView
+                style="@style/CalendarText"
+                android:textColor="@color/calendar_week"
+                android:text = "@string/calendar_tuesday"/>
+            <TextView
+                style="@style/CalendarText"
+                android:textColor="@color/calendar_week"
+                android:text = "@string/calendar_wednesday"/>
+            <TextView
+                style="@style/CalendarText"
+                android:textColor="@color/calendar_week"
+                android:text = "@string/calendar_thursday"/>
+            <TextView
+                style="@style/CalendarText"
+                android:textColor="@color/calendar_week"
+                android:text = "@string/calendar_friday"/>
+            <TextView
+                style="@style/CalendarText"
+                android:textColor="@color/calendar_weekend"
+                android:text = "@string/calendar_saturday"/>
+
+        </LinearLayout>
+        <Space
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id = "@+id/recyclerView"
+            android:overScrollMode="never"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <View
+        style="@style/divider"
+        android:paddingTop = "20dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_height="36dp">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_back"
+            android:layout_gravity="center_vertical"
+            android:id = "@+id/back_icon"
+            />
+        <TextView
+            android:id = "@+id/date"
+            style="@style/HighLightText"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text = "1 may, 2021"
+            />
+        <View
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="7dp"
+            android:layout_gravity="top"
+            android:id = "@+id/delete_icon"
+            />
+    </LinearLayout>
+    <FrameLayout
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:id = "@+id/event_container"
+        android:layout_height="match_parent">
+        <include
+            android:id = "@+id/event_content"
+            layout = "@layout/page_event"
+            android:layout_marginTop="35dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="35dp"
+            android:layout_height="match_parent"
+            android:layout_width = "match_parent"
+            tools:ignore="RtlHardcoded" />
+    </FrameLayout>
+    <com.google.android.material.card.MaterialCardView
+        style="@style/card"
+        android:visibility="gone"
+        app:strokeWidth="0dp"
+        app:rippleColor="@color/ripple_color"
+        android:id = "@+id/noCardInfo"
+        android:layout_width="match_parent"
+        android:layout_margin="35dp"
+        android:layout_height="match_parent"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <TextView
+                style="@style/ArticleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:layout_marginBottom="4dp"
+                android:gravity="bottom|center_horizontal"
+                android:text = "@string/calendar_no_event_info"
+                />
+            <TextView
+                style = "@style/HighLightText"
+                android:alpha="0.8"
+                android:layout_width="match_parent"
+                android:layout_marginTop="4dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:gravity="top|center_horizontal"
+                android:text = "@string/calendar_no_event_action"
+                />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id = "@+id/event_recycler"
+        android:layout_width="match_parent"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft="35dp"
+        android:overScrollMode="never"
+        android:layout_marginRight="35dp"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
+</layout>
