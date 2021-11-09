@@ -7,4 +7,28 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="items_number">#F0EEFF</color>
+    <color name="article_text">#CC5E5C69</color>
+    <color name="important_article_text">#5E5C69</color>
+    <color name="more_info_text">#B3000000</color>
+
+
+    <color name="common_button_text">#3C6D5F</color>
+    <color name="ignore_button_text">#CC32583D</color>
+
+    <color name="divider_color">#BCCCED</color>
+    <color name="warning_advice"></color>
+    <color name="alert_advice">#CC45141A</color>
+    <color name="good_advice">#CC305A15</color>
+    <color name="new_advice"></color>
+    <color name="rape_advice"></color>
+
+
+    <color name="ripple_color">#3360B59D</color>
+
+    <color name="selected_card_color">#E7EAFF</color>
+    <color name="calendar_weekend">#892555</color>
+    <color name="calendar_week">#26356B</color>
 </resources>
