@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+    <data>
+        <import type="java.util.Calendar"/>
+        <variable
+            name="viewModel"
+            type="com.astery.xapplication.viewModels.CalendarViewModel" />
+    </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -98,7 +104,7 @@
             android:layout_marginRight="20dp"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text = "1 may, 2021"
+            android:text = "@{@string/calendar_date(viewModel.selectedDay.get(Calendar.DAY_OF_MONTH), viewModel.getMonth(viewModel.selectedDay.get(Calendar.MONTH), context), viewModel.selectedDay.get(Calendar.YEAR))}"
             />
         <View
             android:layout_width="20dp"
@@ -120,6 +126,7 @@
             android:layout_marginLeft="45dp"
             android:layout_marginRight="35dp"
             android:layout_height="match_parent"
+            app:viewModel = "@{viewModel}"
             android:layout_width = "match_parent"
             tools:ignore="RtlHardcoded" />
     </FrameLayout>

@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="kotlin.Pair"/>
+        <variable
+            name="viewModel"
+            type="com.astery.xapplication.viewModels.CalendarViewModel" />
+    </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -30,7 +39,7 @@
             style="@style/HighLightText"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            android:text = "Having painfull perioud"
+            android:text = "@{viewModel.selectedEvent.first.template.name}"
             />
 
     <TextView
@@ -39,7 +48,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
-        android:text = "Your stomache really hurts, pills can’t help you and everything seems realy harsh"
+        android:text = "@{viewModel.selectedEvent.first.template.description}"
         />
         <TextView
             android:id = "@+id/event_properties"
@@ -47,7 +56,7 @@
             style="@style/ImportantArticleText"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            android:text = "Your stomache really hurts"
+            app:properties = "@{viewModel.selectedEvent.first}"
             />
     </LinearLayout>
     </ScrollView>
@@ -74,6 +83,7 @@
         <Button
             android:id = "@+id/get_a_tip"
             style="@style/CommonButton"
+            android:visibility="@{viewModel.selectedEvent.first.isTips ? View.VISIBLE : View.GONE}"
             android:text = "Get a tip"
             android:layout_gravity="center"
             android:layout_marginLeft="3dp"
@@ -83,3 +93,5 @@
             />
     </LinearLayout>
 </LinearLayout>
+
+</layout>

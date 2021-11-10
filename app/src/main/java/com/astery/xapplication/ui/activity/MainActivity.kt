@@ -10,7 +10,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.astery.xapplication.R
 import com.astery.xapplication.ui.activity.interfaces.ParentActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ParentActivity {
 
     private var _navController:NavController? = null
@@ -26,8 +28,8 @@ class MainActivity : AppCompatActivity(), ParentActivity {
         _navController = navHostFragment.navController
 
 
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        //val appBarConfiguration = AppBarConfiguration(navController.graph)
+        //setupActionBarWithNavController(navController, appBarConfiguration)
 
         val bottomView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomView.setupWithNavController(navController)
