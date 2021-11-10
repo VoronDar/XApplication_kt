@@ -14,6 +14,7 @@
         android:theme="@style/Theme.XApplication">
         <activity
             android:name=".ui.activity.MainActivity"
+            android:theme="@style/Theme.XApplication.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
