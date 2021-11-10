@@ -15,4 +15,5 @@ class ApplicationModule {
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
         return AppDatabase.getDatabase(context)
     }
+
 }

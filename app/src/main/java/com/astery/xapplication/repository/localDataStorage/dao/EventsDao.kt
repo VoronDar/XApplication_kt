@@ -1,13 +1,16 @@
 package com.astery.xapplication.repository.localDataStorage.dao
 
 import androidx.room.*
+import com.astery.xapplication.model.appValues.DateConverter
 import com.astery.xapplication.model.entities.Event
 import com.astery.xapplication.model.entities.EventTemplate
+import java.util.*
 
 @Dao
+@TypeConverters(DateConverter::class)
 interface EventsDao {
     @Query("SELECT * FROM event WHERE date = :time")
-    suspend fun getEventsByTime(time: Long): List<Event>
+    suspend fun getEventsByTime(time: Date): List<Event>
 
     @Query("SELECT * FROM eventtemplate WHERE id = :id")
     suspend fun getEventTemplate(id: String): EventTemplate
@@ -26,6 +29,16 @@ interface EventsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addEvents(events: List<Event>)
+
+    @Query("DELETE from Event")
+    suspend fun deleteEvents()
+    @Query("DELETE from Event WHERE id == :id")
+    suspend fun deleteEvent(id:String)
+
+    @Query("DELETE from EventTemplate")
+    suspend fun deleteEventTemplates()
+    @Query("DELETE from EventTemplate WHERE id == :id")
+    suspend fun deleteEventTemplate(id:String)
 
     /*
     @Insert(onConflict = OnConflictStrategy.REPLACE)
