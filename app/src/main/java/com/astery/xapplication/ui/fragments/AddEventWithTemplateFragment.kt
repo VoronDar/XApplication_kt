@@ -1,23 +1,19 @@
 package com.astery.xapplication.ui.fragments
 
 import android.annotation.SuppressLint
+import android.content.res.Resources.getSystem
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.core.view.marginLeft
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavDirections
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.astery.xapplication.R
-import com.astery.xapplication.databinding.FragmentWithRecyclerBinding
+import com.astery.xapplication.databinding.FragmentItemsBinding
 import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.ui.adapters.BlockListener
-import com.astery.xapplication.ui.adapters.CategoryAdapter
 import com.astery.xapplication.ui.adapters.EventTemplateAdapter
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.astery.xapplication.viewModels.AddEventWithTemplateViewModel
@@ -31,8 +27,8 @@ import java.util.*
  * */
 @AndroidEntryPoint
 class AddEventWithTemplateFragment : XFragment() {
-    private val binding: FragmentWithRecyclerBinding
-        get() = bind as FragmentWithRecyclerBinding
+    private val binding: FragmentItemsBinding
+        get() = bind as FragmentItemsBinding
 
     private val viewModel:AddEventWithTemplateViewModel by viewModels()
 
@@ -56,15 +52,13 @@ class AddEventWithTemplateFragment : XFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _bind = FragmentWithRecyclerBinding.inflate(inflater, container, false)
+        _bind = FragmentItemsBinding.inflate(inflater, container, false)
         return bind.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (binding.recyclerView.layoutParams as ViewGroup.MarginLayoutParams).leftMargin = 0
-        (binding.recyclerView.layoutParams as ViewGroup.MarginLayoutParams).rightMargin = 0
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -103,3 +97,5 @@ class AddEventWithTemplateFragment : XFragment() {
 
 
 }
+val Int.px: Int get() = (this * getSystem().displayMetrics.density).toInt()
+val Int.dp: Int get() = (this / getSystem().displayMetrics.density).toInt()

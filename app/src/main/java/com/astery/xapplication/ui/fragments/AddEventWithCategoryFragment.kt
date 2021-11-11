@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.astery.xapplication.R
-import com.astery.xapplication.databinding.FragmentWithRecyclerBinding
+import com.astery.xapplication.databinding.FragmentCategoryBinding
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.ui.adapters.BlockListener
 import com.astery.xapplication.ui.adapters.CategoryAdapter
@@ -22,8 +22,8 @@ import java.util.*
  * */
 @AndroidEntryPoint
 class AddEventWithCategoryFragment : XFragment() {
-    private val binding: FragmentWithRecyclerBinding
-        get() = bind as FragmentWithRecyclerBinding
+    private val binding: FragmentCategoryBinding
+        get() = bind as FragmentCategoryBinding
 
     private var adapter: CategoryAdapter? = null
 
@@ -43,7 +43,7 @@ class AddEventWithCategoryFragment : XFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _bind = FragmentWithRecyclerBinding.inflate(inflater, container, false)
+        _bind = FragmentCategoryBinding.inflate(inflater, container, false)
         return bind.root
     }
 

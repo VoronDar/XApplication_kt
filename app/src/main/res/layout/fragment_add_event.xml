@@ -11,6 +11,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_marginLeft="35dp"
+    android:paddingTop="?attr/actionBarSize"
     android:layout_marginRight="35dp"
     android:layout_height="match_parent"
     tools:ignore="HardcodedText" >
