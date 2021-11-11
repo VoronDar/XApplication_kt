@@ -2,11 +2,10 @@ package com.astery.xapplication
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.astery.xapplication.application.App
 import com.astery.xapplication.repository.Repository
 import com.astery.xapplication.repository.localDataStorage.AppDatabase
 import com.astery.xapplication.repository.localDataStorage.LocalStorage
-import com.astery.xapplication.repository.localDataStorage.RoomLocalStorage
+import com.astery.xapplication.repository.localDataStorage.AppLocalStorage
 import com.astery.xapplication.roomEventsHelper.RoomEventsHelper
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -27,7 +26,7 @@ import javax.inject.Inject
  */
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class RoomLocalStorageEventsTest {
+class AppLocalStorageEventsTest {
 
 
     lateinit var localStorage: LocalStorage
@@ -40,7 +39,7 @@ class RoomLocalStorageEventsTest {
     @Before
     @Throws(Exception::class)
     fun createDb() {
-        localStorage = RoomLocalStorage(
+        localStorage = AppLocalStorage(
             Room.inMemoryDatabaseBuilder(
             InstrumentationRegistry.getInstrumentation().context,
             AppDatabase::class.java
@@ -73,14 +72,14 @@ class RoomLocalStorageEventsTest {
                 val anotherTime = Repository.clearDate(Calendar.getInstance())
                 anotherTime.add(4, Calendar.DAY_OF_MONTH)
 
-                localStorage.addEvent(RoomEventsHelper.getEmptyEvent("id", now.time))
-                localStorage.addEvent(RoomEventsHelper.getEmptyEvent("id2", now.time))
-                localStorage.addEvent(RoomEventsHelper.getEmptyEvent("id3", anotherTime.time))
+                localStorage.addEvent(RoomEventsHelper.getEmptyEvent(1, now.time))
+                localStorage.addEvent(RoomEventsHelper.getEmptyEvent(2, now.time))
+                localStorage.addEvent(RoomEventsHelper.getEmptyEvent(3, anotherTime.time))
 
-                val new = localStorage.getEventsForDate(now.time as Date)
+                val new = localStorage.getEventsForDate(now)
                 assertTrue("got invalid amount of events for date - ${new.size}", (new.size == requiredEvents))
-                assertTrue("got incorrect events", (new[0] == RoomEventsHelper.getEmptyEvent("id", now.time)))
-                assertTrue("got incorrect events", (new[1] == RoomEventsHelper.getEmptyEvent("id2", now.time)))
+                assertTrue("got incorrect events", (new[0] == RoomEventsHelper.getEmptyEvent(1, now.time)))
+                assertTrue("got incorrect events", (new[1] == RoomEventsHelper.getEmptyEvent(2, now.time)))
 
             }
         }
@@ -112,9 +111,9 @@ class RoomLocalStorageEventsTest {
                 localStorage.clearEventTemplates()
                 localStorage.clearEvents()
 
-                val id = "id"
-                val event = RoomEventsHelper.getEmptyEvent("id", Date())
-                event.template = RoomEventsHelper.getEmptyTemplate(id)
+                val id = 1
+                val event = RoomEventsHelper.getEmptyEvent(1, Date())
+                event.template = RoomEventsHelper.getEmptyTemplate("id")
                 event.templateId = event.templateId
 
                 localStorage.addTemplate(event.template!!)

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <import type="com.astery.xapplication.viewModels.AddEventViewModel.JobState"/>
+        <variable
+            name="viewModel"
+            type="com.astery.xapplication.viewModels.AddEventViewModel" />
+    </data>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_marginLeft="35dp"
+    android:layout_marginRight="35dp"
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <ImageView
+        android:id = "@+id/event_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src = "@drawable/dating"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/item_image_CD" />
+    <TextView
+        style="@style/HighLightText"
+        android:id = "@+id/event_name"
+        android:layout_marginTop="30dp"
+        android:text = "@{viewModel.template.name}"
+        />
+
+    <TextView
+        style="@style/ArticleText"
+        android:id = "@+id/event_content"
+        android:layout_marginTop="30dp"
+        android:text = "@{viewModel.template.description}"
+        />
+
+    <View
+        android:layout_marginTop="20dp"
+        style="@style/divider"
+        android:visibility="gone"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        />
+
+        <TextView
+            android:id = "@+id/title_questions"
+            style="@style/HighLightText"
+            android:layout_marginTop="30dp"
+            android:visibility="gone"
+            android:text = "@string/event_more_info"
+            />
+    <!--  add unit_question here from code -->
+
+        <Button
+            android:id = "@+id/submit"
+            style="@style/CommonButton"
+            android:text="@string/submit"
+            android:enabled="@{viewModel.addEventState == JobState.Idle ? true : false}"
+            android:clickable="@{viewModel.addEventState == JobState.Idle ? true : false}"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="right"
+            />
+
+    </LinearLayout>
+</ScrollView>
+</layout>

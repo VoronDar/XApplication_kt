@@ -9,6 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
 
+
+
     <color name="items_number">#F0EEFF</color>
     <color name="article_text">#CC5E5C69</color>
     <color name="important_article_text">#5E5C69</color>
@@ -29,6 +31,7 @@
     <color name="ripple_color">#3360B59D</color>
 
     <color name="selected_card_color">#E7EAFF</color>
+    <color name="card_corner">#59000000</color>
     <color name="calendar_weekend">#892555</color>
     <color name="calendar_week">#26356B</color>
 </resources>

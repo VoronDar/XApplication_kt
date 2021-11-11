@@ -1,11 +1,14 @@
 package com.astery.xapplication.model.entities
 
 import android.graphics.Bitmap
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.*
 import com.astery.xapplication.model.appValues.ArrayConverter
 import com.astery.xapplication.model.appValues.EventCategoryConverter
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.repository.remoteDataStorage.FbUsable
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -16,7 +19,7 @@ import java.util.*
 open class EventTemplate(@PrimaryKey var id: String, var name: String,
                          var description: String,
                          @ColumnInfo(name = "event_category")
-                         var eventCategory: EventCategory? = null) : FbUsable {
+                         var eventCategory: EventCategory? = null) : FbUsable, Serializable {
 
     @Ignore var image: Bitmap? = null
     //@Ignore var questions: List<Question>? = null
@@ -62,6 +65,5 @@ open class EventTemplate(@PrimaryKey var id: String, var name: String,
         result = 31 * result + (image?.hashCode() ?: 0)
         return result
     }
-
 
 }

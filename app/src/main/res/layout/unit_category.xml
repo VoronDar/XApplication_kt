@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="image"
+            type="android.graphics.drawable.Drawable" />
+        <variable
+            name="title"
+            type="String" />
+    </data>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style = "@style/card"
+    android:id = "@+id/card"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="24dp"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    tools:ignore="HardcodedText" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+    <ImageView
+        android:id = "@+id/article_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:src = "@{image}"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        android:scaleType="centerCrop"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        style="@style/HighLightText"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:id = "@+id/article_name"
+        android:layout_margin="16dp"
+        android:text = "@{title}"
+        />
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
+
+</layout>

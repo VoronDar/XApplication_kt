@@ -7,13 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astery.xapplication.R
 import com.astery.xapplication.model.entities.Event
-import com.astery.xapplication.model.entities.EventTemplate
-import com.astery.xapplication.model.entities.values.EventCategory
-import com.astery.xapplication.repository.AppRepository
 import com.astery.xapplication.repository.Repository
 import com.astery.xapplication.ui.adapters.units.DayUnit
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -51,7 +47,7 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
     fun setSelectedEvent(position:Int){
         viewModelScope.launch {
             val event = events.value!![position]!!
-            repository.getInfoForEvent(event)
+            repository.getDescriptionForEvent(event)
             _selectedEvent.value = Pair(events.value!![position]!!, position)
         }
     }

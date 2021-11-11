@@ -4,6 +4,7 @@ import androidx.room.*
 import com.astery.xapplication.model.appValues.DateConverter
 import com.astery.xapplication.model.entities.Event
 import com.astery.xapplication.model.entities.EventTemplate
+import com.astery.xapplication.model.entities.values.EventCategory
 import java.util.*
 
 @Dao
@@ -15,8 +16,11 @@ interface EventsDao {
     @Query("SELECT * FROM eventtemplate WHERE id = :id")
     suspend fun getEventTemplate(id: String): EventTemplate
 
+    @Query("SELECT * FROM eventtemplate WHERE event_category = :category")
+    suspend fun getEventTemplatesWithCategory(category: EventCategory): List<EventTemplate>
+
     @Query("SELECT * FROM event WHERE id = :id")
-    suspend fun getEvent(id: String): Event
+    suspend fun getEvent(id: Int): Event
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addEventTemplate(template: EventTemplate)

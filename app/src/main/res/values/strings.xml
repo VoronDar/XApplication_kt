@@ -34,9 +34,21 @@
     <string name = "calendar_sunday">Su</string>
 
 
+    <string name="calendar_no_event_info">You haven\'t added any events</string>
+    <string name="calendar_no_event_action">Add an event</string>
+
+
     <string name="title_calendar">%s, %d</string>
     <string name="title_tips">Tips</string>
     <string name="title_new_event">Add new event</string>
-    <string name="calendar_no_event_info">You haven\'t added any events</string>
-    <string name="calendar_no_event_action">Add an event</string>
+
+
+
+    <string-array name="event_category">
+        <item>Mood</item>
+        <item>Medicine</item>
+        <item>Feels</item>
+        <item>Menstrual cycle</item>
+        <item>Sexual life</item>
+    </string-array>
 </resources>

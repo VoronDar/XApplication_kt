@@ -1,11 +1,16 @@
 package com.astery.xapplication.repository
 
 import com.astery.xapplication.model.entities.Event
+import com.astery.xapplication.model.entities.EventTemplate
+import com.astery.xapplication.model.entities.values.EventCategory
 import java.util.*
 
 interface Repository {
     suspend fun getEventsByDay(date: Calendar):List<Event>
-    suspend fun getInfoForEvent(event: Event)
+    suspend fun getDescriptionForEvent(event: Event)
+    suspend fun updateEventTemplates()
+    suspend fun getEventTemplatesForCategory(category: EventCategory):List<EventTemplate>
+    suspend fun addEvent(event: Event)
 
 
     companion object {

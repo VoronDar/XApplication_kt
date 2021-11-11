@@ -5,7 +5,7 @@ import com.astery.xapplication.model.entities.values.EventCategory
 import java.util.*
 
 object RoomEventsHelper {
-    fun getEmptyEvent(id:String, date: Date = Date()):Event{
+    fun getEmptyEvent(id:Int, date: Date = Date()):Event{
         return Event(id, "id", null, date)
     }
     fun getEmptyTemplate(id:String): EventTemplate {

@@ -10,7 +10,7 @@ import java.util.*
 
 @Entity
 @TypeConverters(ArrayConverter::class, DateConverter::class, EventDescriptionConverter::class)
-data class Event(@PrimaryKey var id: String,
+data class Event(@PrimaryKey(autoGenerate = true) var id: Int?,
                  @ColumnInfo(name = "template_id") var templateId: String,
                  @ColumnInfo(name = "description") var eventDescription: EventDescription? = null,
                  var date: Date?
@@ -19,7 +19,7 @@ data class Event(@PrimaryKey var id: String,
     @Ignore var template: EventTemplate? = null
 
     @Ignore
-    constructor():this("", "", null, null)
+    constructor():this(null, "", null, null)
 
     val isTips: Boolean
         get() {

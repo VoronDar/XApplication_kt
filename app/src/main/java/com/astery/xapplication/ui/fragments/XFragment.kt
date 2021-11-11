@@ -46,16 +46,14 @@ abstract class XFragment : Fragment() {
     fun setTransition(transition: NavigationTransition){
         when(transition) {
             is SharedAxisTransition -> {
-                if (transition.isFirst) {
-                    exitTransition = MaterialSharedAxis(transition.axis, transition.firstParent)
-                    reenterTransition = MaterialSharedAxis(transition.axis, !transition.firstParent)
-                } else {
-                    enterTransition = MaterialSharedAxis(transition.axis,  transition.firstParent)
-                    returnTransition = MaterialSharedAxis(transition.axis, transition.firstParent)
-                }
+                enterTransition = MaterialSharedAxis(transition.axis, /* forward= */ true)
+                returnTransition = MaterialSharedAxis(transition.axis, /* forward= */ false)
+                exitTransition = MaterialSharedAxis(transition.axis, /* forward= */ true)
+                reenterTransition = MaterialSharedAxis(transition.axis, /* forward= */ false)
             }
         }
     }
+
 
     /** do smt when backPressed
      * @return false if there is no special action for back*/
@@ -67,11 +65,11 @@ abstract class XFragment : Fragment() {
 
 
     /** set onClick listeners (mostly for applying actions)*/
-    protected abstract fun setListeners()
+    protected open fun setListeners() {}
     /** set listeners to viewModel changes */
-    protected abstract fun setViewModelListeners()
+    protected open fun setViewModelListeners(){}
     /** set units, layout params to adapters*/
-    protected abstract fun prepareAdapters()
+    protected open fun prepareAdapters(){}
 
     /** return title */
     protected abstract fun getTitle():String?

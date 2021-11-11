@@ -7,5 +7,53 @@
     <fragment
         android:id="@+id/calendarFragment"
         android:name="com.astery.xapplication.ui.fragments.CalendarFragment"
-        android:label="CalendarFragment" />
+        android:label="CalendarFragment" >
+        <action
+            android:id="@+id/action_calendarFragment_to_addEventFragment"
+            app:destination="@id/addEventFragment">
+        <argument
+            android:name="day"
+            app:argType="java.util.Calendar" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/addEventFragment"
+        android:name="com.astery.xapplication.ui.fragments.AddEventWithCategoryFragment"
+        android:label="AddEventFragment" >
+        <action
+            android:id="@+id/action_addEventFragment_to_addEventWithTemplateFragment"
+            app:destination="@id/addEventWithTemplateFragment">
+
+            <argument
+                android:name="day"
+                app:argType="java.util.Calendar" />
+            <argument
+                android:name="category"
+                app:argType="integer" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/addEventWithTemplateFragment"
+        android:name="com.astery.xapplication.ui.fragments.AddEventWithTemplateFragment"
+        android:label="AddEventWithTemplateFragment" >
+        <action
+            android:id="@+id/action_addEventWithTemplateFragment_to_addEventFragment2"
+            app:destination="@id/addEventFragment2">
+            <argument
+                android:name="day"
+                app:argType="java.util.Calendar" />
+            <argument
+                android:name="template"
+                app:argType="com.astery.xapplication.model.entities.EventTemplate" />
+
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/addEventFragment2"
+        android:name="com.astery.xapplication.ui.fragments.AddEventFragment"
+        android:label="AddEventFragment" >
+        <action
+            android:id="@+id/action_addEventFragment2_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
+    </fragment>
 </navigation>

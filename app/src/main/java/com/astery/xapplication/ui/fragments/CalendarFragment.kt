@@ -5,13 +5,10 @@ import android.animation.ValueAnimator
 import android.animation.ValueAnimator.REVERSE
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -24,12 +21,13 @@ import androidx.transition.TransitionManager
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentCalendarBinding
 import com.astery.xapplication.model.entities.Event
+import com.astery.xapplication.ui.adapters.BlockListener
 import com.astery.xapplication.ui.adapters.CalendarAdapter
 import com.astery.xapplication.ui.adapters.EventAdapter
+import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.astery.xapplication.viewModels.CalendarViewModel
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.util.*
 
 @AndroidEntryPoint
@@ -39,6 +37,7 @@ class CalendarFragment : XFragment() {
 
     private val viewModel: CalendarViewModel by viewModels()
 
+    // TODO(change Calendar from recyclerview to just grid view)
     private var cAdapter: CalendarAdapter? = null
     private var eAdapter: EventAdapter? = null
 
@@ -56,16 +55,16 @@ class CalendarFragment : XFragment() {
 
     override fun setListeners(){
         binding.backIcon.setOnClickListener { showEventContainer(false) }
-        binding.noCardInfo.setOnClickListener {}
+        binding.noCardInfo.setOnClickListener {moveToAddNewEvent()}
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun prepareAdapters(){
         // calendar
         cAdapter = CalendarAdapter(viewModel.getDayUnitList(), requireContext())
-        cAdapter!!.setBlockListener(object:CalendarAdapter.BlockListener{
+        cAdapter!!.blockListener = (object: BlockListener {
             override fun onClick(position: Int) {
-                viewModel.changeDay(cAdapter!!.units[position].day)
+                viewModel.changeDay(cAdapter!!.units!![position].day)
             }
         })
 
@@ -76,10 +75,10 @@ class CalendarFragment : XFragment() {
 
         // events for one day
         eAdapter = EventAdapter(null, requireContext())
-        eAdapter!!.setBlockListener(object:EventAdapter.BlockListener{
+        eAdapter!!.blockListener = (object:BlockListener{
             override fun onClick(position: Int) {
                 if (position == 0) {
-                    // TODO(move to the add event)
+                    moveToAddNewEvent()
                 }else {
                     viewModel.setSelectedEvent(position)
                 }
@@ -145,19 +144,17 @@ class CalendarFragment : XFragment() {
                 valueAnimator.start()
             }
 
-            eAdapter?.setUnits(it as ArrayList<Event?>)
+            eAdapter?.units = (it as ArrayList<Event?>)
 
         })
 
         viewModel.selectedEvent.observe(viewLifecycleOwner){
             binding.eventContent.getATip.setOnClickListener{
-                move(getActionForTip())
+                moveToActionForTip()
             }
             showEventContainer(true)
-
             viewModel.selectedEvent.value!!.first.isTips
         }
-
     }
 
     /** swap event list and event info */
@@ -182,27 +179,33 @@ class CalendarFragment : XFragment() {
     }
 
     /** get actions with */
-    private fun getActionForTip():NavDirections{
-        return TODO()
+    private fun moveToActionForTip(){
+        TODO()
+    }
+    private fun moveToAddNewEvent() {
+        setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
+        move(CalendarFragmentDirections.
+            actionCalendarFragmentToAddEventFragment(viewModel.selectedDay.value!!))
     }
 
-}
 
-object BindingAdapters{
-    @BindingAdapter("app:properties")
-    @JvmStatic fun setEventProperties(view: TextView?, event: Event?) {
-        val properties = StringBuilder()
-        if (event?.eventDescription != null) {
-            // TODO (add questions later
+    object BindingAdapters{
+        @BindingAdapter("app:properties")
+        @JvmStatic fun setEventProperties(view: TextView?, event: Event?) {
+            val properties = StringBuilder()
+            if (event?.eventDescription != null) {
+                // TODO (add questions later
                 /*
             for (i in event.template?.questions) {
                 properties.append(i.selectedAnswer.text).append("\n\n")
             }
 
                  */
+            }
+            view?.text = properties.toString()
         }
-        view?.text = properties.toString()
+
     }
 
-}
 
+}
