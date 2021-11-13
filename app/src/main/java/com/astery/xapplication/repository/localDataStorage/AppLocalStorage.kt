@@ -1,12 +1,15 @@
 package com.astery.xapplication.repository.localDataStorage
 
-import com.astery.xapplication.model.entities.Event
-import com.astery.xapplication.model.entities.EventTemplate
+import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.values.EventCategory
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * actual implementation of localStorage
+ * Uses Room
+ * */
 @Singleton
 class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDatabase) :LocalStorage{
     override suspend fun getEventsForDate(date: Calendar): List<Event> {
@@ -18,11 +21,11 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
         event.template = appDatabase.eventDao().getEventTemplate(event.templateId)
     }
 
-    override suspend fun clearEvents() {
+    override suspend fun deleteEvents() {
         appDatabase.eventDao().deleteEvents()
     }
 
-    override suspend fun clearEventTemplates() {
+    override suspend fun deleteEventTemplates() {
         appDatabase.eventDao().deleteEventTemplates()
     }
 
@@ -42,7 +45,7 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
         appDatabase.eventDao().addEventTemplates(templates)
     }
 
-    override suspend fun getTemplate(id: String): EventTemplate {
+    override suspend fun getTemplate(id: Int): EventTemplate {
         return appDatabase.eventDao().getEventTemplate(id)
     }
 
@@ -52,5 +55,34 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
 
     override suspend fun getTemplatesForCategory(category: EventCategory): List<EventTemplate> {
         return appDatabase.eventDao().getEventTemplatesWithCategory(category)
+    }
+
+    override suspend fun addArticle(article: Article) {
+        appDatabase.articleDao().addArticleWithTags(article)
+    }
+
+
+    override suspend fun getArticle(id: Int): Article {
+        return appDatabase.articleDao().getArticleById(id)
+    }
+
+    override suspend fun getArticlesWithTag(tags: List<Int>): List<Article> {
+        return appDatabase.articleDao().getArticlesWithTag(tags)
+    }
+
+    override suspend fun getArticlesWithTagAndKeyWord(tags: List<Int>, key: String): List<Article> {
+        return appDatabase.articleDao().getArticlesWIthTagAndKeyWord(tags, key)
+    }
+
+    override suspend fun deleteArticles() {
+        appDatabase.articleDao().deleteArticlesWithTags()
+    }
+
+    override suspend fun getItemsForArticle(articleId: Int): List<Item> {
+        return appDatabase.articleDao().getItemsByParentId(articleId)
+    }
+
+    override suspend fun getAdvicesForItem(itemId: Int): List<Advice> {
+        return appDatabase.articleDao().getAdvisesForItem(itemId)
     }
 }

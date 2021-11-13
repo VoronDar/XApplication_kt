@@ -60,7 +60,7 @@ abstract class XFragment : Fragment() {
     open fun onBackPressed():Boolean {return true}
 
     protected fun setTitle(){
-        (activity as ParentActivity).changeTitle(getTitle())
+        (activity as ParentActivity).changeTitle(getFragmentTitle())
     }
 
 
@@ -72,6 +72,6 @@ abstract class XFragment : Fragment() {
     protected open fun prepareAdapters(){}
 
     /** return title */
-    protected abstract fun getTitle():String?
+    protected abstract fun getFragmentTitle():String?
 
 }

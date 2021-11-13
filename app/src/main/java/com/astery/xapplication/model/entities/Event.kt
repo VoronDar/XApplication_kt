@@ -3,25 +3,30 @@ package com.astery.xapplication.model.entities
 import android.graphics.Bitmap
 import androidx.room.*
 import com.astery.xapplication.model.EventDescription
-import com.astery.xapplication.model.appValues.ArrayConverter
-import com.astery.xapplication.model.appValues.DateConverter
-import com.astery.xapplication.model.appValues.EventDescriptionConverter
+import com.astery.xapplication.model.entities.converters.ArrayConverter
+import com.astery.xapplication.model.entities.converters.DateConverter
+import com.astery.xapplication.model.entities.converters.EventDescriptionConverter
 import java.util.*
 
+/**
+ * Events are used in calendarFragment. Always have templateId.
+ * Events store dynamic info, but EventTemplates store static
+ * */
 @Entity
 @TypeConverters(ArrayConverter::class, DateConverter::class, EventDescriptionConverter::class)
 data class Event(@PrimaryKey(autoGenerate = true) var id: Int?,
-                 @ColumnInfo(name = "template_id") var templateId: String,
+                 @ColumnInfo(name = "template_id") val templateId: Int,
                  @ColumnInfo(name = "description") var eventDescription: EventDescription? = null,
-                 var date: Date?
+                 val date: Date
 ){
     @Ignore var image:Bitmap? = null
     @Ignore var template: EventTemplate? = null
 
-    @Ignore
-    constructor():this(null, "", null, null)
-
-    val isTips: Boolean
+    /**
+     * is there some advices for this event
+     * depends on eventDescription
+     * */
+    val isAdvices: Boolean
         get() {
             return false
             /* TODO(tips)

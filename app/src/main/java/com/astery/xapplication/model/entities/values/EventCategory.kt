@@ -2,25 +2,36 @@ package com.astery.xapplication.model.entities.values
 
 import com.astery.xapplication.R
 
-
+/**
+ * type of event.
+ * stores in eventTemplate
+ * */
 enum class EventCategory {
-    MOOD{
+    /** happy, sad, lonely, etc */
+    Mood{
         override fun getDrawableId(): Int {
             return R.drawable.dating
         }
-    }, MEDICINE {
+    },
+    /** pills, massages, etc */
+    Medicine {
         override fun getDrawableId(): Int {
             return R.drawable.dating
         }
-    }, FEELS {
+    },
+    /** mainly pain */
+    Feels {
         override fun getDrawableId(): Int {
             return R.drawable.dating
         }
-    }, CYCLE {
+    },
+    MenstrualCycle {
         override fun getDrawableId(): Int {
             return R.drawable.dating
         }
-    }, SEX {
+    },
+    /** unique events in you relations, sex */
+    Dating {
 
         override fun getDrawableId(): Int {
             return R.drawable.dating
@@ -34,7 +45,7 @@ enum class EventCategory {
          * */
         fun toArray():ArrayList<EventCategory>{
             val array = ArrayList<EventCategory>()
-            for (i in EventCategory.values()){
+            for (i in values()){
                 array.add(i)
             }
             return array

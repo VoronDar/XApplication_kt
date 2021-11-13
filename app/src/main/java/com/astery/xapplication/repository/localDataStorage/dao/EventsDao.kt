@@ -1,7 +1,7 @@
 package com.astery.xapplication.repository.localDataStorage.dao
 
 import androidx.room.*
-import com.astery.xapplication.model.appValues.DateConverter
+import com.astery.xapplication.model.entities.converters.DateConverter
 import com.astery.xapplication.model.entities.Event
 import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.model.entities.values.EventCategory
@@ -14,7 +14,7 @@ interface EventsDao {
     suspend fun getEventsByTime(time: Date): List<Event>
 
     @Query("SELECT * FROM eventtemplate WHERE id = :id")
-    suspend fun getEventTemplate(id: String): EventTemplate
+    suspend fun getEventTemplate(id: Int): EventTemplate
 
     @Query("SELECT * FROM eventtemplate WHERE event_category = :category")
     suspend fun getEventTemplatesWithCategory(category: EventCategory): List<EventTemplate>
@@ -37,7 +37,7 @@ interface EventsDao {
     @Query("DELETE from Event")
     suspend fun deleteEvents()
     @Query("DELETE from Event WHERE id == :id")
-    suspend fun deleteEvent(id:String)
+    suspend fun deleteEvent(id:Int)
 
     @Query("DELETE from EventTemplate")
     suspend fun deleteEventTemplates()

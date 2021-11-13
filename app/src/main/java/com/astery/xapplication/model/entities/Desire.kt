@@ -1,8 +1,5 @@
 package com.astery.xapplication.model.entities
 
-import androidx.room.*
-import com.astery.xapplication.model.appValues.ArrayConverter
-
 /**
  * used for cases when a user wants to do something and asks for advises.
  */

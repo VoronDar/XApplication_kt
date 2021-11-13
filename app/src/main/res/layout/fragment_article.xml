@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.astery.xapplication.ui.fragments.article.HasPresentable" />
+    </data>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_marginLeft="35dp"
+    android:paddingTop="?attr/actionBarSize"
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText"
+    android:layout_marginStart="35dp">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="30dp"
+        android:layout_marginTop="35dp"
+        android:id = "@+id/page_selector"
+        android:layout_height="wrap_content"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id = "@+id/parent"
+        android:layout_height="match_parent">
+    <include layout="@layout/page_item"
+        android:id = "@+id/page"
+        app:viewModel = "@{viewModel}"
+        />
+    </FrameLayout>
+
+</LinearLayout>
+</layout>

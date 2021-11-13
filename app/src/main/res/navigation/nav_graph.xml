@@ -2,11 +2,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/calendarFragment">
+    app:startDestination="@id/articleFragment">
 
     <fragment
         android:id="@+id/calendarFragment"
-        android:name="com.astery.xapplication.ui.fragments.CalendarFragment"
+        android:name="com.astery.xapplication.ui.fragments.calendar.CalendarFragment"
         android:label="CalendarFragment" >
         <action
             android:id="@+id/action_calendarFragment_to_addEventFragment"
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/addEventFragment"
-        android:name="com.astery.xapplication.ui.fragments.AddEventWithCategoryFragment"
+        android:name="com.astery.xapplication.ui.fragments.addEvent.selectCategory.AddEventWithCategoryFragment"
         android:label="AddEventFragment" >
         <action
             android:id="@+id/action_addEventFragment_to_addEventWithTemplateFragment"
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/addEventWithTemplateFragment"
-        android:name="com.astery.xapplication.ui.fragments.AddEventWithTemplateFragment"
+        android:name="com.astery.xapplication.ui.fragments.addEvent.selectTemplate.AddEventWithTemplateFragment"
         android:label="AddEventWithTemplateFragment" >
         <action
             android:id="@+id/action_addEventWithTemplateFragment_to_addEventFragment2"
@@ -50,10 +50,14 @@
     </fragment>
     <fragment
         android:id="@+id/addEventFragment2"
-        android:name="com.astery.xapplication.ui.fragments.AddEventFragment"
+        android:name="com.astery.xapplication.ui.fragments.addEvent.customizeEvent.AddEventFragment"
         android:label="AddEventFragment" >
         <action
             android:id="@+id/action_addEventFragment2_to_calendarFragment"
             app:destination="@id/calendarFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/articleFragment"
+        android:name="com.astery.xapplication.ui.fragments.article.ArticleFragment"
+        android:label="ArticleFragment" />
 </navigation>

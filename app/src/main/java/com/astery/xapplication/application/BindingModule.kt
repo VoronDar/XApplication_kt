@@ -12,6 +12,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
 
+/**
+ * provide repository and dataStorages
+ * */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class BindingModule{

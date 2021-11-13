@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
     <data>
-        <import type="com.astery.xapplication.viewModels.AddEventViewModel.JobState"/>
+        <import type="com.astery.xapplication.ui.fragments.addEvent.customizeEvent.AddEventViewModel.JobState"/>
         <variable
             name="viewModel"
-            type="com.astery.xapplication.viewModels.AddEventViewModel" />
+            type="com.astery.xapplication.ui.fragments.addEvent.customizeEvent.AddEventViewModel" />
     </data>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -19,6 +19,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id = "@+id/container"
         android:orientation="vertical">
 
     <ImageView
@@ -39,7 +40,7 @@
         style="@style/ArticleText"
         android:id = "@+id/event_content"
         android:layout_marginTop="30dp"
-        android:text = "@{viewModel.template.description}"
+        android:text = "@{viewModel.template.body}"
         />
 
     <View

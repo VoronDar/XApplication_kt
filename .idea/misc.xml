@@ -7,10 +7,14 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/content_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_add_event.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_article.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_calendar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_items.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_with_recycler.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/page_event.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/page_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_advice.xml" value="0.2171875" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_article_page.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_calendar.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_category.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_close_event.xml" value="0.37864583333333335" />
@@ -18,6 +22,11 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/menu/bottom_menu.xml" value="0.36666666666666664" />
       </map>
     </option>
+  </component>
+  <component name="EntryPointsManager">
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="androidx.room.Ignore" />
+    </list>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />

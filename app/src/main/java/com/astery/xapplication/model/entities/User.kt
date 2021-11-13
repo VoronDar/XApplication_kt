@@ -1,9 +1,9 @@
 package com.astery.xapplication.model.entities
 
 /**
- * pojo class for a user
+ * pojo class for a user.
  */
-data class User(var id: String, var gender:Int = 0,
+data class User(var id: Int, var gender:Int = 0,
 
     /** lists with id of articles  */
     var liked: List<String>? = null,

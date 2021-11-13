@@ -1,25 +1,35 @@
 package com.astery.xapplication.model.entities
 
 import android.graphics.Bitmap
-import androidx.room.*
-import com.astery.xapplication.model.appValues.ArrayConverter
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.astery.xapplication.model.entities.converters.ArrayConverter
 
 /**
  * the hugest thing. Has several items. Can be found in article pool.
+ *
  */
 @Entity
 @TypeConverters(ArrayConverter::class)
-data class Article(@PrimaryKey var id: String, var name: String, var description: String,
-                   var likes:Int, var dislikes:Int,
-                   @ColumnInfo(name = "wide_tags") var wideTags: List<String>?,
-                   @ColumnInfo(name = "key_words") var keyWords: List<String>?)
+data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
+                   var likes:Int, var dislikes:Int)
 {
     @Ignore
-    private var items: List<Item>? = null
+    var tags: List<ArticleTag>? = null
     @Ignore
-    private var image: Bitmap? = null
+    var items: List<Item>? = null
+    @Ignore
+    var image: Bitmap? = null
+
 
     @Ignore
-    constructor():this("", "", "", 0,0, null, null)
+    constructor():this(0, "", "", 0,0)
+
+    fun addTags(tags:List<ArticleTag>):Article{
+        this.tags = tags
+        return this
+    }
 
 }

@@ -9,8 +9,8 @@ import com.astery.xapplication.repository.localDataStorage.dao.ArticleDao
 import com.astery.xapplication.repository.localDataStorage.dao.EventsDao
 
 @Database(
-    entities = [Article::class, Item::class, Advise::class, Answer::class,
-        EventTemplate::class, Event::class],
+    entities = [Article::class, Item::class, Advice::class, Answer::class,
+        EventTemplate::class, Event::class, ArticleAndTag::class],
     version = 2,
     exportSchema = false
 )
@@ -30,8 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context,
                     AppDatabase::class.java,
-                    "database_4")
-                    //.addMigrations(MIGRATION_1_2)
+                    "database_8")
                     .build()
                 INSTANCE = instance
 

@@ -4,7 +4,7 @@
         <import type="java.util.Calendar"/>
         <variable
             name="viewModel"
-            type="com.astery.xapplication.viewModels.CalendarViewModel" />
+            type="com.astery.xapplication.ui.fragments.calendar.CalendarViewModel" />
     </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

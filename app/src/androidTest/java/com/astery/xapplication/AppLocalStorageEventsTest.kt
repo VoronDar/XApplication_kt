@@ -18,7 +18,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
-import javax.inject.Inject
 
 
 /**
@@ -30,8 +29,6 @@ class AppLocalStorageEventsTest {
 
 
     lateinit var localStorage: LocalStorage
-    @Inject
-    lateinit var appDatabase:AppDatabase
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -50,8 +47,8 @@ class AppLocalStorageEventsTest {
     fun closeDb(){
         runBlocking {
             launch {
-                localStorage.clearEventTemplates()
-                localStorage.clearEvents()
+                localStorage.deleteEventTemplates()
+                localStorage.deleteEvents()
                 localStorage.close()
             }
         }
@@ -65,7 +62,7 @@ class AppLocalStorageEventsTest {
     fun checkGetEventForTime(){
         runBlocking {
             launch {
-                localStorage.clearEvents()
+                localStorage.deleteEvents()
 
                 val requiredEvents = 2
                 val now = Repository.clearDate(Calendar.getInstance())
@@ -92,8 +89,8 @@ class AppLocalStorageEventsTest {
     fun checkAddTemplate(){
         runBlocking {
             launch{
-                localStorage.clearEventTemplates()
-                val id = "id"
+                localStorage.deleteEventTemplates()
+                val id = 1
                 val template = RoomEventsHelper.getEmptyTemplate(id)
                 localStorage.addTemplate(template)
                 assertTrue("got different event template", localStorage.getTemplate(id) == template)
@@ -108,18 +105,18 @@ class AppLocalStorageEventsTest {
     fun checkGetEventsWithTemplate(){
         runBlocking {
             launch {
-                localStorage.clearEventTemplates()
-                localStorage.clearEvents()
+                localStorage.deleteEventTemplates()
+                localStorage.deleteEvents()
 
                 val id = 1
                 val event = RoomEventsHelper.getEmptyEvent(1, Date())
-                event.template = RoomEventsHelper.getEmptyTemplate("id")
-                event.templateId = event.templateId
+                event.template = RoomEventsHelper.getEmptyTemplate(id)
+                TODO("event.templateId = event.templateId")
 
                 localStorage.addTemplate(event.template!!)
                 localStorage.addEvent(event)
 
-                val newEvent = localStorage.getEvent(id)
+                val newEvent = localStorage.getEvent(1)
                 newEvent.template = localStorage.getTemplate(newEvent.templateId)
 
                 assertTrue("got different template", event.template == newEvent.template)

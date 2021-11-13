@@ -1,7 +1,6 @@
 package com.astery.xapplication.repository
 
-import com.astery.xapplication.model.entities.Event
-import com.astery.xapplication.model.entities.EventTemplate
+import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.repository.localDataStorage.LocalStorage
 import com.astery.xapplication.repository.preferences.PreferenceEntity
@@ -11,6 +10,9 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * actual implementation of repository
+ * */
 @Singleton
 class AppRepository @Inject constructor(@set:Inject var remoteStorage: RemoteStorage,
                                         @set:Inject var localStorage: LocalStorage,
@@ -37,6 +39,18 @@ class AppRepository @Inject constructor(@set:Inject var remoteStorage: RemoteSto
 
     override suspend fun addEvent(event: Event) {
         localStorage.addEvent(event)
+    }
+
+    override suspend fun getArticle(articleId: Int): Article {
+        return localStorage.getArticle(articleId)
+    }
+
+    override suspend fun getItemsForArticle(articleId: Int): List<Item> {
+        return localStorage.getItemsForArticle(articleId)
+    }
+
+    override suspend fun getAdvicesForItem(itemId: Int): List<Advice> {
+        return localStorage.getAdvicesForItem(itemId)
     }
 
     private enum class RepPrefs: PreferenceEntity {

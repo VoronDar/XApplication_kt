@@ -4,34 +4,29 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.astery.xapplication.repository.remoteDataStorage.FbUsable
 
 /**
- * sets of answers to questions. If the user choose this answer and if it has an item - it will be shown to the user.
+ * any question has several answers. Some answers have an item, that has advices what to do in the situation
  */
 @Entity
-data class Answer(@PrimaryKey var id: String, var text: String,
-    var item: String, @ColumnInfo(name = "parent_id") var parentId: String) : FbUsable {
+data class Answer(@PrimaryKey var id: Int, val body: String,
+                  val itemId: Int, @ColumnInfo(name = "parent_id") val questionId: String) {
 
-    @Ignore var itemOb: Item? = null
+    @Ignore var item: Item? = null
 
 
     @Ignore
-    constructor():this("", "", "", "") {
-    }
-
-    override fun setVariableId(id: String) {
-        this.id = id
+    constructor():this(0, "", 0, "") {
     }
 
 
     override fun toString(): String {
         return "Answer{" +
                 "id='" + id + '\'' +
-                ", text='" + text + '\'' +
-                ", item='" + item + '\'' +
-                ", itemOb=" + itemOb +
-                ", parentId='" + parentId + '\'' +
+                ", body='" + body + '\'' +
+                ", itemId='" + itemId + '\'' +
+                ", item=" + item +
+                ", questionId='" + questionId + '\'' +
                 '}'
     }
 

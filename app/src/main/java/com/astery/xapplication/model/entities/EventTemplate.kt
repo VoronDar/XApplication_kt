@@ -1,43 +1,35 @@
 package com.astery.xapplication.model.entities
 
 import android.graphics.Bitmap
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.room.*
-import com.astery.xapplication.model.appValues.ArrayConverter
-import com.astery.xapplication.model.appValues.EventCategoryConverter
+import com.astery.xapplication.model.entities.converters.ArrayConverter
+import com.astery.xapplication.model.entities.converters.EventCategoryConverter
 import com.astery.xapplication.model.entities.values.EventCategory
-import com.astery.xapplication.repository.remoteDataStorage.FbUsable
 import java.io.Serializable
-import java.util.*
 
 /**
- * used for cases when a user completed something and looking for a feedback
+ * type of event. Can't be changed by a user.
+ * Contains list of questions.
  */
 @Entity
 @TypeConverters(ArrayConverter::class, EventCategoryConverter::class)
-open class EventTemplate(@PrimaryKey var id: String, var name: String,
-                         var description: String,
+open class EventTemplate(@PrimaryKey var id: Int, var name: String,
+                         var body: String,
                          @ColumnInfo(name = "event_category")
-                         var eventCategory: EventCategory? = null) : FbUsable, Serializable {
+                         var eventCategory: EventCategory? = null): Serializable {
 
     @Ignore var image: Bitmap? = null
     //@Ignore var questions: List<Question>? = null
 
 
-    @Ignore constructor():this("", "", "", null)
+    @Ignore constructor():this(0, "", "", null)
 
-
-
-    override fun setVariableId(id: String) {
-        this.id = id
-    }
 
     override fun toString(): String {
         return "EventTemplate{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
+                ", description='" + body + '\'' +
                 ", image=" + image +
                 ", eventCategory=" + eventCategory +
                 //", questions=" + questions +
@@ -50,7 +42,7 @@ open class EventTemplate(@PrimaryKey var id: String, var name: String,
 
         if (id != other.id) return false
         if (name != other.name) return false
-        if (description != other.description) return false
+        if (body != other.body) return false
         if (eventCategory != other.eventCategory) return false
         if (image != other.image) return false
 
@@ -60,7 +52,7 @@ open class EventTemplate(@PrimaryKey var id: String, var name: String,
     override fun hashCode(): Int {
         var result = id.hashCode()
         result = 31 * result + name.hashCode()
-        result = 31 * result + description.hashCode()
+        result = 31 * result + body.hashCode()
         result = 31 * result + (eventCategory?.hashCode() ?: 0)
         result = 31 * result + (image?.hashCode() ?: 0)
         return result

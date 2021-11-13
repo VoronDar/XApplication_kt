@@ -11,6 +11,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * single activity
+ * */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ParentActivity {
 
