@@ -26,9 +26,6 @@ import android.view.MotionEvent
 import android.view.View.OnTouchListener
 
 
-
-
-
 /**
  * menu -> select article -> Article
  * */

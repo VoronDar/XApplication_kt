@@ -6,7 +6,6 @@
             type="com.astery.xapplication.model.entities.Advice" />
     </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="horizontal"
     android:paddingTop="20dp"
@@ -34,6 +33,7 @@
 
     <com.google.android.material.card.MaterialCardView
         style = "@style/feetback_card"
+        android:visibility="gone"
         >
         <LinearLayout
             android:layout_width="wrap_content"
@@ -57,6 +57,7 @@
     <com.google.android.material.card.MaterialCardView
         style = "@style/feetback_card"
         android:layout_marginLeft="8dp"
+        android:visibility="gone"
         >
         <LinearLayout
             android:layout_width="wrap_content"

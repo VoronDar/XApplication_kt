@@ -21,10 +21,10 @@ class EventDescriptionConverter {
         if (data == null) return null
         val properties = ArrayList<String>()
         Collections.addAll(properties, *data.split("//").toTypedArray())
-        val values: MutableMap<String, String> = HashMap()
+        val values: MutableMap<Int, Int> = HashMap()
         for (k in properties) {
-            val key = k.substring(0, k.indexOf("|"))
-            val value = k.substring(k.indexOf("|") + 1)
+            val key = k.substring(0, k.indexOf("|")).toInt()
+            val value = k.substring(k.indexOf("|") + 1).toInt()
             values[key] = value
         }
         return EventDescription(values)

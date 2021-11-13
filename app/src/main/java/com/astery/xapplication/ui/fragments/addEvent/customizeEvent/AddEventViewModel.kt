@@ -29,7 +29,7 @@ class AddEventViewModel @Inject constructor(): ViewModel() {
     fun addEvent(){
         viewModelScope.launch {
             _addEventState.value = JobState.Running
-            repository.addEvent(Event(null, template!!.id, null, selectedDay!!.time))
+            repository.addEvent(Event(null, template!!.id, selectedDay!!.time))
             _addEventState.value = JobState.Success
         }
     }

@@ -16,11 +16,11 @@ import java.util.*
 @TypeConverters(ArrayConverter::class, DateConverter::class, EventDescriptionConverter::class)
 data class Event(@PrimaryKey(autoGenerate = true) var id: Int?,
                  @ColumnInfo(name = "template_id") val templateId: Int,
-                 @ColumnInfo(name = "description") var eventDescription: EventDescription? = null,
                  val date: Date
 ){
     @Ignore var image:Bitmap? = null
     @Ignore var template: EventTemplate? = null
+    @Ignore var eventDescription: EventDescription? = null
 
     /**
      * is there some advices for this event

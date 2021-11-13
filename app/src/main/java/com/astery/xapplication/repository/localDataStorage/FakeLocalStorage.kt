@@ -16,13 +16,13 @@ class FakeLocalStorage @Inject constructor():LocalStorage {
     override suspend fun getEventsForDate(date: Calendar): List<Event> {
         val list = ArrayList<Event>()
         if (date.get(Calendar.DAY_OF_MONTH) == 2) {
-            list.add(Event(1,  2, null, Date()))
-            list.add(Event(2, 2, null, Date()))
-            list.add(Event(3, 2, null, Date()))
-            list.add(Event(4, 2, null, Date()))
+            list.add(Event(1,  2, Date()))
+            list.add(Event(2, 2, Date()))
+            list.add(Event(3, 2, Date()))
+            list.add(Event(4, 2, Date()))
         } else  if (date.get(Calendar.DAY_OF_MONTH) == 1){
-            list.add(Event(1, 1, null, Date()))
-            list.add(Event(2, 2, null, Date()))
+            list.add(Event(1, 1, Date()))
+            list.add(Event(2, 2, Date()))
         }
 
         return list
