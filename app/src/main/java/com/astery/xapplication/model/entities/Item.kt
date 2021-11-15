@@ -25,6 +25,9 @@ data class Item(@PrimaryKey var id:Int, var body: String,
     @Ignore
     constructor():this(0, "", "", 0, 0)
 
+    @Ignore
+    constructor(id:Int):this(id, "", "", 0, 0)
+
     override fun toString(): String {
         return "Item{" +
                 "id='" + id + '\'' +

@@ -15,6 +15,15 @@
             android:name="day"
             app:argType="java.util.Calendar" />
         </action>
+
+        <action
+            android:id="@+id/action_calendarFragment_to_advicesFragment"
+            app:destination="@id/advicesFragment">
+            <argument
+                android:name="questions"
+                app:argType="com.astery.xapplication.model.entities.Question[]" />
+
+        </action>
     </fragment>
     <fragment
         android:id="@+id/addEventFragment"
@@ -60,4 +69,9 @@
         android:id="@+id/articleFragment"
         android:name="com.astery.xapplication.ui.fragments.article.ArticleFragment"
         android:label="ArticleFragment" />
+    <fragment
+        android:id="@+id/advicesFragment"
+        android:name="com.astery.xapplication.ui.fragments.advices.AdvicesFragment"
+        android:label="AdvicesFragment">
+    </fragment>
 </navigation>

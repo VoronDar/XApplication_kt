@@ -1,14 +1,11 @@
 package com.astery.xapplication.ui.fragments.article
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astery.xapplication.model.entities.Article
-import com.astery.xapplication.model.entities.Item
 import com.astery.xapplication.repository.Repository
-import com.astery.xapplication.viewModels.ItemViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

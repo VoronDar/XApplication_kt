@@ -186,7 +186,12 @@ class CalendarFragment : XFragment() {
 
     /** get actions with */
     private fun moveToActionForTip() {
-        TODO()
+        setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
+        move(
+            CalendarFragmentDirections.actionCalendarFragmentToAdvicesFragment(
+                viewModel.selectedEvent.value!!.first.template!!.questions!!.toTypedArray()
+            )
+        )
     }
 
     private fun moveToAddNewEvent() {

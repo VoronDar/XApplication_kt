@@ -1,16 +1,22 @@
 package com.astery.xapplication.model.entities
 
-import androidx.room.*
-import com.astery.xapplication.repository.remoteDataStorage.FbUsable
+import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
 /**
  * narrow questions for desire and consequence that allow to know more
  */
+@Parcelize
 @Entity
 data class Question(
     @PrimaryKey var id: Int,
     var body: String,
-    var eventTemplateId: Int) {
+    var eventTemplateId: Int
+) : Parcelable {
 
     @Ignore
     var answers: List<Answer>? = null
@@ -19,7 +25,11 @@ data class Question(
     var selectedAnswer: Answer? = null
 
     @Ignore
-    constructor(id:Int, body: String, eventTemplateId: Int, selectedAnswer: Answer):this(id, body, eventTemplateId){
+    constructor(id: Int, body: String, eventTemplateId: Int, selectedAnswer: Answer) : this(
+        id,
+        body,
+        eventTemplateId
+    ) {
         this.selectedAnswer = selectedAnswer
     }
 
