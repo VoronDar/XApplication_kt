@@ -47,10 +47,11 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
     fun setSelectedEvent(position:Int){
         viewModelScope.launch {
             val event = events.value!![position]!!
-            repository.getDescriptionForEvent(event)
+            event.template = repository.getDescriptionForEvent(event)
             _selectedEvent.value = Pair(events.value!![position]!!, position)
         }
     }
+
 
     /** change current date if the user changes month  */
     fun changeMonth(isMore: Boolean) {

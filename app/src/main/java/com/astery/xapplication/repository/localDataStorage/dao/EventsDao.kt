@@ -1,9 +1,8 @@
 package com.astery.xapplication.repository.localDataStorage.dao
 
 import androidx.room.*
+import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.converters.DateConverter
-import com.astery.xapplication.model.entities.Event
-import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.model.entities.values.EventCategory
 import java.util.*
 
@@ -29,20 +28,70 @@ interface EventsDao {
     suspend fun addEventTemplates(templates: List<EventTemplate>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addEvent(event: Event)
+    suspend fun addEvent(event: Event):Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addEvents(events: List<Event>)
 
-    @Query("DELETE from Event")
-    suspend fun deleteEvents()
-    @Query("DELETE from Event WHERE id == :id")
-    suspend fun deleteEvent(id:Int)
 
-    @Query("DELETE from EventTemplate")
-    suspend fun deleteEventTemplates()
-    @Query("DELETE from EventTemplate WHERE id == :id")
-    suspend fun deleteEventTemplate(id:String)
+
+    @Query("SELECT * from question WHERE eventTemplateId = :parentId")
+    suspend fun getQuestionsForEventTemplate(parentId: Int): List<Question?>
+
+    @Query("SELECT * from question WHERE id = :id")
+    suspend fun getQuestion(id: Int): Question
+
+    /** get just answers */
+    @Query("SELECT Answer.* from AnswerAndEvent inner Join Answer on eventId == :eventId AND Answer.id == answerId")
+    suspend fun getAnswersForEvent(eventId:Int):List<Answer>
+
+    /** get just answers */
+    @Query("SELECT Answer.id from Answer WHERE Answer.parent_id == :questionId")
+    suspend fun getAnswersIdForQuestion(questionId:Int):List<Int>
+
+    @Transaction
+    suspend fun getAnswersAndQuestionsForEvent(eventId: Int):List<Question>{
+        val questions:ArrayList<Question> = ArrayList()
+        val list = getAnswersForEvent(eventId)
+        for (i in list){
+            questions.add(getQuestion(i.questionId))
+            questions.last().selectedAnswer = i
+        }
+        return questions
+    }
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addAnswer(answer: Answer)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addAnswers(answers: List<Answer?>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addAnswerAndEvent(relation: AnswerAndEvent)
+
+
+    /** update answerId in AnswerAndEventRelation*/
+    @Transaction
+    suspend fun updateAnswerAndEvent(eventId: Int, question: Question){
+        // get all answers for this question, find relation for one of these answer, replace
+        val answers = getAnswersIdForQuestion(question.id)
+        updateAnswerAndEvent(getAnswerAndEventRelation(eventId, answers)
+            .copy(answerId = question.selectedAnswer!!.id))
+    }
+
+    /** get one relation for event and list of answers */
+    @Query("SELECT * from ANSWERANDEVENT WHERE eventId == :eventId AND answerId in (:answersId)")
+    suspend fun getAnswerAndEventRelation(eventId: Int, answersId: List<Int>):AnswerAndEvent
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateAnswerAndEvent(relation: AnswerAndEvent)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addQuestion(question: Question)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addQuestions(questions: List<Question?>)
+
 
     /*
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -71,6 +120,19 @@ interface EventsDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateEvents(events: List<Event>)
 
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateAnswer(answer: Answer?)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateAnswers(answers: List<Answer?>?)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateQuestion(questions: Question?)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateQuestions(questions: List<Question?>)
+
     /*
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateWarningTemplate(template: WarningTemplate)
@@ -85,4 +147,26 @@ interface EventsDao {
     suspend fun updateWarnings(warning: List<Warning>)
 
      */
+
+    @Query("DELETE from Event")
+    suspend fun deleteEvents()
+
+    @Query("DELETE from Event WHERE id == :id")
+    suspend fun deleteEvent(id:Int)
+
+    @Query("DELETE from AnswerAndEvent")
+    suspend fun deleteAnswerAndEventRelations()
+
+    @Query("DELETE from AnswerAndEvent WHERE eventId == :eventId")
+    suspend fun deleteAnswerAndEventRelation(eventId: Int)
+
+    @Query("DELETE from EventTemplate")
+    suspend fun deleteEventTemplates()
+    @Query("DELETE from EventTemplate WHERE id == :id")
+    suspend fun deleteEventTemplate(id:String)
+
+    @Query("DELETE from Answer")
+    suspend fun deleteAnswers()
+    @Query("DELETE from Question")
+    suspend fun deleteQuestions()
 }

@@ -116,6 +116,10 @@
             />
     </LinearLayout>
     <FrameLayout
+        android:layout_width="match_parent"
+        android:id = "@+id/event_root"
+        android:layout_height="match_parent">
+    <FrameLayout
         android:visibility="gone"
         android:layout_width="match_parent"
         android:id = "@+id/event_container"
@@ -176,6 +180,6 @@
         android:overScrollMode="never"
         android:layout_marginRight="35dp"
         android:layout_height="match_parent"/>
-
+    </FrameLayout>
 </LinearLayout>
 </layout>

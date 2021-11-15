@@ -21,8 +21,8 @@ class Repository @Inject constructor(@set:Inject var remoteStorage: RemoteStorag
     }
 
     /** load eventTemplate, questions, answers */
-    suspend fun getDescriptionForEvent(event: Event) {
-        localStorage.getDescriptionForEvent(event)
+    suspend fun getDescriptionForEvent(event: Event):EventTemplate {
+        return localStorage.getDescriptionForEvent(event)
     }
 
     /** check for updates and load new event templates from remote */
@@ -54,6 +54,10 @@ class Repository @Inject constructor(@set:Inject var remoteStorage: RemoteStorag
         return localStorage.getAdvicesForItem(itemId)
     }
 
+    suspend fun getEventDescription(eventId:Int):List<Question>{
+        return localStorage.getQuestionsAndSelectedAnswersForEvent(eventId)
+    }
+
     private enum class RepPrefs: PreferenceEntity {
         /**
          * day of last update values from remote. Need to get only new info
@@ -62,7 +66,6 @@ class Repository @Inject constructor(@set:Inject var remoteStorage: RemoteStorag
             override val default: Long = 0
         }
     }
-
 
 
 

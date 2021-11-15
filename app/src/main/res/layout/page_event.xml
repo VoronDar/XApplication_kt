@@ -3,7 +3,6 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="kotlin.Pair"/>
         <variable
             name="viewModel"
             type="com.astery.xapplication.ui.fragments.calendar.CalendarViewModel" />
@@ -83,7 +82,7 @@
         <Button
             android:id = "@+id/get_a_tip"
             style="@style/CommonButton"
-            android:visibility="@{viewModel.selectedEvent.first.advices ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.selectedEvent.first.isAdvices ? View.VISIBLE : View.GONE}"
             android:text = "Get a tip"
             android:layout_gravity="center"
             android:layout_marginLeft="3dp"

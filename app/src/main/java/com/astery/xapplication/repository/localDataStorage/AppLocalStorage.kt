@@ -16,13 +16,15 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
         return appDatabase.eventDao().getEventsByTime(date.time)
     }
 
-    override suspend fun getDescriptionForEvent(event: Event) {
-        // TODO(questions, advises)
-        event.template = appDatabase.eventDao().getEventTemplate(event.templateId)
+    override suspend fun getDescriptionForEvent(event:Event):EventTemplate {
+        val template = appDatabase.eventDao().getEventTemplate(event.templateId)
+        template.questions = getQuestionsAndSelectedAnswersForEvent(event.id!!)
+        return template
     }
 
     override suspend fun deleteEvents() {
         appDatabase.eventDao().deleteEvents()
+        appDatabase.eventDao().deleteAnswerAndEventRelations()
     }
 
     override suspend fun deleteEventTemplates() {
@@ -34,7 +36,12 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
     }
 
     override suspend fun addEvent(event: Event) {
-        appDatabase.eventDao().addEvent(event)
+        val eventId = appDatabase.eventDao().addEvent(event)
+        for (i in event.template!!.questions!!){
+            if (i.selectedAnswer != null){
+                appDatabase.eventDao().addAnswerAndEvent(AnswerAndEvent(eventId.toInt(), i.selectedAnswer!!.id))
+            }
+        }
     }
 
     override suspend fun addTemplate(template: EventTemplate) {
@@ -61,7 +68,6 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
         appDatabase.articleDao().addArticleWithTags(article)
     }
 
-
     override suspend fun getArticle(id: Int): Article {
         return appDatabase.articleDao().getArticleById(id)
     }
@@ -85,4 +91,37 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
     override suspend fun getAdvicesForItem(itemId: Int): List<Advice> {
         return appDatabase.articleDao().getAdvisesForItem(itemId)
     }
+
+    override suspend fun getQuestionsAndSelectedAnswersForEvent(eventId: Int): List<Question> {
+        return appDatabase.eventDao().getAnswersAndQuestionsForEvent(eventId)
+    }
+
+    override suspend fun updateSelectedAnswer(eventId: Int, question: Question) {
+        appDatabase.eventDao().updateAnswerAndEvent(eventId, question)
+    }
+
+    override suspend fun addAnswer(answer: Answer) {
+        appDatabase.eventDao().addAnswer(answer)
+    }
+
+    override suspend fun addAnswers(answers: List<Answer>) {
+        appDatabase.eventDao().addAnswers(answers)
+    }
+
+    override suspend fun addQuestions(question: List<Question>) {
+        appDatabase.eventDao().addQuestions(question)
+    }
+
+    override suspend fun addQuestion(question: Question) {
+        appDatabase.eventDao().addQuestion(question)
+    }
+
+    override suspend fun deleteQuestions() {
+        appDatabase.eventDao().deleteQuestions()
+    }
+
+    override suspend fun deleteAnswers() {
+        appDatabase.eventDao().deleteAnswers()
+    }
+
 }
