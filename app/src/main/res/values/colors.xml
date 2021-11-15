@@ -34,4 +34,5 @@
     <color name="card_corner">#59000000</color>
     <color name="calendar_weekend">#892555</color>
     <color name="calendar_week">#26356B</color>
+    <color name="calendar_unit_stroke_color">#CDD8FF</color>
 </resources>

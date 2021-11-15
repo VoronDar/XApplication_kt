@@ -28,11 +28,16 @@ class FakeLocalStorage @Inject constructor():LocalStorage {
         return list
     }
 
-    override suspend fun getDescriptionForEvent(event: Event) {
-        if (event.templateId == 1){
-            event.template = EventTemplate(1, "name", "asdasdasdasd asd asd sad asd asd as", EventCategory.Feels)
+    override suspend fun getDescriptionForEvent(event: Event):EventTemplate {
+        return if (event.templateId == 1){
+            val list = getQuestionsAndSelectedAnswersForEvent(event.id!!)
+            val template = EventTemplate(1, "name", "asdasdasdasd asd asd sad asd asd as", EventCategory.Feels)
+            template.questions = list
+            template
         }else{
-            event.template = EventTemplate(2, "You feel bad", "asdas adas dasdasd asdsadasdsadasdas dasd asd asdsadsad as dasd asd asd asd asd asd as as", EventCategory.MenstrualCycle)
+            val template = EventTemplate(2, "You feel bad", "asdas adas dasdasd asdsadasdsadasdas dasd asd asdsadsad as dasd asd asd asd asd asd as as", EventCategory.MenstrualCycle)
+            template.questions = getQuestionsAndSelectedAnswersForEvent(event.id!!)
+            template
         }
     }
 
@@ -134,5 +139,57 @@ class FakeLocalStorage @Inject constructor():LocalStorage {
         } else{
             listOf(Advice(1, 2, 3, AdviceType.NEW_IDEA, "wqe axc zxc asd  ", itemId))
         }
+    }
+
+    override suspend fun getQuestionsAndSelectedAnswersForEvent(eventId: Int): List<Question> {
+        return when (eventId) {
+            1 -> {
+                listOf(
+                    Question(1, "fake question1", 1, Answer(1, "answer1", null, 1)),
+                    Question(2, "fake question2", 1, Answer(2, "answer2", null, 1)),
+                    Question(3, "fake question3", 1, Answer(3, "answer3", null, 1)),
+                    Question(4, "fake question4", 1, Answer(4, "answer4", null, 1))
+                )
+            }
+            2 -> {
+                listOf(
+                    Question(1, "fake question1", 1, Answer(1, "answer1", 1, 1)),
+                    Question(2, "fake question2", 1, Answer(2, "answer2", 2, 1)),
+                    Question(3, "fake question3", 1, Answer(3, "answer3", 3, 1)),
+                    Question(4, "fake question4", 1, Answer(4, "answer4", 4, 1))
+                )
+            }
+            else -> {
+                listOf()
+            }
+        }
+    }
+
+    override suspend fun addAnswer(answer: Answer) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addQuestion(question: Question) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addQuestions(question: List<Question>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteQuestions() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteAnswers() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addAnswers(answers: List<Answer>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateSelectedAnswer(eventId: Int, question: Question) {
+        TODO("Not yet implemented")
     }
 }

@@ -7,6 +7,6 @@ package com.astery.xapplication.model
  * Maybe later this class will be contains some more fields that just map
  * */
 class EventDescription(
-    /** advice questionId - adviceId  */
-    var properties: Map<String, String>
+    /** advice questionId - answerId  */
+    var properties: Map<Int, Int>
 )

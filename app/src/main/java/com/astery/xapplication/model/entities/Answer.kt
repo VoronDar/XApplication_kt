@@ -10,24 +10,18 @@ import androidx.room.PrimaryKey
  */
 @Entity
 data class Answer(@PrimaryKey var id: Int, val body: String,
-                  val itemId: Int, @ColumnInfo(name = "parent_id") val questionId: String) {
+                  val itemId: Int?, @ColumnInfo(name = "parent_id") val questionId: Int) {
 
     @Ignore var item: Item? = null
 
 
     @Ignore
-    constructor():this(0, "", 0, "") {
+    constructor():this(0, "", 0, 0) {
     }
-
 
     override fun toString(): String {
-        return "Answer{" +
-                "id='" + id + '\'' +
-                ", body='" + body + '\'' +
-                ", itemId='" + itemId + '\'' +
-                ", item=" + item +
-                ", questionId='" + questionId + '\'' +
-                '}'
+        return "Answer(id=$id, body='$body', itemId=$itemId, questionId=$questionId, item=$item)"
     }
+
 
 }
