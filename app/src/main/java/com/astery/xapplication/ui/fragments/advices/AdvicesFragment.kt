@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentAdvicesBinding
+import com.astery.xapplication.model.entities.Item
 import com.astery.xapplication.model.entities.Question
 import com.astery.xapplication.ui.adapterUtils.BlockListener
 import com.astery.xapplication.ui.fragments.XFragment
@@ -16,6 +17,9 @@ import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransiti
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * menu - calendarFragment - advicesFragment
+ * */
 @AndroidEntryPoint
 class AdvicesFragment : XFragment() {
     private val binding: FragmentAdvicesBinding
@@ -48,7 +52,7 @@ class AdvicesFragment : XFragment() {
         adapter = AdvicesAdapter(null, requireContext())
         adapter!!.blockListener = (object : BlockListener {
             override fun onClick(position: Int) {
-                moveToActionForItem(viewModel.getItemIdForQuestion(position))
+                moveToActionForItem(viewModel.getItemForQuestion(position))
             }
         })
 
@@ -65,8 +69,11 @@ class AdvicesFragment : XFragment() {
     override fun getFragmentTitle(): String = getString(R.string.title_tips)
 
     /** get action for item */
-    private fun moveToActionForItem(itemId: Int) {
-
+    private fun moveToActionForItem(item: Item) {
+        setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
+        move(
+            AdvicesFragmentDirections.actionAdvicesFragmentToItemFragment(item)
+        )
     }
 
 }

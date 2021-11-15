@@ -58,6 +58,12 @@ class Repository @Inject constructor(@set:Inject var remoteStorage: RemoteStorag
         return localStorage.getQuestionsAndSelectedAnswersForEvent(eventId)
     }
 
+    /** we have itemId, and advices. We need body and name. Get item from db, combine*/
+    suspend fun setItemBody(item: Item):Item{
+        val gotItem = localStorage.getItemBody(item.id!!)
+        return item.clone(name = gotItem.name, body = gotItem.body)
+    }
+
     private enum class RepPrefs: PreferenceEntity {
         /**
          * day of last update values from remote. Need to get only new info

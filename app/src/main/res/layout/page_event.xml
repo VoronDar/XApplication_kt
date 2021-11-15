@@ -2,95 +2,100 @@
 <layout>
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.astery.xapplication.ui.fragments.calendar.CalendarViewModel" />
     </data>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:layout_marginLeft="35dp"
-    android:layout_marginRight="35dp"
-    android:layout_height="match_parent"
-    tools:ignore="HardcodedText"
-    android:baselineAligned="false">
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:overScrollMode="never"
-        android:fadeScrollbars="true"
-        android:scrollbarThumbVertical="@android:color/white"
-        android:layout_weight="1">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingRight = "35dp"
-            android:orientation="vertical"
-            android:paddingEnd="35dp"
-            tools:ignore="RtlSymmetry">
 
-        <TextView
-            android:id = "@+id/event_name"
-            style="@style/HighLightText"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:text = "@{viewModel.selectedEvent.first.template.name}"
-            />
-
-    <TextView
-        android:id = "@+id/event_description"
-        style="@style/ArticleText"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="horizontal"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:text = "@{viewModel.selectedEvent.first.template.body}"
-        />
-        <TextView
-            android:id = "@+id/event_properties"
-            android:layout_marginTop="15dp"
-            style="@style/ImportantArticleText"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            app:properties = "@{viewModel.selectedEvent.first}"
-            />
-    </LinearLayout>
-    </ScrollView>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        tools:ignore="HardcodedText"
+        android:baselineAligned="false">
 
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:fadeScrollbars="true"
+            android:scrollbarThumbVertical="@android:color/white"
+            android:layout_weight="1">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id = "@+id/item_image"
+            <LinearLayout
                 android:layout_width="match_parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="1:1"
-                android:src = "@drawable/dating"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/item_image_CD" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-        <Button
-            android:id = "@+id/get_a_tip"
-            style="@style/CommonButton"
-            android:visibility="@{viewModel.selectedEvent.first.isAdvices ? View.VISIBLE : View.GONE}"
-            android:text = "Get a tip"
-            android:layout_gravity="center"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="15dp"
-            android:layout_width="match_parent"
-            />
+                android:layout_height="wrap_content"
+                android:paddingRight="35dp"
+                android:orientation="vertical"
+                android:paddingEnd="35dp"
+                tools:ignore="RtlSymmetry">
+
+                <TextView
+                    android:id="@+id/event_name"
+                    style="@style/HighLightText"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:text="@{viewModel.selectedEvent.first.template.name}" />
+
+                <TextView
+                    android:id="@+id/event_description"
+                    style="@style/ArticleText"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:text="@{viewModel.selectedEvent.first.template.body}" />
+
+                <TextView
+                    android:id="@+id/event_properties"
+                    android:layout_marginTop="15dp"
+                    style="@style/ImportantArticleText"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    app:properties="@{viewModel.selectedEvent.first}" />
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/item_image"
+                    android:layout_width="match_parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintDimensionRatio="1:1"
+                    android:src="@drawable/dating"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/item_image_CD" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/get_a_tip"
+                style="@style/CommonButton"
+                android:visibility="@{viewModel.selectedEvent.first.isAdvices ? View.VISIBLE : View.GONE}"
+                android:text="Get a tip"
+                android:layout_gravity="center"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 
 </layout>

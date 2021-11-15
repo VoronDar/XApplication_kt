@@ -22,6 +22,7 @@ interface LocalStorage {
     suspend fun getArticlesWithTagAndKeyWord(tags:List<Int>, key:String):List<Article>
     suspend fun getItemsForArticle(articleId:Int):List<Item>
     suspend fun getAdvicesForItem(itemId: Int): List<Advice>
+    suspend fun getItemBody(itemId:Int):Item
 
     /** get answers and questions for event */
     suspend fun getQuestionsAndSelectedAnswersForEvent(eventId:Int):List<Question>

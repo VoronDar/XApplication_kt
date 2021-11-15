@@ -39,8 +39,8 @@ class AdvicesViewModel @Inject constructor(): ViewModel() {
     /**
      * @param position is the position in units, not in questions
      * */
-    fun getItemIdForQuestion(position: Int): Int {
-        return _questions.value!![units.value!![position].position].selectedAnswer!!.itemId!!
+    fun getItemForQuestion(position: Int): Item {
+        return _questions.value!![units.value!![position].position].selectedAnswer!!.item!!
     }
 
 }

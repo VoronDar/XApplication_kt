@@ -124,4 +124,7 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
         appDatabase.eventDao().deleteAnswers()
     }
 
+    override suspend fun getItemBody(itemId: Int): Item {
+        return appDatabase.articleDao().getItemBody(itemId)
+    }
 }

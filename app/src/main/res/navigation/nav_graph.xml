@@ -73,5 +73,16 @@
         android:id="@+id/advicesFragment"
         android:name="com.astery.xapplication.ui.fragments.advices.AdvicesFragment"
         android:label="AdvicesFragment">
+        <action
+            android:id="@+id/action_advicesFragment_to_itemFragment"
+            app:destination="@id/itemFragment">
+            <argument
+                android:name="item"
+                app:argType="com.astery.xapplication.model.entities.Item" />
+        </action>
     </fragment>
+    <fragment
+        android:id="@+id/itemFragment"
+        android:name="com.astery.xapplication.ui.fragments.itemForAnswer.ItemFragment"
+        android:label="ItemFragment" />
 </navigation>

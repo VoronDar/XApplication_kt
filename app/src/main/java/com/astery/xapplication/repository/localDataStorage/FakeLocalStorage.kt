@@ -192,4 +192,10 @@ class FakeLocalStorage @Inject constructor():LocalStorage {
     override suspend fun updateSelectedAnswer(eventId: Int, question: Question) {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getItemBody(itemId: Int): Item {
+        return Item(-1, "asdasdsa das asd asd kasldj askldjasjdjaskldjasjlkdjklasjdklasjlkdkasjdjlk" +
+                "askdjasljdlkasjdlkasjdaslkdklasjldjasldjklasjldjlkasjdlkaskljdjaslkdkjlasjkldjkla" +
+                "sjdklasjlkdjkasjdlkasjlk dasljk d", "sadasddas asdas d", 1, 0)
+    }
 }

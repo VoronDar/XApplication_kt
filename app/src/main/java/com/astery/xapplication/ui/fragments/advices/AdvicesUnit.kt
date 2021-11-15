@@ -28,7 +28,7 @@ class AdvicesUnit private constructor(q: Question, val order:Int, val position:I
         fun createList(list: List<Question>):List<AdvicesUnit>{
             val units = ArrayList<AdvicesUnit>()
             for (i in list.indices){
-                val unit = create(list[i], units.size, i)
+                val unit = create(list[i], units.size+1, i)
                 if (unit != null) units.add(unit)
             }
             return units
