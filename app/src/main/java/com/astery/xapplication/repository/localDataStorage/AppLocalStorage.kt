@@ -127,4 +127,9 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
     override suspend fun getItemBody(itemId: Int): Item {
         return appDatabase.articleDao().getItemBody(itemId)
     }
+
+
+    override suspend fun getQuestionsWithAnswers(templateId: Int): List<Question> {
+        return appDatabase.eventDao().getAnswersAndQuestionsForTemplate(templateId)
+    }
 }

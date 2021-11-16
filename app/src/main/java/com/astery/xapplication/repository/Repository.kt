@@ -64,6 +64,10 @@ class Repository @Inject constructor(@set:Inject var remoteStorage: RemoteStorag
         return item.clone(name = gotItem.name, body = gotItem.body)
     }
 
+    suspend fun getQuestionsWithAnswers(templateId: Int):List<Question> {
+        return localStorage.getQuestionsWithAnswers(templateId)
+    }
+
     private enum class RepPrefs: PreferenceEntity {
         /**
          * day of last update values from remote. Need to get only new info

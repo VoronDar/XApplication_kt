@@ -36,7 +36,7 @@ interface EventsDao {
 
 
     @Query("SELECT * from question WHERE eventTemplateId = :parentId")
-    suspend fun getQuestionsForEventTemplate(parentId: Int): List<Question?>
+    suspend fun getQuestionsForEventTemplate(parentId: Int): List<Question>
 
     @Query("SELECT * from question WHERE id = :id")
     suspend fun getQuestion(id: Int): Question
@@ -45,9 +45,13 @@ interface EventsDao {
     @Query("SELECT Answer.* from AnswerAndEvent inner Join Answer on eventId == :eventId AND Answer.id == answerId")
     suspend fun getAnswersForEvent(eventId:Int):List<Answer>
 
-    /** get just answers */
+    /** get just answers id  */
     @Query("SELECT Answer.id from Answer WHERE Answer.parent_id == :questionId")
     suspend fun getAnswersIdForQuestion(questionId:Int):List<Int>
+
+    /** get just answers */
+    @Query("SELECT Answer.* from Answer WHERE Answer.parent_id == :questionId")
+    suspend fun getAnswersForQuestion(questionId:Int):List<Answer>
 
     @Transaction
     suspend fun getAnswersAndQuestionsForEvent(eventId: Int):List<Question>{
@@ -56,6 +60,15 @@ interface EventsDao {
         for (i in list){
             questions.add(getQuestion(i.questionId))
             questions.last().selectedAnswer = i
+        }
+        return questions
+    }
+
+    @Transaction
+    suspend fun getAnswersAndQuestionsForTemplate(templateId: Int):List<Question>{
+        val questions = getQuestionsForEventTemplate(templateId)
+        for (i in questions){
+            i.answers = getAnswersForQuestion(i.id)
         }
         return questions
     }

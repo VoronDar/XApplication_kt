@@ -40,5 +40,6 @@ interface LocalStorage {
     suspend fun deleteAnswers()
 
     suspend fun close()
+    suspend fun getQuestionsWithAnswers(templateId: Int):List<Question>
 
 }
