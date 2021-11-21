@@ -53,12 +53,16 @@ class CalendarFragment : XFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as ParentActivity).showMenuNav(false, changeMonthListener)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onResume() {
+        super.onResume()
         (activity as ParentActivity).showMenuNav(true, changeMonthListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (activity as ParentActivity).showMenuNav(false, changeMonthListener)
     }
 
     override fun setListeners() {
