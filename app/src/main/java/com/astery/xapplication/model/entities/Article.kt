@@ -23,6 +23,9 @@ data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
     @Ignore
     var image: Bitmap? = null
 
+    @Ignore
+    var ta:String? = null
+
 
     @Ignore
     constructor():this(0, "", "", 0,0)

@@ -20,6 +20,7 @@ import androidx.transition.TransitionManager
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentCalendarBinding
 import com.astery.xapplication.model.entities.Event
+import com.astery.xapplication.ui.activity.interfaces.ParentActivity
 import com.astery.xapplication.ui.adapterUtils.BlockListener
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.calendar.calendar_adapter.CalendarAdapter
@@ -50,10 +51,20 @@ class CalendarFragment : XFragment() {
         return bind.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as ParentActivity).showMenuNav(false, changeMonthListener)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        (activity as ParentActivity).showMenuNav(true, changeMonthListener)
+    }
 
     override fun setListeners() {
         binding.backIcon.setOnClickListener { showEventContainer(false) }
         binding.noCardInfo.setOnClickListener { moveToAddNewEvent() }
+        binding.deleteIcon.setOnClickListener{ deleteEvent() }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -122,6 +133,11 @@ class CalendarFragment : XFragment() {
 
     /** blink noCard page */
     private fun renderNoEventsAgain() {
+
+        // need to hide event parts if there is not events because the user just deleted them
+        binding.eventContainer.isGone = true
+        binding.eventRecycler.isGone = true
+
         val alphaAnimator = ValueAnimator.ofFloat(1f, 0.75f)
         alphaAnimator.addUpdateListener { animator ->
             val value = animator.animatedValue as Float
@@ -170,6 +186,7 @@ class CalendarFragment : XFragment() {
         binding.eventRecycler.isGone = show
         binding.eventContainer.isGone = !show
         binding.backIcon.isGone = !show
+        binding.deleteIcon.isGone = !show
     }
 
     override fun getFragmentTitle(): String? {
@@ -194,6 +211,25 @@ class CalendarFragment : XFragment() {
         )
     }
 
+    private fun deleteEvent(){
+        DeleteEventDialogue(layoutInflater, requireContext())
+            .setOnOkListener{
+                showEventContainer(false)
+                viewModel.deleteEvent()
+            }
+            .show()
+    }
+
+    private val changeMonthListener:MenuNavListener = object: MenuNavListener() {
+        override fun click(back: Boolean) {
+            viewModel.changeMonth(!back)
+            cAdapter?.units = viewModel.getDayUnitList()
+            cAdapter?.selectedDay = 1
+        }
+    }
+
+
+    /** move to fragment to add new event */
     private fun moveToAddNewEvent() {
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
         move(
@@ -202,6 +238,14 @@ class CalendarFragment : XFragment() {
             )
         )
     }
+
+
+    abstract class MenuNavListener{
+        var close = false
+        abstract fun click(back:Boolean)
+    }
+
+
 
 
     object BindingAdapters {
@@ -222,6 +266,7 @@ class CalendarFragment : XFragment() {
 
         }
     }
+
 
 
 }

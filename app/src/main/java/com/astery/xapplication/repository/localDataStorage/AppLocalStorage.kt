@@ -27,6 +27,12 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
         appDatabase.eventDao().deleteAnswerAndEventRelations()
     }
 
+    override suspend fun deleteEvent(event: Event) {
+        appDatabase.eventDao().deleteEvent(event.id!!)
+        appDatabase.eventDao().deleteAnswerAndEventRelation(event.id!!)
+    }
+
+
     override suspend fun deleteEventTemplates() {
         appDatabase.eventDao().deleteEventTemplates()
     }

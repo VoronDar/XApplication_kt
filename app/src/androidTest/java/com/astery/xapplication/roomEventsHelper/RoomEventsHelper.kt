@@ -6,7 +6,7 @@ import java.util.*
 
 object RoomEventsHelper {
     fun getEmptyEvent(id:Int, date: Date = Date()):Event{
-        return Event(id, 0, null, date)
+        return Event(id, 0, date)
     }
     fun getEmptyTemplate(id:Int): EventTemplate {
         return EventTemplate(id, "id", "description", EventCategory.Medicine)

@@ -1,12 +1,15 @@
 package com.astery.xapplication.ui.activity
 
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.astery.xapplication.R
 import com.astery.xapplication.ui.activity.interfaces.ParentActivity
+import com.astery.xapplication.ui.fragments.calendar.CalendarFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -38,5 +41,38 @@ class MainActivity : AppCompatActivity(), ParentActivity {
     override fun changeTitle(title: String?) {
         supportActionBar?.title = title
         Timber.i(supportActionBar?.title.toString())
+    }
+
+
+    var menuMonthListener: CalendarFragment.MenuNavListener? = null
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.menu_main, menu)
+
+
+        if (menuMonthListener != null){
+            menu?.findItem(R.id.action_back)?.isVisible = !menuMonthListener!!.close
+            menu?.findItem(R.id.action_forward)?.isVisible = !menuMonthListener!!.close
+        }
+
+        menu?.findItem(R.id.action_back)?.setOnMenuItemClickListener {
+            menuMonthListener?.click(true)
+            return@setOnMenuItemClickListener true
+        }
+        menu?.findItem(R.id.action_forward)?.setOnMenuItemClickListener {
+            menuMonthListener?.click(false)
+            return@setOnMenuItemClickListener true
+        }
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun showMenuNav(show: Boolean, listener: CalendarFragment.MenuNavListener) {
+        menuMonthListener = listener
+        val toolBar = findViewById<Toolbar>(R.id.toolbar)
+        if (toolBar?.menu?.findItem(R.id.action_back) != null){
+            toolBar.menu?.findItem(R.id.action_back)?.isVisible = show
+            toolBar.menu?.findItem(R.id.action_forward)?.isVisible = show
+        }
     }
 }

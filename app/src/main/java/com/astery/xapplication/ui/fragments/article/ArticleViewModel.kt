@@ -49,7 +49,7 @@ class ArticleViewModel @Inject constructor(): ViewModel(), HasPresentable {
 
         if (item.advices == null) {
             viewModelScope.launch {
-                item.advices = repository.getAdvicesForItem(item.id)
+                item.advices = repository.getAdvicesForItem(item.id!!)
                 _element.value = ItemPresentable(item)
             }
         }

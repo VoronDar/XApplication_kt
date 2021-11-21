@@ -31,7 +31,6 @@ class AddEventWithCategoryFragment : XFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
 
         arguments?.let {

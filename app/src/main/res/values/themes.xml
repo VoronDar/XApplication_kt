@@ -22,6 +22,9 @@
 
     <style name="Theme.XApplication.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/alert_dialogue_background</item>
+    </style>
 
     <style name="HighLightText">
         <item name = "android:fontFamily">@font/opensans_semibold</item>

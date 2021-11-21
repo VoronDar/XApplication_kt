@@ -29,6 +29,7 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
     val events:LiveData<List<Event?>>
         get() = _events
 
+    /** int there is a position in events list */
     private val _selectedEvent: MutableLiveData<Pair<Event, Int>>
     val selectedEvent:LiveData<Pair<Event, Int>>
         get() = _selectedEvent
@@ -131,5 +132,13 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
         }
 
         return units
+    }
+
+    fun deleteEvent() {
+        viewModelScope.launch {
+            _events.value = events.value!!.subList(0, selectedEvent.value!!.second) +
+                    events.value!!.subList(selectedEvent.value!!.second+1, events.value!!.size)
+            repository.deleteEvent(selectedEvent.value!!.first)
+        }
     }
 }

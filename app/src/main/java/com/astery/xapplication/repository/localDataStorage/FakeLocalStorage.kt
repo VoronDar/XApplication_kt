@@ -333,4 +333,6 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
         )
         return listOf(question1, question2)
     }
+
+    override suspend fun deleteEvent(event: Event) {}
 }

@@ -16,15 +16,13 @@ interface ArticleDao {
     @Query("SELECT * FROM item WHERE parent_id = :parentId ORDER BY pagePosition")
     suspend fun getItemsByParentId(parentId: Int): List<Item>
 
-    
-    @Query("SELECT * FROM item")
-    suspend fun getItem(): List<Item>
+    @Query("SELECT body, name FROM item WHERE id = :itemId")
+    suspend fun getItemBody(itemId: Int):Item
             
     /** return article with all of its items and advises  */
     @Query("SELECT * FROM Article WHERE id = :articleId")
     @Transaction
     suspend fun getArticleById(articleId: Int): Article
-
 
     /** return articles */
     @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +

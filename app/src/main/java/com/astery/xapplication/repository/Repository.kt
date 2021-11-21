@@ -68,6 +68,10 @@ class Repository @Inject constructor(@set:Inject var remoteStorage: RemoteStorag
         return localStorage.getQuestionsWithAnswers(templateId)
     }
 
+    suspend fun deleteEvent(event: Event) {
+        localStorage.deleteEvent(event)
+    }
+
     private enum class RepPrefs: PreferenceEntity {
         /**
          * day of last update values from remote. Need to get only new info
