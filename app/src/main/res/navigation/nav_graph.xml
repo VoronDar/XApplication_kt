@@ -64,6 +64,13 @@
         <action
             android:id="@+id/action_addEventFragment2_to_calendarFragment"
             app:destination="@id/calendarFragment" />
+        <action
+            android:id="@+id/action_addEventFragment2_to_endEventFragment"
+            app:destination="@id/endEventFragment" >
+            <argument
+                android:name="event"
+                app:argType="com.astery.xapplication.model.entities.Event" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/articleFragment"
@@ -85,4 +92,19 @@
         android:id="@+id/itemFragment"
         android:name="com.astery.xapplication.ui.fragments.itemForAnswer.ItemFragment"
         android:label="ItemFragment" />
+    <fragment
+        android:id="@+id/endEventFragment"
+        android:name="com.astery.xapplication.ui.fragments.addEvent.endEvent.EndEventFragment"
+        android:label="EndEventFragment">
+    <action
+        android:id="@+id/action_endEventFragment_to_calendarFragment"
+        app:destination="@id/calendarFragment" />
+    <action
+        android:id="@+id/action_endEventFragment_to_advicesFragment"
+        app:destination="@id/advicesFragment">
+        <argument
+            android:name="questions"
+            app:argType="com.astery.xapplication.model.entities.Question[]" />
+    </action>
+    </fragment>
 </navigation>

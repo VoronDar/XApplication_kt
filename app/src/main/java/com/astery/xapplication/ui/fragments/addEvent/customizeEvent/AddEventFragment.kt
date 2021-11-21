@@ -82,12 +82,13 @@ class AddEventFragment : XFragment() {
         return requireContext().resources.getString(R.string.title_new_event)
     }
 
-    /** move to calendar
-     * TODO(after adding questions - move to CongratulationsEvent)
-     * */
+
     private fun moveNext(){
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
-        move(AddEventFragmentDirections.actionAddEventFragment2ToCalendarFragment())
+        if (viewModel.event?.isAdvices == true)
+            move(AddEventFragmentDirections.actionAddEventFragment2ToEndEventFragment(viewModel.event!!))
+        else
+            move(AddEventFragmentDirections.actionAddEventFragment2ToCalendarFragment())
     }
 
 

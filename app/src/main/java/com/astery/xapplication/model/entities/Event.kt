@@ -1,22 +1,25 @@
 package com.astery.xapplication.model.entities
 
 import android.graphics.Bitmap
+import android.os.Parcelable
 import androidx.room.*
 import com.astery.xapplication.model.entities.converters.ArrayConverter
 import com.astery.xapplication.model.entities.converters.DateConverter
 import com.astery.xapplication.model.entities.converters.EventDescriptionConverter
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
 /**
  * Events are used in calendarFragment. Always have templateId.
  * Events store dynamic info, but EventTemplates store static
  * */
+@Parcelize
 @Entity
 @TypeConverters(ArrayConverter::class, DateConverter::class, EventDescriptionConverter::class)
 data class Event(@PrimaryKey(autoGenerate = true) var id: Int?,
                  @ColumnInfo(name = "template_id") val templateId: Int,
                  val date: Date
-){
+): Parcelable{
     @Ignore var image:Bitmap? = null
     @Ignore var template: EventTemplate? = null
 

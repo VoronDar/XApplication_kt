@@ -20,6 +20,8 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ParentActivity {
 
+    // TODO (make custom behaviour onBack)
+
     private var _navController:NavController? = null
     private val navController
         get() = _navController!!

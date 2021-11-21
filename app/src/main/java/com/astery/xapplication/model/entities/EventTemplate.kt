@@ -1,16 +1,20 @@
 package com.astery.xapplication.model.entities
 
 import android.graphics.Bitmap
+import android.os.Parcelable
 import androidx.room.*
 import com.astery.xapplication.model.entities.converters.ArrayConverter
 import com.astery.xapplication.model.entities.converters.EventCategoryConverter
 import com.astery.xapplication.model.entities.values.EventCategory
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 /**
  * type of event. Can't be changed by a user.
  * Contains list of questions.
  */
+@Parcelize
 @Entity
 @TypeConverters(ArrayConverter::class, EventCategoryConverter::class)
 open class EventTemplate(
@@ -18,7 +22,7 @@ open class EventTemplate(
     var body: String,
     @ColumnInfo(name = "event_category")
     val eventCategory: EventCategory = EventCategory.Dating
-) : Serializable {
+) : Serializable, Parcelable {
 
     @Ignore
     var image: Bitmap? = null

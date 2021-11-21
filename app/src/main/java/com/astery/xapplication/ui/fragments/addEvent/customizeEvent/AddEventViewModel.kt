@@ -19,6 +19,8 @@ class AddEventViewModel @Inject constructor(): ViewModel() {
     @set:Inject lateinit var repository: Repository
     var template: EventTemplate? = null
     var selectedDay: Calendar? = null
+    var event:Event? = null
+
     private val _addEventState:MutableLiveData<JobState> = MutableLiveData()
     val addEventState:LiveData<JobState>
         get() = _addEventState
@@ -44,12 +46,12 @@ class AddEventViewModel @Inject constructor(): ViewModel() {
         viewModelScope.launch {
             _addEventState.value = JobState.Running
 
-            val event = Event(null, template!!.id, selectedDay!!.time)
-            event.template = EventTemplate()
-            event.template!!.questions = _questions
+            event = Event(null, template!!.id, selectedDay!!.time)
+            event?.template = EventTemplate()
+            event?.template!!.questions = _questions
             Timber.d("$event")
 
-            repository.addEvent(event)
+            repository.addEvent(event!!)
             _addEventState.value = JobState.Success
         }
     }
