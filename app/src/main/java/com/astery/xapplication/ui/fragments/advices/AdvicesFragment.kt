@@ -49,7 +49,7 @@ class AdvicesFragment : XFragment() {
     }
 
     override fun prepareAdapters() {
-        adapter = AdvicesAdapter(null, requireContext())
+        adapter = AdvicesAdapter(null, requireContext(), null)
         adapter!!.blockListener = (object : BlockListener {
             override fun onClick(position: Int) {
                 moveToActionForItem(viewModel.getItemForQuestion(position))
@@ -63,7 +63,10 @@ class AdvicesFragment : XFragment() {
 
     override fun setViewModelListeners() {
         viewModel.loadAdvices()
-        viewModel.units.observe(viewLifecycleOwner) { units -> adapter?.units = units }
+        viewModel.units.observe(viewLifecycleOwner) { units ->
+            adapter?.units = units
+            adapter?.feedbackListener = viewModel.feedbackListener
+        }
     }
 
     override fun getFragmentTitle(): String = getString(R.string.title_tips)

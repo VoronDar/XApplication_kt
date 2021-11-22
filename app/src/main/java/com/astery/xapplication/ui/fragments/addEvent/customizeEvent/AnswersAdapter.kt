@@ -47,10 +47,7 @@ class AnswersAdapter(units: List<Answer>?, context: Context, question: QuestionU
         val binding = (h as ViewHolder).binding
         units!![position].also { unit ->
             binding.answer = unit
-            if (selectedAnswer == position){
-                // TODO(REPLACE)
-                binding.adviceIcon.isGone = true
-            }
+            binding.isSelected = selectedAnswer == position
         }
     }
 

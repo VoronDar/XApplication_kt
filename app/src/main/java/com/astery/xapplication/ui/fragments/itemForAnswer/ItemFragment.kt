@@ -1,6 +1,8 @@
 package com.astery.xapplication.ui.fragments.itemForAnswer
 
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +14,10 @@ import com.astery.xapplication.model.entities.Item
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.article.ItemPresentable
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
+import com.astery.xapplication.ui.pageFeetback.advice.AdviceFeetBackDelegate
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import android.app.Activity
-import android.text.BoringLayout
-import android.util.DisplayMetrics
-
-import android.util.TypedValue
 import kotlin.math.roundToInt
 
 
@@ -78,20 +76,21 @@ class ItemFragment : XFragment() {
 
     override fun setViewModelListeners() {
         viewModel.loadItemBody()
-        viewModel.element.observe(viewLifecycleOwner){
+        viewModel.element.observe(viewLifecycleOwner) {
             renderItemInfo(it as ItemPresentable)
         }
     }
 
 
-    /** render advices*/
+    /** render advices */
     private fun renderItemInfo(item: ItemPresentable) {
         Timber.i("item advices ${item.advices}")
         if (item.advices != null) {
             for (i in item.advices) {
-                // TODO(what if there is a memory leaking)
                 val adviceBinding = UnitAdviceBinding.inflate(layoutInflater)
                 adviceBinding.advice = i
+                adviceBinding.feedBack =
+                    AdviceFeetBackDelegate(i, adviceBinding, viewModel.feedbackListener).getValue()
                 binding.tipsLayout.addView(adviceBinding.root)
             }
         }

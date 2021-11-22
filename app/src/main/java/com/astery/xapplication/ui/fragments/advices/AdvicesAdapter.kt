@@ -7,12 +7,19 @@ import com.astery.xapplication.databinding.UnitAdviceBinding
 import com.astery.xapplication.databinding.UnitAnswerWithAdvicesBinding
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
+import com.astery.xapplication.ui.pageFeetback.advice.AdviceFeetBackDelegate
+import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetbackListener
 import java.util.*
 
 /**
  * advices for answers
  * */
-class AdvicesAdapter(units: ArrayList<AdvicesUnit>?, context: Context) :
+
+class AdvicesAdapter(
+    units: ArrayList<AdvicesUnit>?,
+    context: Context,
+    var feedbackListener: OnAdviceFeetbackListener?
+) :
     BaseAdapter<AdvicesAdapter.ViewHolder, AdvicesUnit>(units, context) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseViewHolder {
@@ -25,7 +32,10 @@ class AdvicesAdapter(units: ArrayList<AdvicesUnit>?, context: Context) :
 
     override fun onBindViewHolder(h: BaseViewHolder, position: Int) {
         val binding = (h as ViewHolder).binding
+
+
         units!![position].also { unit ->
+
             binding.unit = unit
 
             binding.tipLayout.removeAllViews()
@@ -33,11 +43,14 @@ class AdvicesAdapter(units: ArrayList<AdvicesUnit>?, context: Context) :
                 for (i in unit.advices) {
                     val adviceBinding = UnitAdviceBinding.inflate(LayoutInflater.from(context))
                     adviceBinding.advice = i
+                    adviceBinding.feedBack =
+                        AdviceFeetBackDelegate(i, adviceBinding, feedbackListener).getValue()
                     binding.tipLayout.addView(adviceBinding.root)
                 }
             }
         }
     }
+
 
     override fun onViewDetachedFromWindow(h: BaseViewHolder) {
         super.onViewDetachedFromWindow(h)

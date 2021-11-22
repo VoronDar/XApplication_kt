@@ -46,29 +46,15 @@ class MainActivity : AppCompatActivity(), ParentActivity {
     }
 
 
-    var menuMonthListener: CalendarFragment.MenuNavListener? = null
+    // MARK: Toolbar changing
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
         menuInflater.inflate(R.menu.menu_main, menu)
-
-
-        if (menuMonthListener != null){
-            menu?.findItem(R.id.action_back)?.isVisible = !menuMonthListener!!.close
-            menu?.findItem(R.id.action_forward)?.isVisible = !menuMonthListener!!.close
-        }
-
-        menu?.findItem(R.id.action_back)?.setOnMenuItemClickListener {
-            menuMonthListener?.click(true)
-            return@setOnMenuItemClickListener true
-        }
-        menu?.findItem(R.id.action_forward)?.setOnMenuItemClickListener {
-            menuMonthListener?.click(false)
-            return@setOnMenuItemClickListener true
-        }
-
+        if (menuMonthListener != null) showMenuNav(!menuMonthListener!!.close, menuMonthListener!!)
+        setMenuListeners(menu)
         return super.onCreateOptionsMenu(menu)
     }
 
+    /** hide or reveal iconButtons for calendar **/
     override fun showMenuNav(show: Boolean, listener: CalendarFragment.MenuNavListener) {
         menuMonthListener = listener
         val toolBar = findViewById<Toolbar>(R.id.toolbar)
@@ -77,4 +63,19 @@ class MainActivity : AppCompatActivity(), ParentActivity {
             toolBar.menu?.findItem(R.id.action_forward)?.isVisible = show
         }
     }
+
+
+    private fun setMenuListeners(menu: Menu?) {
+        menu?.findItem(R.id.action_back)?.setOnMenuItemClickListener {
+            menuMonthListener?.click(true)
+            return@setOnMenuItemClickListener true
+        }
+        menu?.findItem(R.id.action_forward)?.setOnMenuItemClickListener {
+            menuMonthListener?.click(false)
+            return@setOnMenuItemClickListener true
+        }
+    }
+
+
+    private var menuMonthListener: CalendarFragment.MenuNavListener? = null
 }

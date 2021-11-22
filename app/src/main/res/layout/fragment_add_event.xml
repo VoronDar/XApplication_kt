@@ -14,6 +14,7 @@
     android:orientation="vertical"
     android:layout_marginLeft="@dimen/margin_frame"
     android:paddingTop="90dp"
+    android:scrollbars="none"
     android:clipToPadding = "false"
     android:layout_marginRight="@dimen/margin_frame"
     android:overScrollMode="never"

@@ -234,7 +234,7 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
     override suspend fun getAdvicesForItem(itemId: Int): List<Advice> {
         return if (itemId == 1) {
             listOf(
-                Advice(1, 2, 3, AdviceType.DO_NOT_DO_THAT_ANYMORE, "dsdsadsad sad asd ", itemId),
+                Advice(1, 2, 3, AdviceType.ALERT, "dsdsadsad sad asd ", itemId),
                 Advice(
                     1,
                     2,
@@ -335,4 +335,6 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
     }
 
     override suspend fun deleteEvent(event: Event) {}
+
+    override suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {}
 }

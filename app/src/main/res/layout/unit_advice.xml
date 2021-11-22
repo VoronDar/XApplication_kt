@@ -1,83 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
             name="advice"
             type="com.astery.xapplication.model.entities.Advice" />
+        <import type="com.astery.xapplication.model.entities.values.AdviceType"/>
+        <variable
+            name="feedBack"
+            type="com.astery.xapplication.ui.pageFeetback.FeedBackStorage" />
     </data>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+<com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:paddingTop="20dp"
+    app:cardElevation="8dp"
+    android:elevation="8dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="5dp"
+    android:layout_marginTop="20dp"
     android:layout_height="wrap_content">
 
-        <View
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="7dp"
-            android:layout_gravity="top"
-            android:id = "@+id/advice_icon"
-            android:background="@drawable/dating"
-            />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@{advice.type == AdviceType.ALERT ? @drawable/advice_background_dont : advice.type == AdviceType.ALWAYS_DO_IT ? @drawable/advice_background_do : @drawable/advice_background_try}"
+        android:orientation="vertical">
 
         <TextView
             style="@style/advice"
-            android:textColor="@color/alert_advice"
+            android:textColor="@{advice.type == AdviceType.ALERT ? @color/advice_text_dont : advice.type == AdviceType.ALWAYS_DO_IT ? @color/advice_text_do : @color/advice_text_try}"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_width="0dp"
+            android:padding="20dp"
+            android:layout_width="match_parent"
             android:layout_weight="1"
             android:text = "@{advice.body}"
             />
 
-    <com.google.android.material.card.MaterialCardView
-        style = "@style/feetback_card"
-        android:visibility="gone"
-        >
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
-            <TextView
-                style="@style/FeetbackText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="12dp"
-                android:layout_marginLeft="8dp"
-                android:layout_gravity="center_vertical"
-                android:text = "@{String.valueOf(advice.likes)}"/>
-            <View
-                android:layout_width="25dp"
-                android:layout_height="25dp" />
-        </LinearLayout>
+        <include layout="@layout/page_feetback"
+            app:feedBackStorage = "@{feedBack}"
+            android:layout_gravity="end"
+            android:layout_height="30dp"
+            android:layout_width="wrap_content" />
 
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        style = "@style/feetback_card"
-        android:layout_marginLeft="8dp"
-        android:visibility="gone"
-        >
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
-            <TextView
-                style="@style/FeetbackText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="12dp"
-                android:layout_marginLeft="8dp"
-                android:layout_gravity="center_vertical"
-                android:text = "@{String.valueOf(advice.dislikes)}"/>
-            <View
-                android:layout_width="25dp"
-                android:layout_height="25dp" />
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-
-</LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
 </layout>

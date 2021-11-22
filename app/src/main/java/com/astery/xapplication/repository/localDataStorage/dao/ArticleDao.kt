@@ -1,10 +1,7 @@
 package com.astery.xapplication.repository.localDataStorage.dao
 
 import androidx.room.*
-import com.astery.xapplication.model.entities.Advice
-import com.astery.xapplication.model.entities.Article
-import com.astery.xapplication.model.entities.ArticleAndTag
-import com.astery.xapplication.model.entities.Item
+import com.astery.xapplication.model.entities.*
 
 @Dao
 interface ArticleDao {
@@ -72,6 +69,9 @@ interface ArticleDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateAdvise(advice: Advice)
+
+    @Query("UPDATE advice SET feedback = :feedBackState WHERE id = :adviceId")
+    suspend fun updateAdviceFeedbackState(adviceId:Int, feedBackState: FeedBackState)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateAdvises(advice: List<Advice>)

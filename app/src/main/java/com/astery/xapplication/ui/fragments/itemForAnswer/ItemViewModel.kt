@@ -9,6 +9,8 @@ import com.astery.xapplication.repository.Repository
 import com.astery.xapplication.ui.fragments.article.HasPresentable
 import com.astery.xapplication.ui.fragments.article.ItemPresentable
 import com.astery.xapplication.ui.fragments.article.Presentable
+import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetBackListenerImpl
+import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetbackListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -28,6 +30,7 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
 
     /** load required parts of item:body and name */
     fun loadItemBody() {
+        feedbackListener = OnAdviceFeetBackListenerImpl(viewModelScope, repository)
         viewModelScope.launch {
             if (item == null) cancel()
 
@@ -35,4 +38,6 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
                 _element.value = ItemPresentable(repository.setItemBody(item!!))
         }
     }
+
+    var feedbackListener:OnAdviceFeetbackListener? = null
 }

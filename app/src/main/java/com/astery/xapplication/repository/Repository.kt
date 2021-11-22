@@ -72,6 +72,14 @@ class Repository @Inject constructor(@set:Inject var remoteStorage: RemoteStorag
         localStorage.deleteEvent(event)
     }
 
+    suspend fun likeAdvice(id: Int) {}
+    suspend fun dislikeAdvice(id: Int) {}
+    suspend fun cancelLikeAdvice(id: Int) {}
+    suspend fun cancelDislikeAdvice(id: Int) {}
+    suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {
+        localStorage.changeFeetBackStateForAdvice(id, feedBackState)
+    }
+
     private enum class RepPrefs: PreferenceEntity {
         /**
          * day of last update values from remote. Need to get only new info

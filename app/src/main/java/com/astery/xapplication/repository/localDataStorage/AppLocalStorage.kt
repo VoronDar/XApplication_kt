@@ -138,4 +138,8 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
     override suspend fun getQuestionsWithAnswers(templateId: Int): List<Question> {
         return appDatabase.eventDao().getAnswersAndQuestionsForTemplate(templateId)
     }
+
+    override suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {
+        appDatabase.articleDao().updateAdviceFeedbackState(id, feedBackState)
+    }
 }

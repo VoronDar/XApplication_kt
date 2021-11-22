@@ -28,6 +28,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <FrameLayout android:layout_height="200dp"
+                android:layout_width="match_parent">
             <ImageView
                 android:id="@+id/item_image"
                 android:layout_width="match_parent"
@@ -35,6 +37,14 @@
                 android:contentDescription="@string/item_image_CD"
                 android:scaleType="centerCrop"
                 android:src="@drawable/dating" />
+
+
+            <include layout="@layout/page_feetback"
+                android:visibility="gone"
+                android:layout_gravity="end|bottom"
+                android:layout_height="30dp"
+                android:layout_width="wrap_content" />
+            </FrameLayout>
 
             <TextView
                 style="@style/HighLightText"
@@ -48,6 +58,7 @@
 
             <LinearLayout
                 android:id="@+id/tips_layout"
+                android:layout_marginTop="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />

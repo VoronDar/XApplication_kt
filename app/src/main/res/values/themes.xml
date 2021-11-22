@@ -98,7 +98,7 @@
 
 
     <style name="FeetbackText">
-        <item name = "android:fontFamily">@font/opensans_regular</item>
+        <item name = "android:fontFamily">@font/heebo_regular</item>
         <item name = "android:textSize">@dimen/small_text_size</item>
         <item name = "android:textColor">@color/black</item>
         <item name = "android:textAlignment" tools:targetApi="jelly_bean_mr1">viewStart</item>

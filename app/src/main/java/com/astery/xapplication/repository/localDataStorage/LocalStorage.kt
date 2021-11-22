@@ -42,5 +42,5 @@ interface LocalStorage {
     suspend fun close()
     suspend fun getQuestionsWithAnswers(templateId: Int):List<Question>
     suspend fun deleteEvent(event: Event)
-
+    suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState)
 }
