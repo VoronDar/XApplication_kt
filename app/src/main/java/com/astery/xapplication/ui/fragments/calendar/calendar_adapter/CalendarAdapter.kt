@@ -19,10 +19,13 @@ import java.util.*
  * */
 class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
     BaseAdapter<CalendarAdapter.ViewHolder, DayUnit>(units, context ) {
-    private var selectedDay: Int = 0
-    fun setSelectedDay(day: Int) {
-        selectedDay = day
-        notifyDataSetChanged()
+    var selectedDay: Int = 0
+    set(value) {
+        val oldValue = selectedDay
+        field = value
+        Timber.d("$oldValue, $value")
+        notifyItemChanged(oldValue)
+        notifyItemChanged(selectedDay)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -41,6 +44,9 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
             Timber.i("${holder.card} and $context")
             holder.card.setBackgroundColor(context.resources.getColor(R.color.selected_card_color))
             holder.card.strokeColor = context.resources.getColor(R.color.black)
+        } else{
+            holder.card.setBackgroundColor(context.resources.getColor(R.color.white))
+            holder.card.strokeColor = context.resources.getColor(R.color.calendar_unit_stroke_color)
         }
     }
 

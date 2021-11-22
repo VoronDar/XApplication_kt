@@ -20,6 +20,7 @@ import androidx.transition.TransitionManager
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentCalendarBinding
 import com.astery.xapplication.model.entities.Event
+import com.astery.xapplication.ui.activity.interfaces.ParentActivity
 import com.astery.xapplication.ui.adapterUtils.BlockListener
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.calendar.calendar_adapter.CalendarAdapter
@@ -50,17 +51,31 @@ class CalendarFragment : XFragment() {
         return bind.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
 
-    override fun setListeners(){
+    override fun onResume() {
+        super.onResume()
+        (activity as ParentActivity).showMenuNav(true, changeMonthListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (activity as ParentActivity).showMenuNav(false, changeMonthListener)
+    }
+
+    override fun setListeners() {
         binding.backIcon.setOnClickListener { showEventContainer(false) }
-        binding.noCardInfo.setOnClickListener {moveToAddNewEvent()}
+        binding.noCardInfo.setOnClickListener { moveToAddNewEvent() }
+        binding.deleteIcon.setOnClickListener{ deleteEvent() }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun prepareAdapters(){
+    override fun prepareAdapters() {
         // calendar
         cAdapter = CalendarAdapter(viewModel.getDayUnitList(), requireContext())
-        cAdapter!!.blockListener = (object: BlockListener {
+        cAdapter!!.blockListener = (object : BlockListener {
             override fun onClick(position: Int) {
                 viewModel.changeDay(cAdapter!!.units!![position].day)
             }
@@ -73,11 +88,11 @@ class CalendarFragment : XFragment() {
 
         // events for one day
         eAdapter = EventAdapter(null, requireContext())
-        eAdapter!!.blockListener = (object:BlockListener{
+        eAdapter!!.blockListener = (object : BlockListener {
             override fun onClick(position: Int) {
                 if (position == 0) {
                     moveToAddNewEvent()
-                }else {
+                } else {
                     viewModel.setSelectedEvent(position)
                 }
             }
@@ -88,66 +103,31 @@ class CalendarFragment : XFragment() {
             GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
     }
 
-    @SuppressLint("Recycle")
     override fun setViewModelListeners() {
-
         viewModel.selectedDay.observe(viewLifecycleOwner, {
-            cAdapter?.setSelectedDay(it.get(Calendar.DAY_OF_MONTH))
+            cAdapter?.selectedDay = (it.get(Calendar.DAY_OF_MONTH))
             viewModel.updateEvents()
             super.setTitle()
 
         })
 
-        viewModel.events.observe(viewLifecycleOwner,{
+        viewModel.events.observe(viewLifecycleOwner, {
             val noEvents = (it.size == 1)
 
             // go from anywhere to page without events
-            if (binding.noCardInfo.isVisible != noEvents){
-                val sharedAxis = MaterialSharedAxis(MaterialSharedAxis.Y, (noEvents))
-                TransitionManager.beginDelayedTransition(binding.fragmentRoot, sharedAxis)
-                binding.eventRecycler.isGone = noEvents
-                binding.eventContainer.isGone = true
-                binding.noCardInfo.isGone = !noEvents
-            }
+            if (binding.noCardInfo.isVisible != noEvents) renderChangeNoEventsState(noEvents)
             // go from eventInfo to page with events
-            else if (binding.eventContainer.isVisible){
-
-                val sharedAxis = MaterialSharedAxis(MaterialSharedAxis.Y, (false))
-                TransitionManager.beginDelayedTransition(binding.fragmentRoot, sharedAxis)
-                binding.eventRecycler.isGone = false
-                binding.eventContainer.isGone = true
-            }
+            else if (binding.eventContainer.isVisible) renderEvents()
             // go from page without event to page without events (blink)
-            else if (binding.noCardInfo.isVisible && noEvents){
-                val alphaAnimator = ValueAnimator.ofFloat(1f, 0.75f)
-                alphaAnimator.addUpdateListener { animator ->
-                    val value = animator.animatedValue as Float
-                    binding.noCardInfo.alpha = value
-                }
-                alphaAnimator.repeatMode = REVERSE
-                alphaAnimator.repeatCount = 1
-
-                val transitionAnimator = ValueAnimator.ofFloat(0f, 25f)
-                transitionAnimator.addUpdateListener { animator ->
-                    val value = animator.animatedValue as Float
-                    binding.noCardInfo.translationY = value
-                }
-                transitionAnimator.repeatMode = REVERSE
-                transitionAnimator.repeatCount = 1
-
-                val valueAnimator = AnimatorSet()
-                valueAnimator.play(alphaAnimator).with(transitionAnimator)
-                valueAnimator.interpolator = AccelerateDecelerateInterpolator()
-                valueAnimator.duration = 150
-                valueAnimator.start()
-            }
+            else if (binding.noCardInfo.isVisible && noEvents) renderNoEventsAgain()
 
             eAdapter?.units = (it as ArrayList<Event?>)
 
         })
 
-        viewModel.selectedEvent.observe(viewLifecycleOwner){
-            binding.eventContent.getATip.setOnClickListener{
+
+        viewModel.selectedEvent.observe(viewLifecycleOwner) {
+            binding.eventContent.getATip.setOnClickListener {
                 moveToActionForTip()
             }
             showEventContainer(true)
@@ -155,55 +135,142 @@ class CalendarFragment : XFragment() {
         }
     }
 
+    /** blink noCard page */
+    private fun renderNoEventsAgain() {
+
+        // need to hide event parts if there is not events because the user just deleted them
+        binding.eventContainer.isGone = true
+        binding.eventRecycler.isGone = true
+
+        val alphaAnimator = ValueAnimator.ofFloat(1f, 0.75f)
+        alphaAnimator.addUpdateListener { animator ->
+            val value = animator.animatedValue as Float
+            binding.noCardInfo.alpha = value
+        }
+        alphaAnimator.repeatMode = REVERSE
+        alphaAnimator.repeatCount = 1
+
+        val transitionAnimator = ValueAnimator.ofFloat(0f, 25f)
+        transitionAnimator.addUpdateListener { animator ->
+            val value = animator.animatedValue as Float
+            binding.noCardInfo.translationY = value
+        }
+        transitionAnimator.repeatMode = REVERSE
+        transitionAnimator.repeatCount = 1
+
+        val valueAnimator = AnimatorSet()
+        valueAnimator.play(alphaAnimator).with(transitionAnimator)
+        valueAnimator.interpolator = AccelerateDecelerateInterpolator()
+        valueAnimator.duration = 150
+        valueAnimator.start()
+    }
+
+    /** animate from noCards to events */
+    private fun renderEvents() {
+        val sharedAxis = MaterialSharedAxis(MaterialSharedAxis.Y, (false))
+        TransitionManager.beginDelayedTransition(binding.eventRoot, sharedAxis)
+        binding.eventRecycler.isGone = false
+        binding.eventContainer.isGone = true
+    }
+
+    /** animate noCards from events and vice versa */
+    private fun renderChangeNoEventsState(noEvents:Boolean) {
+        val sharedAxis = MaterialSharedAxis(MaterialSharedAxis.Y, true)
+        TransitionManager.beginDelayedTransition(binding.eventRoot, sharedAxis)
+        binding.eventRecycler.isGone = noEvents
+        binding.eventContainer.isGone = true
+        binding.noCardInfo.isGone = !noEvents
+    }
+
     /** swap event list and event info */
-    private fun showEventContainer(show:Boolean){
+    private fun showEventContainer(show: Boolean) {
         val sharedAxis = MaterialSharedAxis(MaterialSharedAxis.Y, show)
         TransitionManager.beginDelayedTransition(binding.fragmentRoot, sharedAxis)
 
         binding.eventRecycler.isGone = show
         binding.eventContainer.isGone = !show
         binding.backIcon.isGone = !show
-        }
+        binding.deleteIcon.isGone = !show
+    }
 
     override fun getFragmentTitle(): String? {
         val now = viewModel.selectedDay.value
         if (now != null) {
             return getString(
                 R.string.title_calendar,
-                viewModel.getMonth(now.get(Calendar.MONTH), requireContext()), now.get(Calendar.YEAR)
+                viewModel.getMonth(now.get(Calendar.MONTH), requireContext()),
+                now.get(Calendar.YEAR)
             )
         }
         return null
     }
 
     /** get actions with */
-    private fun moveToActionForTip(){
-        TODO()
+    private fun moveToActionForTip() {
+        setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
+        move(
+            CalendarFragmentDirections.actionCalendarFragmentToAdvicesFragment(
+                viewModel.selectedEvent.value!!.first.template!!.questions!!.toTypedArray()
+            )
+        )
     }
+
+    private fun deleteEvent(){
+        DeleteEventDialogue(layoutInflater, requireContext())
+            .setOnOkListener{
+                showEventContainer(false)
+                viewModel.deleteEvent()
+            }
+            .show()
+    }
+
+    private val changeMonthListener:MenuNavListener = object: MenuNavListener() {
+        override fun click(back: Boolean) {
+            viewModel.changeMonth(!back)
+            cAdapter?.units = viewModel.getDayUnitList()
+            cAdapter?.selectedDay = 1
+        }
+    }
+
+
+    /** move to fragment to add new event */
     private fun moveToAddNewEvent() {
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
-        move(CalendarFragmentDirections.actionCalendarFragmentToAddEventFragment(
+        move(
+            CalendarFragmentDirections.actionCalendarFragmentToAddEventFragment(
                 viewModel.selectedDay.value!!
             )
         )
     }
 
 
-    object BindingAdapters{
-        @BindingAdapter("app:properties")
-        @JvmStatic fun setEventProperties(view: TextView?, event: Event?) {
-            // TODO (add questions later)
-            val properties = StringBuilder()
-            /*
-            if (event?.eventDescription != null) {
-            for (i in event.template?.questions) {
-                properties.append(i.selectedAnswer.text).append("\n\n")
-            }
-             */
-            view?.text = properties.toString()
-        }
-
+    abstract class MenuNavListener{
+        var close = false
+        abstract fun click(back:Boolean)
     }
+
+
+
+
+    object BindingAdapters {
+        @BindingAdapter("app:properties")
+        @JvmStatic
+        fun setEventProperties(view: TextView?, event: Event?) {
+            //val list:ArrayList<Triple<Int, Int, AdviceType>> = arrayListOf()
+            val properties = StringBuilder()
+            if (event?.template?.questions != null) {
+                for (i in event.template!!.questions!!) {
+                    val selectedAnswer = i.selectedAnswer!!
+                    //list.add(Triple(properties.length, selectedAnswer.body.length+2, selectedAnswer.item.))
+                    properties.append(selectedAnswer.body).append("\n\n")
+                }
+                view?.text = properties.toString()
+            } else
+                view?.text = null
+
+        }
+    }
+
 
 
 }

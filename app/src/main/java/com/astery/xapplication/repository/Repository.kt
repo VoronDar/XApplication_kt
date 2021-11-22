@@ -21,8 +21,8 @@ class Repository @Inject constructor(@set:Inject var remoteStorage: RemoteStorag
     }
 
     /** load eventTemplate, questions, answers */
-    suspend fun getDescriptionForEvent(event: Event) {
-        localStorage.getDescriptionForEvent(event)
+    suspend fun getDescriptionForEvent(event: Event):EventTemplate {
+        return localStorage.getDescriptionForEvent(event)
     }
 
     /** check for updates and load new event templates from remote */
@@ -54,6 +54,40 @@ class Repository @Inject constructor(@set:Inject var remoteStorage: RemoteStorag
         return localStorage.getAdvicesForItem(itemId)
     }
 
+    suspend fun getEventDescription(eventId:Int):List<Question>{
+        return localStorage.getQuestionsAndSelectedAnswersForEvent(eventId)
+    }
+
+    /** we have itemId, and advices. We need body and name. Get item from db, combine*/
+    suspend fun setItemBody(item: Item):Item{
+        val gotItem = localStorage.getItemBody(item.id!!)
+        return item.clone(name = gotItem.name, body = gotItem.body)
+    }
+
+    suspend fun getQuestionsWithAnswers(templateId: Int):List<Question> {
+        return localStorage.getQuestionsWithAnswers(templateId)
+    }
+
+    suspend fun deleteEvent(event: Event) {
+        localStorage.deleteEvent(event)
+    }
+
+    suspend fun likeAdvice(id: Int) {}
+    suspend fun dislikeAdvice(id: Int) {}
+    suspend fun cancelLikeAdvice(id: Int) {}
+    suspend fun cancelDislikeAdvice(id: Int) {}
+    suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {
+        localStorage.changeFeetBackStateForAdvice(id, feedBackState)
+    }
+
+    suspend fun likeArticle(id: Int) {}
+    suspend fun dislikeArticle(id: Int) {}
+    suspend fun cancelLikeArticle(id: Int) {}
+    suspend fun cancelDislikeArticle(id: Int) {}
+    suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState) {
+        localStorage.changeFeetBackStateForArticle(id, feedBackState)
+    }
+
     private enum class RepPrefs: PreferenceEntity {
         /**
          * day of last update values from remote. Need to get only new info
@@ -62,7 +96,6 @@ class Repository @Inject constructor(@set:Inject var remoteStorage: RemoteStorag
             override val default: Long = 0
         }
     }
-
 
 
 

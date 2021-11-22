@@ -12,9 +12,6 @@ import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
 import com.astery.xapplication.ui.utils.getDraw
 import java.util.ArrayList
 
-/**
- *
- * */
 class CategoryAdapter(units: ArrayList<EventCategory>, context: Context) :
     BaseAdapter<CategoryAdapter.ViewHolder, EventCategory>(units, context) {
 
@@ -29,7 +26,7 @@ class CategoryAdapter(units: ArrayList<EventCategory>, context: Context) :
         binding.image = context.getDraw(units!![position].getDrawableId())
         binding.title = context.resources.getStringArray(R.array.event_category)[position]
 
-        binding.card.elevation = 8f
+        //binding.card.elevation = 8f
     }
 
     override fun onViewDetachedFromWindow(h: BaseViewHolder) {

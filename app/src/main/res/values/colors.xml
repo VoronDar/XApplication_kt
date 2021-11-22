@@ -21,11 +21,16 @@
     <color name="ignore_button_text">#CC32583D</color>
 
     <color name="divider_color">#BCCCED</color>
+
+    <!-- delete them -->
     <color name="warning_advice"></color>
     <color name="alert_advice">#CC45141A</color>
     <color name="good_advice">#CC305A15</color>
     <color name="new_advice"></color>
     <color name="rape_advice"></color>
+
+
+    <color name="selected_ansser">#423B56</color>
 
 
     <color name="ripple_color">#3360B59D</color>
@@ -34,4 +39,19 @@
     <color name="card_corner">#59000000</color>
     <color name="calendar_weekend">#892555</color>
     <color name="calendar_week">#26356B</color>
+    <color name="calendar_unit_stroke_color">#CDD8FF</color>
+
+
+
+    <color name="advice_background_do">#669BD378</color>
+    <color name="advice_background_dont">#66D37878</color>
+    <color name="advice_background_try">#66D3CA78</color>
+    <color name="advice_gr_do">#9974CDFF</color>
+    <color name="advice_gr_dont">#99FF6CF9</color>
+    <color name="advice_gr_try">#99FFC774</color>
+    <color name="advice_text_do">#355323</color>
+    <color name="advice_text_dont">#532323</color>
+    <color name="advice_text_try">#534E23</color>
+
+    <color name="icon_tint">#808080</color>
 </resources>

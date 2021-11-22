@@ -1,10 +1,7 @@
 package com.astery.xapplication.repository.localDataStorage.dao
 
 import androidx.room.*
-import com.astery.xapplication.model.entities.Advice
-import com.astery.xapplication.model.entities.Article
-import com.astery.xapplication.model.entities.ArticleAndTag
-import com.astery.xapplication.model.entities.Item
+import com.astery.xapplication.model.entities.*
 
 @Dao
 interface ArticleDao {
@@ -16,15 +13,13 @@ interface ArticleDao {
     @Query("SELECT * FROM item WHERE parent_id = :parentId ORDER BY pagePosition")
     suspend fun getItemsByParentId(parentId: Int): List<Item>
 
-    
-    @Query("SELECT * FROM item")
-    suspend fun getItem(): List<Item>
+    @Query("SELECT body, name FROM item WHERE id = :itemId")
+    suspend fun getItemBody(itemId: Int):Item
             
     /** return article with all of its items and advises  */
     @Query("SELECT * FROM Article WHERE id = :articleId")
     @Transaction
     suspend fun getArticleById(articleId: Int): Article
-
 
     /** return articles */
     @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
@@ -75,6 +70,12 @@ interface ArticleDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateAdvise(advice: Advice)
 
+    @Query("UPDATE advice SET feedback = :feedBackState WHERE id = :adviceId")
+    suspend fun updateAdviceFeedbackState(adviceId:Int, feedBackState: FeedBackState)
+
+    @Query("UPDATE advice SET feedback = :feedBackState WHERE id = :id")
+    suspend fun updateArticleFeedbackState(id: Int, feedBackState: FeedBackState)
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateAdvises(advice: List<Advice>)
 
@@ -101,6 +102,7 @@ interface ArticleDao {
         deleteArticles()
         deleteArticleAndTagRelations()
     }
+
 
 
 }

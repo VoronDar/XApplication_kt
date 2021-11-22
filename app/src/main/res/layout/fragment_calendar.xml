@@ -21,9 +21,9 @@
         android:orientation="horizontal"
         android:layout_height="wrap_content"
         android:paddingBottom="20dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
         android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/margin_frame"
+        android:layout_marginRight="@dimen/margin_frame"
         app:layout_constraintBottom_toBottomOf="parent">
         <LinearLayout
             android:layout_width="wrap_content"
@@ -108,13 +108,18 @@
             android:text = "@{@string/calendar_date(viewModel.selectedDay.get(Calendar.DAY_OF_MONTH), viewModel.getMonth(viewModel.selectedDay.get(Calendar.MONTH), context), viewModel.selectedDay.get(Calendar.YEAR))}"
             />
         <View
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="7dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_gravity="top"
+            android:visibility="gone"
+            android:background="@drawable/ic_delete"
             android:id = "@+id/delete_icon"
             />
     </LinearLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id = "@+id/event_root"
+        android:layout_height="match_parent">
     <FrameLayout
         android:visibility="gone"
         android:layout_width="match_parent"
@@ -125,7 +130,7 @@
             layout = "@layout/page_event"
             android:layout_marginTop="35dp"
             android:layout_marginLeft="45dp"
-            android:layout_marginRight="35dp"
+            android:layout_marginRight="@dimen/margin_frame"
             android:layout_height="match_parent"
             app:viewModel = "@{viewModel}"
             android:layout_width = "match_parent"
@@ -138,7 +143,7 @@
         app:rippleColor="@color/ripple_color"
         android:id = "@+id/noCardInfo"
         android:layout_width="match_parent"
-        android:layout_margin="35dp"
+        android:layout_margin="@dimen/margin_frame"
         android:layout_height="match_parent"
         >
         <LinearLayout
@@ -171,11 +176,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id = "@+id/event_recycler"
         android:layout_width="match_parent"
-        android:layout_marginTop="35dp"
-        android:layout_marginLeft="35dp"
+        android:layout_marginTop="@dimen/margin_frame"
+        android:layout_marginLeft="@dimen/margin_frame"
         android:overScrollMode="never"
-        android:layout_marginRight="35dp"
+        android:layout_marginRight="@dimen/margin_frame"
         android:layout_height="match_parent"/>
-
+    </FrameLayout>
 </LinearLayout>
 </layout>

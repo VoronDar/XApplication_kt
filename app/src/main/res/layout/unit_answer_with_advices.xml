@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="unit"
+            type="com.astery.xapplication.ui.fragments.advices.AdvicesUnit" />
+
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginStart="@dimen/margin_frame"
+            android:layout_marginEnd="@dimen/margin_frame"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/question_number"
+                style="@style/RoundButtonClicked"
+                android:layout_gravity="top"
+                android:text="@{String.valueOf(unit.order)}" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_height="wrap_content"
+                android:orientation= "vertical">
+                <TextView
+                    android:id="@+id/question"
+                    style="@style/ImportantArticleText"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@{unit.question}" />
+                    <TextView
+                        android:id="@+id/answer"
+                        style="@style/ImportantArticleText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="20dp"
+                        android:text="@{unit.answer}"
+                        android:textColor="@color/black" />
+            </LinearLayout>
+
+
+            <View
+                android:id="@+id/more_details"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/ic_forward"
+                android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tip_layout"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="85dp"
+            android:layout_marginEnd="@dimen/margin_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <View
+            style="@style/divider"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="0dp" />
+
+    </LinearLayout>
+
+</layout>

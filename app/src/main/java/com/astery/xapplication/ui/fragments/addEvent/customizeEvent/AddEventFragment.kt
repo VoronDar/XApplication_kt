@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.animation.doOnEnd
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentAddEventBinding
 import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.ui.fragments.XFragment
+import com.astery.xapplication.ui.fragments.article.PageSelectorAdapter
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +27,7 @@ class AddEventFragment : XFragment() {
         get() = bind as FragmentAddEventBinding
 
     private val viewModel: AddEventViewModel by viewModels()
+    private var questionsAdapter: QuestionsAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +59,10 @@ class AddEventFragment : XFragment() {
     }
 
     override fun setViewModelListeners() {
+        viewModel.loadQuestions()
+        viewModel.questions.observe(viewLifecycleOwner){
+            questionsAdapter?.units = it
+        }
         viewModel.addEventState.observe(viewLifecycleOwner){
             if (it == AddEventViewModel.JobState.Success){
                 moveNext()
@@ -61,16 +70,25 @@ class AddEventFragment : XFragment() {
         }
     }
 
+    override fun prepareAdapters() {
+        questionsAdapter = QuestionsAdapter(null, requireContext())
+        binding.recyclerView.adapter = questionsAdapter
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+    }
+
     override fun getFragmentTitle(): String {
         return requireContext().resources.getString(R.string.title_new_event)
     }
 
-    /** move to calendar
-     * TODO(after adding questions - move to CongratulationsEvent)
-     * */
+
     private fun moveNext(){
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
-        move(AddEventFragmentDirections.actionAddEventFragment2ToCalendarFragment())
+        if (viewModel.event?.isAdvices == true)
+            move(AddEventFragmentDirections.actionAddEventFragment2ToEndEventFragment(viewModel.event!!))
+        else
+            move(AddEventFragmentDirections.actionAddEventFragment2ToCalendarFragment())
     }
 
 

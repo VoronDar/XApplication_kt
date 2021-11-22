@@ -13,10 +13,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 
 

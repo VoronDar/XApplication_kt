@@ -22,6 +22,9 @@
 
     <style name="Theme.XApplication.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/alert_dialogue_background</item>
+    </style>
 
     <style name="HighLightText">
         <item name = "android:fontFamily">@font/opensans_semibold</item>
@@ -95,7 +98,7 @@
 
 
     <style name="FeetbackText">
-        <item name = "android:fontFamily">@font/opensans_regular</item>
+        <item name = "android:fontFamily">@font/heebo_regular</item>
         <item name = "android:textSize">@dimen/small_text_size</item>
         <item name = "android:textColor">@color/black</item>
         <item name = "android:textAlignment" tools:targetApi="jelly_bean_mr1">viewStart</item>

@@ -9,11 +9,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:layout_marginLeft="35dp"
     android:paddingTop="?attr/actionBarSize"
     android:layout_height="match_parent"
     tools:ignore="HardcodedText"
-    android:layout_marginStart="35dp">
+    android:layout_marginStart="@dimen/margin_frame">
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="30dp"
