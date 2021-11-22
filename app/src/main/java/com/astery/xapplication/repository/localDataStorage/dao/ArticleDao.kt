@@ -73,6 +73,9 @@ interface ArticleDao {
     @Query("UPDATE advice SET feedback = :feedBackState WHERE id = :adviceId")
     suspend fun updateAdviceFeedbackState(adviceId:Int, feedBackState: FeedBackState)
 
+    @Query("UPDATE advice SET feedback = :feedBackState WHERE id = :id")
+    suspend fun updateArticleFeedbackState(id: Int, feedBackState: FeedBackState)
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateAdvises(advice: List<Advice>)
 
@@ -99,6 +102,7 @@ interface ArticleDao {
         deleteArticles()
         deleteArticleAndTagRelations()
     }
+
 
 
 }

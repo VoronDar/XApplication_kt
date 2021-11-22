@@ -14,6 +14,9 @@ import com.astery.xapplication.model.entities.Item
         override val name = article.name
         override val description = article.body
         override val image = article.image
+        val likes = article.likes
+        val dislikes = article.dislikes
+        val feedBackState = article.feedBack
     }
     
     class ItemPresentable(val item: Item): Presentable() {

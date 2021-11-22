@@ -7,6 +7,7 @@ import com.astery.xapplication.databinding.UnitAdviceBinding
 import com.astery.xapplication.databinding.UnitAnswerWithAdvicesBinding
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
+import com.astery.xapplication.ui.adviceUtils.AdviceRenderer
 import com.astery.xapplication.ui.pageFeetback.advice.AdviceFeetBackDelegate
 import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetbackListener
 import java.util.*
@@ -41,11 +42,7 @@ class AdvicesAdapter(
             binding.tipLayout.removeAllViews()
             if (unit.advices != null) {
                 for (i in unit.advices) {
-                    val adviceBinding = UnitAdviceBinding.inflate(LayoutInflater.from(context))
-                    adviceBinding.advice = i
-                    adviceBinding.feedBack =
-                        AdviceFeetBackDelegate(i, adviceBinding, feedbackListener).getValue()
-                    binding.tipLayout.addView(adviceBinding.root)
+                    binding.tipLayout.addView(AdviceRenderer().render(i, feedbackListener, context))
                 }
             }
         }

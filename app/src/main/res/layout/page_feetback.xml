@@ -12,6 +12,13 @@
     android:background="@drawable/shape_with_rounded_corner"
     android:gravity="center"
     android:layout_height="30dp">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:onClick="@{(view) -> feedBackStorage.press(FeedBackState.Dislike)}"
+        android:orientation="horizontal">
+
     <TextView
         style="@style/FeetbackText"
         android:layout_marginStart="25dp"
@@ -26,6 +33,14 @@
         android:layout_marginEnd="10dp"
         android:background="@{feedBackStorage.feedBackState == FeedBackState.Dislike ? @drawable/ic_filled_dislike : @drawable/ic_dislike}"
         />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:onClick="@{(view) -> feedBackStorage.press(FeedBackState.Like)}"
+        android:layout_height="match_parent">
     <TextView
         style="@style/FeetbackText"
         android:text = "@{String.valueOf(feedBackStorage.likes)}"
@@ -39,6 +54,7 @@
         android:layout_marginEnd="10dp"
         android:background="@{feedBackStorage.feedBackState == FeedBackState.Like ? @drawable/ic_filled_like : @drawable/ic_like}"
         />
+    </LinearLayout>
 
 </LinearLayout>
 </layout>

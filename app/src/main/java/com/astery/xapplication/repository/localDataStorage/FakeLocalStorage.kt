@@ -337,4 +337,5 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
     override suspend fun deleteEvent(event: Event) {}
 
     override suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {}
+    override suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState) {}
 }

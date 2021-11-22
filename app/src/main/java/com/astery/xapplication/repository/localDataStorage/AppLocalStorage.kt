@@ -142,4 +142,8 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
     override suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {
         appDatabase.articleDao().updateAdviceFeedbackState(id, feedBackState)
     }
+
+    override suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState) {
+        appDatabase.articleDao().updateArticleFeedbackState(id, feedBackState)
+    }
 }

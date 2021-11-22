@@ -40,7 +40,7 @@
 
 
             <include layout="@layout/page_feetback"
-                android:visibility="gone"
+                android:id = "@+id/page_feedback"
                 android:layout_gravity="end|bottom"
                 android:layout_height="30dp"
                 android:layout_width="wrap_content" />

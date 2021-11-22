@@ -9,12 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.PageItemBinding
-import com.astery.xapplication.databinding.UnitAdviceBinding
 import com.astery.xapplication.model.entities.Item
+import com.astery.xapplication.ui.adviceUtils.AdviceRenderer
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.article.ItemPresentable
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
-import com.astery.xapplication.ui.pageFeetback.advice.AdviceFeetBackDelegate
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -87,11 +86,13 @@ class ItemFragment : XFragment() {
         Timber.i("item advices ${item.advices}")
         if (item.advices != null) {
             for (i in item.advices) {
-                val adviceBinding = UnitAdviceBinding.inflate(layoutInflater)
-                adviceBinding.advice = i
-                adviceBinding.feedBack =
-                    AdviceFeetBackDelegate(i, adviceBinding, viewModel.feedbackListener).getValue()
-                binding.tipsLayout.addView(adviceBinding.root)
+                binding.tipsLayout.addView(
+                    AdviceRenderer().render(
+                        i,
+                        viewModel.feedbackListener,
+                        requireContext()
+                    )
+                )
             }
         }
     }
