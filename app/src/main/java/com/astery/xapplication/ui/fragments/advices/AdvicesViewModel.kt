@@ -12,6 +12,7 @@ import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetBackListenerIm
 import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetbackListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,8 +33,9 @@ class AdvicesViewModel @Inject constructor(): ViewModel() {
 
         viewModelScope.launch{
             for (i in _questions.value!!){
-                if (i.selectedAnswer!!.itemId == null) continue
+                if (i.selectedAnswer!!.itemId == null || i.selectedAnswer!!.itemId == 0) continue
                 i.selectedAnswer!!.item = Item(i.selectedAnswer!!.itemId!!)
+                Timber.d("ask tips for $i")
                 i.selectedAnswer!!.item!!.advices = repository.getAdvicesForItem(i.selectedAnswer!!.itemId!!)
             }
             _units.value = AdvicesUnit.createList(_questions.value!!)

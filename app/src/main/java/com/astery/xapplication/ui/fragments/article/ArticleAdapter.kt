@@ -9,14 +9,12 @@ import com.astery.xapplication.databinding.UnitArticlePageBinding
 import com.astery.xapplication.model.entities.Event
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
-import com.astery.xapplication.ui.adapterUtils.BlockListener
-import timber.log.Timber
 
 /**
  * adapter for pages (ArticleFragment)
  * */
-class PageSelectorAdapter(pageCount: Int, context: Context) :
-    BaseAdapter<PageSelectorAdapter.ViewHolder, Event?>(null, context) {
+class ArticleAdapter(pageCount: Int, context: Context) :
+    BaseAdapter<ArticleAdapter.ViewHolder, Event?>(null, context) {
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseViewHolder {
         val binding =
             UnitArticlePageBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)

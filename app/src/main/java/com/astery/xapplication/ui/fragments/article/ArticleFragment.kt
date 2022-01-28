@@ -33,7 +33,7 @@ class ArticleFragment : XFragment() {
         get() = bind as FragmentArticleBinding
 
     val viewModel: ArticleViewModel by viewModels()
-    private var pageSelectorAdapter: PageSelectorAdapter? = null
+    private var articleAdapter: ArticleAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,11 +87,11 @@ class ArticleFragment : XFragment() {
 
                         // scroll down and there is the end of the scroll view
                         if (downY >= (upY+minSlideRange) && isScrollWasInTheEnd) {
-                            pageSelectorAdapter?.slidePage(true)
+                            articleAdapter?.slidePage(true)
                         }
                         // scroll up and there is the start of the scroll view
                         else if (downY <= (upY-minSlideRange) && binding.page.parent.scrollY == 0) {
-                            pageSelectorAdapter?.slidePage(false)
+                            articleAdapter?.slidePage(false)
                         }
                     }
                     else -> {
@@ -103,9 +103,9 @@ class ArticleFragment : XFragment() {
     }
 
     override fun prepareAdapters() {
-        pageSelectorAdapter = PageSelectorAdapter(1, requireContext())
+        articleAdapter = ArticleAdapter(1, requireContext())
 
-        pageSelectorAdapter!!.listener = (object : PageSelectorAdapter.BlockListener {
+        articleAdapter!!.listener = (object : ArticleAdapter.BlockListener {
             override fun onClick(oldPos: Int, newPos: Int) {
                 fade(true, newPos > oldPos)?.doOnEnd {
                     if (newPos == 0) {
@@ -117,7 +117,7 @@ class ArticleFragment : XFragment() {
             }
         })
 
-        binding.pageSelector.adapter = pageSelectorAdapter
+        binding.pageSelector.adapter = articleAdapter
         binding.pageSelector.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
@@ -128,7 +128,7 @@ class ArticleFragment : XFragment() {
 
         viewModel.article.observe(viewLifecycleOwner) {
             if (it.items != null) {
-                pageSelectorAdapter!!.pageCount = it.items!!.size + 1
+                articleAdapter!!.pageCount = it.items!!.size + 1
             }
         }
         viewModel.element.observe(viewLifecycleOwner) {

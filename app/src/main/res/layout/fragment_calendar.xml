@@ -35,6 +35,7 @@
             android:layout_height="match_parent">
             <TextView
                 style = "@style/CalendarText"
+                android:onClick="@{(v) -> viewModel.reset()}"
                 android:textColor="@color/calendar_weekend"
                 android:text = "@string/calendar_sunday"/>
             <TextView

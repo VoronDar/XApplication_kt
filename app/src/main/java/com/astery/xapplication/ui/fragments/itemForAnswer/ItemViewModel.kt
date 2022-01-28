@@ -32,8 +32,7 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
     fun loadItemBody() {
         feedbackListener = OnAdviceFeetBackListenerImpl(viewModelScope, repository)
         viewModelScope.launch {
-            if (item == null) cancel()
-
+            if (item == null || item!!.id == null) cancel()
             if (element.value == null)
                 _element.value = ItemPresentable(repository.setItemBody(item!!))
         }

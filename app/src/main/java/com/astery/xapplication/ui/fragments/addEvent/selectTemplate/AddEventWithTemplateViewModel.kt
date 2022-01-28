@@ -9,6 +9,7 @@ import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,6 +24,10 @@ class AddEventWithTemplateViewModel @Inject constructor(): ViewModel() {
         if (templates.value == null) {
             viewModelScope.launch {
                 _templates.value = repository.getEventTemplatesForCategory(category)
+                for (i in templates.value!!){
+                    i.image = repository.getImageForEventTemplate(i)
+                    Timber.d("for ${i.name} got bitmap ${i.image}")
+                }
             }
         }
     }

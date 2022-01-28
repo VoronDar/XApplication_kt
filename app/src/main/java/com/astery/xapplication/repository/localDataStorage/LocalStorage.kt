@@ -1,5 +1,7 @@
 package com.astery.xapplication.repository.localDataStorage
 
+import android.graphics.Bitmap
+import androidx.paging.PagingSource
 import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.values.EventCategory
 import java.util.*
@@ -16,18 +18,22 @@ interface LocalStorage {
     suspend fun addTemplate(template:EventTemplate)
     suspend fun addTemplates(templates:List<EventTemplate>)
     suspend fun addArticle(article: Article)
+    suspend fun addArticleWithTag(article: Article)
+    suspend fun addAdvices(advices:List<Advice>)
     suspend fun getArticle(id:Int):Article
-    suspend fun getArticlesWithTag(tags:List<Int>):List<Article>
+    fun getArticlesWithTag(tags:List<Int>):PagingSource<Int,Article>
     /** searching for articles using keyword () */
     suspend fun getArticlesWithTagAndKeyWord(tags:List<Int>, key:String):List<Article>
     suspend fun getItemsForArticle(articleId:Int):List<Item>
     suspend fun getAdvicesForItem(itemId: Int): List<Advice>
-    suspend fun getItemBody(itemId:Int):Item
+    /** it returns list with just one (or zero) item */
+    suspend fun getItemBody(itemId:Int):List<Item>
 
     /** get answers and questions for event */
     suspend fun getQuestionsAndSelectedAnswersForEvent(eventId:Int):List<Question>
     suspend fun addAnswer(answer: Answer)
     suspend fun addAnswers(answers: List<Answer>)
+    suspend fun addItems(items: List<Item>)
     suspend fun addQuestion(question: Question)
     suspend fun addQuestions(question: List<Question>)
 
@@ -44,4 +50,10 @@ interface LocalStorage {
     suspend fun deleteEvent(event: Event)
     suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState)
     suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState)
+
+    suspend fun getArticlesWithTagPaged(tags:List<Int>, size:Int):List<Article>
+    suspend fun addImage(bitmap: Bitmap, name: String)
+    suspend fun getImage(name:String):Bitmap?
+
+    suspend fun reset()
 }

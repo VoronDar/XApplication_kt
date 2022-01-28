@@ -6,6 +6,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.astery.xapplication.repository.RemoteEntity
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -14,14 +16,14 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 @Entity
-data class Item(
-    @PrimaryKey var id: Int?, var body: String,
+open class Item(
+    @PrimaryKey open var id: Int = 0, var body: String,
     var name: String,
     @ColumnInfo(name = "parent_id") var articleId: Int?,
     /** position in article */
     val pagePosition: Int?
     //@ColumnInfo(name = "category_id") var categoryId: String
-) : Parcelable {
+) : Parcelable{
 
     @Ignore
     var image: Bitmap? = null
@@ -37,21 +39,16 @@ data class Item(
 
 
     fun clone(
-        id: Int? = this.id, body: String = this.body, name: String = this.name,
+        id: Int = this.id, body: String = this.body, name: String = this.name,
         articleId: Int? = this.articleId, pagePosition: Int? = this.pagePosition,
         image: Bitmap? = this.image, advices: List<Advice>? = this.advices
     ): Item {
-        val item = this.copy(
-            id = id,
-            body = body,
-            name = name,
-            articleId = articleId,
-            pagePosition = pagePosition
-        )
+        val item = Item(id, body, name, articleId, pagePosition)
         item.image = image
         item.advices = advices // i didn't forget to make deep copy, it works as expected
         return item
     }
+
 
     override fun toString(): String {
         return "Item{" +

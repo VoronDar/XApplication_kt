@@ -12,9 +12,6 @@ class EventCategoryConverter {
 
     @TypeConverter
     fun toClass(data: Int): EventCategory {
-        for (e in EventCategory.values()) {
-            if (e.ordinal == data) return e
-        }
-        throw RuntimeException("EventCategoryConverter got invalid enum ordinal = $data")
+        return EventCategory.values()[data]
     }
 }

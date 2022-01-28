@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.animation.doOnEnd
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +11,6 @@ import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentAddEventBinding
 import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.ui.fragments.XFragment
-import com.astery.xapplication.ui.fragments.article.PageSelectorAdapter
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,6 +18,10 @@ import java.util.*
 
 /**
  * menu -> calendar > add Event with category -> add event with template -> add event
+ *
+ * when this page is opened the first time with the current template, questions, answers and tips are loaded
+ * item loaded later
+ *
  * */
 @AndroidEntryPoint
 class AddEventFragment : XFragment() {

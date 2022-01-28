@@ -17,7 +17,7 @@ class AdvicesUnit private constructor(q: Question, val order:Int, val position:I
         /** you can't create adviceUnit for question if there are no selectedAnswer for the question
          *  or item for this answer */
         fun create(question: Question, order: Int, position: Int): AdvicesUnit?{
-            if (question.selectedAnswer != null && question.selectedAnswer!!.item != null){
+            if (question.selectedAnswer != null && question.selectedAnswer!!.item != null && question.selectedAnswer!!.itemId != 0){
                 return AdvicesUnit(question, order, position)
             }
             return null

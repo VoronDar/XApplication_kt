@@ -1,7 +1,21 @@
 package com.astery.xapplication.repository.localDataStorage
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import androidx.paging.PagingSource
 import com.astery.xapplication.model.entities.*
+import com.astery.xapplication.model.entities.converters.EventCategoryConverter
 import com.astery.xapplication.model.entities.values.EventCategory
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,12 +25,15 @@ import javax.inject.Singleton
  * Uses Room
  * */
 @Singleton
-class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDatabase) :LocalStorage{
+class AppLocalStorage @Inject constructor(
+    @set:Inject var appDatabase: AppDatabase,
+    @ApplicationContext var context: Context
+) : LocalStorage {
     override suspend fun getEventsForDate(date: Calendar): List<Event> {
         return appDatabase.eventDao().getEventsByTime(date.time)
     }
 
-    override suspend fun getDescriptionForEvent(event:Event):EventTemplate {
+    override suspend fun getDescriptionForEvent(event: Event): EventTemplate {
         val template = appDatabase.eventDao().getEventTemplate(event.templateId)
         template.questions = getQuestionsAndSelectedAnswersForEvent(event.id!!)
         return template
@@ -43,9 +60,10 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
 
     override suspend fun addEvent(event: Event) {
         val eventId = appDatabase.eventDao().addEvent(event)
-        for (i in event.template!!.questions!!){
-            if (i.selectedAnswer != null){
-                appDatabase.eventDao().addAnswerAndEvent(AnswerAndEvent(eventId.toInt(), i.selectedAnswer!!.id))
+        for (i in event.template!!.questions!!) {
+            if (i.selectedAnswer != null) {
+                appDatabase.eventDao()
+                    .addAnswerAndEvent(AnswerAndEvent(eventId.toInt(), i.selectedAnswer!!.id))
             }
         }
     }
@@ -78,7 +96,7 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
         return appDatabase.articleDao().getArticleById(id)
     }
 
-    override suspend fun getArticlesWithTag(tags: List<Int>): List<Article> {
+    override fun getArticlesWithTag(tags: List<Int>): PagingSource<Int, Article> {
         return appDatabase.articleDao().getArticlesWithTag(tags)
     }
 
@@ -115,7 +133,8 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
     }
 
     override suspend fun addQuestions(question: List<Question>) {
-        appDatabase.eventDao().addQuestions(question)
+        Timber.d("add questions $question")
+        appDatabase.eventDao().addQuestionsWithAnswers(question)
     }
 
     override suspend fun addQuestion(question: Question) {
@@ -130,8 +149,13 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
         appDatabase.eventDao().deleteAnswers()
     }
 
-    override suspend fun getItemBody(itemId: Int): Item {
-        return appDatabase.articleDao().getItemBody(itemId)
+    override suspend fun addItems(items: List<Item>) {
+        appDatabase.articleDao().addItems(items)
+    }
+
+    override suspend fun getItemBody(itemId: Int): List<Item> {
+        val item = appDatabase.articleDao().getItemBody(itemId) ?: return listOf()
+        return listOf(item)
     }
 
 
@@ -145,5 +169,52 @@ class AppLocalStorage @Inject constructor(@set:Inject var appDatabase: AppDataba
 
     override suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState) {
         appDatabase.articleDao().updateArticleFeedbackState(id, feedBackState)
+    }
+
+    override suspend fun getArticlesWithTagPaged(tags: List<Int>, size: Int): List<Article> {
+        return appDatabase.articleDao().getArticlesWithTagPaged(tags, size)
+    }
+
+    override suspend fun addArticleWithTag(article: Article) {
+        appDatabase.articleDao().addArticleWithTags(article)
+    }
+
+    override suspend fun addAdvices(advices: List<Advice>) {
+        appDatabase.articleDao().addAdvises(advices)
+    }
+
+    override suspend fun addImage(bitmap:Bitmap, name:String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            runCatching {
+                val f: File = File(context.cacheDir, "$name.jpeg")
+                try {
+                    f.createNewFile()
+                    val bos = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
+                    val bitmapdata = bos.toByteArray()
+                    val fos = FileOutputStream(f)
+                    fos.write(bitmapdata)
+                    fos.flush()
+                    fos.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+    }
+
+    override suspend fun getImage(name:String):Bitmap?{
+        val f:File = File(context.cacheDir, "$name.jpeg")
+        return BitmapFactory.decodeFile(f.absolutePath)
+    }
+
+
+    override suspend fun reset() {
+        appDatabase.eventDao().deleteEventTemplates()
+        appDatabase.eventDao().deleteEvents()
+        appDatabase.eventDao().deleteAnswers()
+        appDatabase.eventDao().deleteQuestions()
+        appDatabase.articleDao().deleteArticles()
     }
 }

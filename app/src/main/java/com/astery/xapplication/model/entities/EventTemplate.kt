@@ -6,6 +6,7 @@ import androidx.room.*
 import com.astery.xapplication.model.entities.converters.ArrayConverter
 import com.astery.xapplication.model.entities.converters.EventCategoryConverter
 import com.astery.xapplication.model.entities.values.EventCategory
+import com.astery.xapplication.repository.RemoteEntity
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.io.Serializable
@@ -21,8 +22,8 @@ open class EventTemplate(
     @PrimaryKey var id: Int, var name: String,
     var body: String,
     @ColumnInfo(name = "event_category")
-    val eventCategory: EventCategory = EventCategory.Dating
-) : Serializable, Parcelable {
+    val eventCategory: EventCategory? = EventCategory.Dating
+) : Serializable, Parcelable{
 
     @Ignore
     var image: Bitmap? = null

@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/articleFragment">
+    app:startDestination="@id/articlesListFragment">
 
     <fragment
         android:id="@+id/calendarFragment"
@@ -70,6 +70,16 @@
             <argument
                 android:name="event"
                 app:argType="com.astery.xapplication.model.entities.Event" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/articlesListFragment"
+        android:name="com.astery.xapplication.ui.fragments.articlesList.ArticlesListFragment"
+        android:label="">
+        <action
+            android:id="@+id/action_articlesListFragment_to_articleFragment"
+            app:destination="@id/articleFragment">
         </action>
     </fragment>
     <fragment

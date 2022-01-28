@@ -26,12 +26,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@{advice.type == AdviceType.ALERT ? @drawable/advice_background_dont : advice.type == AdviceType.ALWAYS_DO_IT ? @drawable/advice_background_do : @drawable/advice_background_try}"
+        android:background="@{advice.type == AdviceType.Alert ? @drawable/advice_background_dont : advice.type == AdviceType.AlwaysDoIt ? @drawable/advice_background_do : @drawable/advice_background_try}"
         android:orientation="vertical">
 
         <TextView
             style="@style/advice"
-            android:textColor="@{advice.type == AdviceType.ALERT ? @color/advice_text_dont : advice.type == AdviceType.ALWAYS_DO_IT ? @color/advice_text_do : @color/advice_text_try}"
+            android:textColor="@{advice.type == AdviceType.Alert ? @color/advice_text_dont : advice.type == AdviceType.AlwaysDoIt ? @color/advice_text_do : @color/advice_text_try}"
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:layout_width="match_parent"
