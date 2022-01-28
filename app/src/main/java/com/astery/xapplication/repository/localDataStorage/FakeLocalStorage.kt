@@ -151,11 +151,14 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
         TODO("Not yet implemented")
     }
 
-    override fun getArticlesWithTag(tags: List<Int>): PagingSource<Int, Article> {
+    override fun getArticlesWithTag(tags: List<ArticleTag>): PagingSource<Int, Article> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getArticlesWithTagAndKeyWord(tags: List<Int>, key: String): List<Article> {
+    override fun getArticlesWithTagAndKeyWord(
+        tags: List<ArticleTag>,
+        key: String
+    ): PagingSource<Int, Article> {
         TODO("Not yet implemented")
     }
 
@@ -346,11 +349,6 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
     override suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {}
     override suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState) {}
 
-    override suspend fun getArticlesWithTagPaged(tags: List<Int>, size: Int) :List<Article>{
-        if (tags.isEmpty()) return listOf()
-        return listOf(Article(12, "afdadadfasfdsf", "asdasdasd a", 12, 12, FeedBackState.None))
-    }
-
     override suspend fun addImage(bitmap: Bitmap, name: String) {}
     override suspend fun getImage(name: String): Bitmap? {
         return null
@@ -365,6 +363,10 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
     }
 
     override suspend fun addItems(items: List<Item>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getArticles(): PagingSource<Int, Article> {
         TODO("Not yet implemented")
     }
 }

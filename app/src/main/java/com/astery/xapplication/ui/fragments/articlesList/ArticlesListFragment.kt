@@ -53,8 +53,6 @@ class ArticlesListFragment : XFragment() {
         binding.recyclerView.adapter = articleListAdapter
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-
-
     }
 
     override fun getFragmentTitle(): String? {
@@ -65,11 +63,8 @@ class ArticlesListFragment : XFragment() {
         prepareAdapters()
         lifecycleScope.launch {
             //viewModel.setArticleFlow(listOf(GenderTag.Man.id))
-            viewModel.articlesFlow.collectLatest { source ->
-                Timber.d("aaraaar ${source.insertHeaderItem(item = Article(1,"asdsad", "asdasd", 213, 123))}")
+            viewModel.requestFlow("", listOf()).collectLatest { source ->
                 articleListAdapter?.submitData(source)
-                Timber.d("item count ${articleListAdapter?.itemCount}")
-                Timber.d("item count $articleListAdapter")
             }
         }
     }

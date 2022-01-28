@@ -110,8 +110,11 @@ class Repository @Inject constructor(
         localStorage.deleteEvent(event)
     }
 
-    fun getArticles(): PagingSource<Int, Article> {
-        return localStorage.getArticlesWithTag(listOf(GenderTag.Man.ordinal))
+    fun getArticles(sequence:String, tags:List<ArticleTag>): PagingSource<Int, Article> {
+        //TODO (make for remote also)
+        if (sequence.isEmpty() && tags.isEmpty()) return localStorage.getArticles()
+        return if (sequence.isNotEmpty()) localStorage.getArticlesWithTagAndKeyWord(tags, sequence)
+        else localStorage.getArticlesWithTag(tags)
     }
 
     suspend fun reset() {

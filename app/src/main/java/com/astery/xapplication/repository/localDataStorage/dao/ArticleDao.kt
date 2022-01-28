@@ -23,22 +23,18 @@ interface ArticleDao {
     @Transaction
     suspend fun getArticleById(articleId: Int): Article
 
-    /** return articles */
     @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
             "  AND ArticleAndTag.tagId IN (:tags) GROUP BY Article.ID")
     fun getArticlesWithTag(tags: List<Int>): PagingSource<Int, Article>
+    @Query("SELECT Article.id, likes, dislikes, name FROM Article")
+    fun getArticles(): PagingSource<Int, Article>
 
-
-    /** return articles*/
-    @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
-            "  AND ArticleAndTag.tagId IN (:tags) GROUP BY Article.ID LIMIT :loadSize ")
-    suspend fun getArticlesWithTagPaged(tags: List<Int>, loadSize:Int): List<Article>
 
 
     /** return articles */
     @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId  " +
             "AND ArticleAndTag.tagId IN (:tags) AND (name LIKE '%' || :key || '%' OR body LIKE '%' || :key || '%') GROUP BY Article.ID")
-    suspend fun getArticlesWIthTagAndKeyWord(tags: List<Int>, key:String): List<Article>
+    fun getArticlesWIthTagAndKeyWord(tags: List<Int>, key:String): PagingSource<Int, Article>
 
     @Query("SELECT * from advice where itemId = :parentId")
     suspend fun getAdvisesForItem(parentId: Int): List<Advice>

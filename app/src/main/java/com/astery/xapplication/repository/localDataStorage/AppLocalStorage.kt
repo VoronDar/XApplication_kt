@@ -96,12 +96,24 @@ class AppLocalStorage @Inject constructor(
         return appDatabase.articleDao().getArticleById(id)
     }
 
-    override fun getArticlesWithTag(tags: List<Int>): PagingSource<Int, Article> {
-        return appDatabase.articleDao().getArticlesWithTag(tags)
+    override fun getArticlesWithTag(tags: List<ArticleTag>): PagingSource<Int, Article> {
+        return appDatabase.articleDao().getArticlesWithTag(convertListOfTagsToListOfId(tags))
     }
 
-    override suspend fun getArticlesWithTagAndKeyWord(tags: List<Int>, key: String): List<Article> {
-        return appDatabase.articleDao().getArticlesWIthTagAndKeyWord(tags, key)
+    override fun getArticlesWithTagAndKeyWord(tags: List<ArticleTag>, key: String): PagingSource<Int, Article> {
+        return appDatabase.articleDao().getArticlesWIthTagAndKeyWord(convertListOfTagsToListOfId(tags), key)
+    }
+
+    override fun getArticles(): PagingSource<Int, Article> {
+        return appDatabase.articleDao().getArticles()
+    }
+
+    private fun convertListOfTagsToListOfId(tags:List<ArticleTag>):List<Int>{
+        val list = arrayListOf<Int>()
+        for (i in tags){
+            list.add(i.id)
+        }
+        return list
     }
 
     override suspend fun deleteArticles() {
@@ -171,9 +183,6 @@ class AppLocalStorage @Inject constructor(
         appDatabase.articleDao().updateArticleFeedbackState(id, feedBackState)
     }
 
-    override suspend fun getArticlesWithTagPaged(tags: List<Int>, size: Int): List<Article> {
-        return appDatabase.articleDao().getArticlesWithTagPaged(tags, size)
-    }
 
     override suspend fun addArticleWithTag(article: Article) {
         appDatabase.articleDao().addArticleWithTags(article)

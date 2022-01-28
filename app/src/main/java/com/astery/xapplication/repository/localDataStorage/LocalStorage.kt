@@ -21,9 +21,10 @@ interface LocalStorage {
     suspend fun addArticleWithTag(article: Article)
     suspend fun addAdvices(advices:List<Advice>)
     suspend fun getArticle(id:Int):Article
-    fun getArticlesWithTag(tags:List<Int>):PagingSource<Int,Article>
+    fun getArticlesWithTag(tags:List<ArticleTag>):PagingSource<Int,Article>
     /** searching for articles using keyword () */
-    suspend fun getArticlesWithTagAndKeyWord(tags:List<Int>, key:String):List<Article>
+    fun getArticlesWithTagAndKeyWord(tags:List<ArticleTag>, key:String):PagingSource<Int, Article>
+    fun getArticles():PagingSource<Int,Article>
     suspend fun getItemsForArticle(articleId:Int):List<Item>
     suspend fun getAdvicesForItem(itemId: Int): List<Advice>
     /** it returns list with just one (or zero) item */
@@ -50,8 +51,6 @@ interface LocalStorage {
     suspend fun deleteEvent(event: Event)
     suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState)
     suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState)
-
-    suspend fun getArticlesWithTagPaged(tags:List<Int>, size:Int):List<Article>
     suspend fun addImage(bitmap: Bitmap, name: String)
     suspend fun getImage(name:String):Bitmap?
 
