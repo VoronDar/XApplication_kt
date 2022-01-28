@@ -354,6 +354,10 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
         return null
     }
 
+    override fun getArticlesWithKeyWord(sequence: String): PagingSource<Int, Article> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun reset() {
         TODO("Not yet implemented")
     }

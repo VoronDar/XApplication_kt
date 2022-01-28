@@ -1,10 +1,7 @@
 package com.astery.xapplication.model.entities
 
 import android.graphics.Bitmap
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.astery.xapplication.model.entities.converters.ArrayConverter
 import com.astery.xapplication.model.entities.converters.FeedbackStateConverter
 
@@ -37,3 +34,7 @@ data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
     }
 
 }
+
+@Entity
+@Fts4(contentEntity = Article::class)
+data class ArticleFts(val name:String, val body:String?)

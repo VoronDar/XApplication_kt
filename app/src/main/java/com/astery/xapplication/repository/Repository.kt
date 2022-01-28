@@ -113,7 +113,8 @@ class Repository @Inject constructor(
     fun getArticles(sequence:String, tags:List<ArticleTag>): PagingSource<Int, Article> {
         //TODO (make for remote also)
         if (sequence.isEmpty() && tags.isEmpty()) return localStorage.getArticles()
-        return if (sequence.isNotEmpty()) localStorage.getArticlesWithTagAndKeyWord(tags, sequence)
+        if (sequence.isNotEmpty() && tags.isNotEmpty()) return localStorage.getArticlesWithTagAndKeyWord(tags, sequence)
+        return if (sequence.isNotEmpty()) localStorage.getArticlesWithKeyWord(sequence)
         else localStorage.getArticlesWithTag(tags)
     }
 

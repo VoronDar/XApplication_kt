@@ -103,6 +103,9 @@ class AppLocalStorage @Inject constructor(
     override fun getArticlesWithTagAndKeyWord(tags: List<ArticleTag>, key: String): PagingSource<Int, Article> {
         return appDatabase.articleDao().getArticlesWIthTagAndKeyWord(convertListOfTagsToListOfId(tags), key)
     }
+    override fun getArticlesWithKeyWord(key: String): PagingSource<Int, Article> {
+        return appDatabase.articleDao().getArticlesWithKeyWord(key)
+    }
 
     override fun getArticles(): PagingSource<Int, Article> {
         return appDatabase.articleDao().getArticles()

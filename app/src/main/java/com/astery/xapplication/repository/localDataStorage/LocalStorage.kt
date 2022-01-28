@@ -55,4 +55,5 @@ interface LocalStorage {
     suspend fun getImage(name:String):Bitmap?
 
     suspend fun reset()
+    fun getArticlesWithKeyWord(sequence: String): PagingSource<Int, Article>
 }
