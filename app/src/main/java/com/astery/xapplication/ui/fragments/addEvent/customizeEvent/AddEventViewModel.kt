@@ -43,6 +43,7 @@ class AddEventViewModel @Inject constructor(): ViewModel() {
 
 
     fun addEvent(){
+        // TODO(selected answer changed only if you click on it, but not if you don't change it)
         viewModelScope.launch {
             _addEventState.value = JobState.Running
 
@@ -58,7 +59,8 @@ class AddEventViewModel @Inject constructor(): ViewModel() {
 
     fun loadQuestions(){
         viewModelScope.launch {
-            _questions = repository.getQuestionsWithAnswers(template!!.id)
+            template!!.questions = repository.getQuestionsWithAnswers(template!!.id)
+            _questions = template!!.questions
         }
     }
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1052308252341",
+    "project_id": "xapp-35533",
+    "storage_bucket": "xapp-35533.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052308252341:android:4d330b3ea487e040d800fc",
+        "android_client_info": {
+          "package_name": "com.astery.xapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052308252341-f0b6cs4gg1jr6u3glu928g9npr9po3bd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbsT5cCcAvcuG95_VAURutPXg128tV1jU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052308252341-f0b6cs4gg1jr6u3glu928g9npr9po3bd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

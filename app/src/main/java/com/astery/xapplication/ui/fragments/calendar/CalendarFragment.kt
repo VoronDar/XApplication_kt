@@ -105,6 +105,7 @@ class CalendarFragment : XFragment() {
 
     override fun setViewModelListeners() {
         viewModel.selectedDay.observe(viewLifecycleOwner, {
+
             cAdapter?.selectedDay = (it.get(Calendar.DAY_OF_MONTH))
             viewModel.updateEvents()
             super.setTitle()

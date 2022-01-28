@@ -24,8 +24,8 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
         val oldValue = selectedDay
         field = value
         Timber.d("$oldValue, $value")
-        notifyItemChanged(oldValue)
-        notifyItemChanged(selectedDay)
+        notifyItemChanged(units!!.indexOfFirst { it.day == oldValue })
+        notifyItemChanged(units!!.indexOfFirst { it.day == value })
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {

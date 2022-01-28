@@ -1,5 +1,7 @@
 package com.astery.xapplication.repository.localDataStorage.dao
 
+import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.astery.xapplication.model.entities.*
 
@@ -13,8 +15,8 @@ interface ArticleDao {
     @Query("SELECT * FROM item WHERE parent_id = :parentId ORDER BY pagePosition")
     suspend fun getItemsByParentId(parentId: Int): List<Item>
 
-    @Query("SELECT body, name FROM item WHERE id = :itemId")
-    suspend fun getItemBody(itemId: Int):Item
+    @Query("SELECT id, body, name FROM item WHERE id = :itemId")
+    suspend fun getItemBody(itemId: Int):Item?
             
     /** return article with all of its items and advises  */
     @Query("SELECT * FROM Article WHERE id = :articleId")
@@ -24,7 +26,14 @@ interface ArticleDao {
     /** return articles */
     @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
             "  AND ArticleAndTag.tagId IN (:tags) GROUP BY Article.ID")
-    suspend fun getArticlesWithTag(tags: List<Int>): List<Article>
+    fun getArticlesWithTag(tags: List<Int>): PagingSource<Int, Article>
+
+
+    /** return articles*/
+    @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
+            "  AND ArticleAndTag.tagId IN (:tags) GROUP BY Article.ID LIMIT :loadSize ")
+    suspend fun getArticlesWithTagPaged(tags: List<Int>, loadSize:Int): List<Article>
+
 
     /** return articles */
     @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId  " +

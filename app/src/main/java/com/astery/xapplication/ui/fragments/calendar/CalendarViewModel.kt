@@ -53,6 +53,10 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
         }
     }
 
+    fun reset(){
+        viewModelScope.launch { repository.reset() }
+    }
+
 
     /** change current date if the user changes month  */
     fun changeMonth(isMore: Boolean) {

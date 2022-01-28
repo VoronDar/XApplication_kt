@@ -2,12 +2,14 @@ package com.astery.xapplication.repository.localDataStorage.dao
 
 import androidx.room.*
 import com.astery.xapplication.model.entities.*
+import com.astery.xapplication.model.entities.converters.AdviceTypeConverter
 import com.astery.xapplication.model.entities.converters.DateConverter
+import com.astery.xapplication.model.entities.converters.EventCategoryConverter
 import com.astery.xapplication.model.entities.values.EventCategory
 import java.util.*
 
 @Dao
-@TypeConverters(DateConverter::class)
+@TypeConverters(DateConverter::class, EventCategoryConverter::class, AdviceTypeConverter::class)
 interface EventsDao {
     @Query("SELECT * FROM event WHERE date = :time")
     suspend fun getEventsByTime(time: Date): List<Event>
@@ -17,6 +19,9 @@ interface EventsDao {
 
     @Query("SELECT * FROM eventtemplate WHERE event_category = :category")
     suspend fun getEventTemplatesWithCategory(category: EventCategory): List<EventTemplate>
+
+    @Query("SELECT * FROM eventtemplate")
+    suspend fun getEventTemplatesWithCategory(): List<EventTemplate>
 
     @Query("SELECT * FROM event WHERE id = :id")
     suspend fun getEvent(id: Int): Event
@@ -104,6 +109,14 @@ interface EventsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addQuestions(questions: List<Question?>)
+
+    @Transaction
+    suspend fun addQuestionsWithAnswers(questions:List<Question>){
+        addQuestions(questions)
+        for (i in questions){
+            if (i.answers != null) addAnswers(i.answers!!)
+        }
+    }
 
 
     /*

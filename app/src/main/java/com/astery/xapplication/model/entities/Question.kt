@@ -4,6 +4,8 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.astery.xapplication.repository.RemoteEntity
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
@@ -12,14 +14,19 @@ import java.io.Serializable
  */
 @Parcelize
 @Entity
-data class Question(
+open class Question(
     @PrimaryKey var id: Int,
     var body: String,
     var eventTemplateId: Int
-) : Parcelable {
+) : Parcelable{
 
     @Ignore
     var answers: List<Answer>? = null
+    set(value) {
+        if (selectedAnswer == null && value?.isNotEmpty() == true)
+            selectedAnswer = value[0]
+        field = value
+    }
 
     @Ignore
     var selectedAnswer: Answer? = null
@@ -50,6 +57,4 @@ data class Question(
     override fun toString(): String {
         return "Question(id=$id, body='$body', eventTemplateId=$eventTemplateId, answers=$answers, selectedAnswer=$selectedAnswer)"
     }
-
-
 }

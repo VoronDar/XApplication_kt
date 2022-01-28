@@ -1,6 +1,5 @@
 package com.astery.xapplication.model.entities
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -15,7 +14,7 @@ import kotlinx.parcelize.Parcelize
 @Entity
 data class Answer(
     @PrimaryKey var id: Int, val body: String,
-    val itemId: Int?, @ColumnInfo(name = "parent_id") val questionId: Int
+    val itemId: Int? = null, @ColumnInfo(name = "parent_id") val questionId: Int
 ) :
     Parcelable {
 

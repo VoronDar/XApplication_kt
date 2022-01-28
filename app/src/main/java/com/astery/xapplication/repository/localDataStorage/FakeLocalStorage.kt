@@ -1,8 +1,11 @@
 package com.astery.xapplication.repository.localDataStorage
 
+import android.graphics.Bitmap
+import androidx.paging.PagingSource
 import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.values.AdviceType
 import com.astery.xapplication.model.entities.values.EventCategory
+import com.astery.xapplication.model.entities.values.WarningCategory
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -148,7 +151,7 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getArticlesWithTag(tags: List<Int>): List<Article> {
+    override fun getArticlesWithTag(tags: List<Int>): PagingSource<Int, Article> {
         TODO("Not yet implemented")
     }
 
@@ -157,6 +160,10 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
     }
 
     override suspend fun deleteArticles() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addArticleWithTag(article: Article) {
         TODO("Not yet implemented")
     }
 
@@ -234,18 +241,18 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
     override suspend fun getAdvicesForItem(itemId: Int): List<Advice> {
         return if (itemId == 1) {
             listOf(
-                Advice(1, 2, 3, AdviceType.ALERT, "dsdsadsad sad asd ", itemId),
+                Advice(1, 2, 3, AdviceType.Alert, "dsdsadsad sad asd ", itemId),
                 Advice(
                     1,
                     2,
                     3,
-                    AdviceType.ALWAYS_DO_IT,
+                    AdviceType.Alert,
                     "wqe asd asd asd zxc zxc zxc asd  ",
                     itemId
                 )
             )
         } else {
-            listOf(Advice(1, 2, 3, AdviceType.NEW_IDEA, "wqe axc zxc asd  ", itemId))
+            listOf(Advice(1, 2, 3, AdviceType.Alert, "wqe axc zxc asd  ", itemId))
         }
     }
 
@@ -309,12 +316,12 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getItemBody(itemId: Int): Item {
-        return Item(
+    override suspend fun getItemBody(itemId: Int): List<Item> {
+        return listOf(Item(
             -1, "asdasdsa das asd asd kasldj askldjasjdjaskldjasjlkdjklasjdklasjlkdkasjdjlk" +
                     "askdjasljdlkasjdlkasjdaslkdklasjldjasldjklasjldjlkasjdlkaskljdjaslkdkjlasjkldjkla" +
                     "sjdklasjlkdjkasjdlkasjlk dasljk d", "sadasddas asdas d", 1, 0
-        )
+        ))
     }
 
     override suspend fun getQuestionsWithAnswers(templateId: Int): List<Question> {
@@ -338,4 +345,26 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
 
     override suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {}
     override suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState) {}
+
+    override suspend fun getArticlesWithTagPaged(tags: List<Int>, size: Int) :List<Article>{
+        if (tags.isEmpty()) return listOf()
+        return listOf(Article(12, "afdadadfasfdsf", "asdasdasd a", 12, 12, FeedBackState.None))
+    }
+
+    override suspend fun addImage(bitmap: Bitmap, name: String) {}
+    override suspend fun getImage(name: String): Bitmap? {
+        return null
+    }
+
+    override suspend fun reset() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addAdvices(advices: List<Advice>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addItems(items: List<Item>) {
+        TODO("Not yet implemented")
+    }
 }
