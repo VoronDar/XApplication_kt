@@ -46,13 +46,14 @@ class ArticlesListViewModel @Inject constructor() : ViewModel(){
     private var articlesFlow:Flow<PagingData<Article>>? = null
 
     fun requestFlow(searchSequence:String, filters:List<ArticleTag>): Flow<PagingData<Article>> {
-        articlesFlow = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 15, enablePlaceholders = true)){
+        //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)
+        articlesFlow = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12, enablePlaceholders = true)){
             repository.getArticles(searchSequence, filters) }.flow.cachedIn(viewModelScope)
         return articlesFlow!!
     }
 
 
     companion object{
-        const val PAGED_SIZE = 5
+        const val PAGED_SIZE = 4
     }
 }

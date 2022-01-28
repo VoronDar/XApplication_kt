@@ -1,16 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="article"
             type="com.astery.xapplication.model.entities.Article" />
+        <variable
+            name="feedBackStorage"
+            type="com.astery.xapplication.ui.pageFeetback.FeedBackStorage" />
     </data>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout
+    android:layout_width = "match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:layout_marginBottom="20dp"
-    android:text = "@{article.name}"
-    android:gravity="center"
-    android:layout_height="350dp">
+    >
 
-</TextView>
+    <FrameLayout android:layout_height="200dp"
+        android:layout_width="match_parent">
+        <ImageView
+            android:id="@+id/item_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:contentDescription="@string/item_image_CD"
+            android:scaleType="centerCrop"
+            android:src="@drawable/dating" />
+
+
+        <include layout="@layout/page_feetback"
+            android:id = "@+id/page_feedback"
+            android:layout_gravity="end|bottom"
+            android:layout_height="30dp"
+            app:feedBackStorage = "@{feedBackStorage}"
+            android:layout_width="wrap_content" />
+    </FrameLayout>
+
+    <TextView
+        android:text = "@{article.name}"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="15dp"
+        style="@style/HighLightText"
+        android:layout_height="wrap_content"/>
+    <View
+        style="@style/divider"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        />
+
+</LinearLayout>
 </layout>

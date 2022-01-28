@@ -8,7 +8,13 @@ class FeedBackStorage(
     var likes: Int,
     var dislikes: Int,
     var feedBackState: FeedBackState = FeedBackState.None,
-    val listener: OnFeedbackListener
+    val listener: OnFeedbackListener = object:OnFeedbackListener{
+        override fun onLike() {}
+        override fun onCancelLike() {}
+        override fun onDislike() {}
+        override fun onCancelDislike() {}
+        override fun onChangeFeetBackState(feedBackState: FeedBackState) {}
+    }
 ) {
 
     /** called from xml (dataBinding) when press like or dislike.

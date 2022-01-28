@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.astery.xapplication.databinding.UnitArticleBinding
 import com.astery.xapplication.model.entities.Article
+import com.astery.xapplication.model.entities.FeedBackState
+import com.astery.xapplication.repository.feetback.OnFeedbackListener
+import com.astery.xapplication.ui.pageFeetback.FeedBackStorage
 
 class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewHolder>(ArticleDiffUtils()) {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -21,6 +24,7 @@ class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewH
     inner class ViewHolder(private val binding: UnitArticleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(article: Article) {
             binding.article = article
+            binding.feedBackStorage = FeedBackStorage(article.likes, article.dislikes)
         }
     }
 
