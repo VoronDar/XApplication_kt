@@ -34,8 +34,12 @@ class ArticlesListViewModel @Inject constructor() : ViewModel(){
                 repository.localStorage.addArticleWithTag(article)
             }
 
-            //TODO(система с keyword работает пока странно.
-            // Хочу, чтобы она показывала сначала с наибольшими совпадениями, а потом с наименьм). В итоге показывает только с полным совпадением
+            for (i in 0..5) {
+                val article = Article(i + 200, "keyword tips $i", "key collection", 12, 13)
+                article.tags = listOf(GenderTag.Woman)
+                repository.localStorage.addArticleWithTag(article)
+            }
+
             for (i in 0..5) {
                 val article = Article(i + 200, "keyword tips $i", "key collection", 12, 13)
                 article.tags = listOf(GenderTag.Woman)

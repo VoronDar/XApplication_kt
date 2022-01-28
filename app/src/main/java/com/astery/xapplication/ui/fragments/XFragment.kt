@@ -60,8 +60,11 @@ abstract class XFragment : Fragment() {
     open fun onBackPressed():Boolean {return true}
 
     protected fun setTitle(){
-        (activity as ParentActivity).changeTitle(getFragmentTitle())
+        parentActivity.changeTitle(getFragmentTitle())
     }
+
+    protected val parentActivity:ParentActivity
+        get() = activity as ParentActivity
 
 
     /** set onClick listeners (mostly for applying actions)*/

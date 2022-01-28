@@ -8,4 +8,5 @@ import com.astery.xapplication.ui.fragments.calendar.CalendarFragment
 interface ParentActivity {
     fun changeTitle(title:String?)
     fun showMenuNav(show:Boolean, listener: CalendarFragment.MenuNavListener)
+    fun showSearchBar(show:Boolean, fragment: SearchUsable)
 }
