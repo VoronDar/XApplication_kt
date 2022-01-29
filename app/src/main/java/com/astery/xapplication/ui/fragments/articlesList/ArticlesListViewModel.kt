@@ -52,8 +52,12 @@ class ArticlesListViewModel @Inject constructor() : ViewModel(){
     fun requestFlow(searchSequence:String, filters:List<ArticleTag>): Flow<PagingData<Article>> {
         //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)
         articlesFlow = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12, enablePlaceholders = true)){
-            repository.getArticles(searchSequence, filters) }.flow.cachedIn(viewModelScope)
+            repository.getArticles(cleanSearchSequence(searchSequence), filters) }.flow.cachedIn(viewModelScope)
         return articlesFlow!!
+    }
+
+    private fun cleanSearchSequence(searchSequence: String):String{
+        return searchSequence.replace("\"", "").lowercase()
     }
 
 
