@@ -1,11 +1,10 @@
-package com.astery.xapplication.ui.activity
+package com.astery.xapplication.ui.activity.spechToText
 
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.speech.RecognizerIntent
-import android.widget.EditText
 import android.widget.Toast
-import com.astery.xapplication.R
+import com.astery.xapplication.ui.activity.MainActivity
 import com.astery.xapplication.ui.activity.interfaces.SearchUsable
 import timber.log.Timber
 

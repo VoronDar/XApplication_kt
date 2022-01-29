@@ -9,11 +9,19 @@ import com.astery.xapplication.databinding.UnitArticleBinding
 import com.astery.xapplication.model.entities.Article
 import com.astery.xapplication.model.entities.FeedBackState
 import com.astery.xapplication.repository.feetback.OnFeedbackListener
+import com.astery.xapplication.ui.activity.popupDialogue.Blockable
+import com.astery.xapplication.ui.adapterUtils.BlockListener
 import com.astery.xapplication.ui.pageFeetback.FeedBackStorage
 
-class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewHolder>(ArticleDiffUtils()) {
+class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewHolder>(ArticleDiffUtils()), Blockable {
+    private var isBlocked = false
+    override fun setEnabled(enable: Boolean) {
+        isBlocked = !enable
+    }
+    /** important: listen for id, not for position */
+    var blockListener:BlockListener? = null
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //getItem(position)?.let { userPostEntity -> holder.bind(userPostEntity) }
         holder.bind(getItem(position)!!)
     }
 
@@ -25,6 +33,11 @@ class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewH
         fun bind(article: Article) {
             binding.article = article
             binding.feedBackStorage = FeedBackStorage(article.likes, article.dislikes)
+
+            binding.root.setOnClickListener {
+                if (isBlocked) return@setOnClickListener
+                blockListener?.onClick(article.id)
+            }
         }
     }
 

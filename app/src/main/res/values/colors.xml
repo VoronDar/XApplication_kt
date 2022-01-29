@@ -30,6 +30,16 @@
     <color name="rape_advice"></color>
 
 
+
+    <color name="tag_odd">#DAFDF3</color>
+    <color name="tag_even">#CEF6CA</color>
+    <color name="tag_text_color">#B3000000</color>
+
+    <color name="tag_selected_text_color">#000000</color>
+    <color name="tag_unselected_text_color">#99000000</color>
+
+
+
     <color name="selected_ansser">#423B56</color>
 
 

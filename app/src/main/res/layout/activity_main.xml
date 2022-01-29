@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    >
+<androidx.constraintlayout.widget.ConstraintLayout
     android:fitsSystemWindows="true"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
     tools:context=".ui.activity.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         android:fitsSystemWindows="true"
         app:popupTheme="@style/Theme.XApplication.PopupOverlay"
@@ -28,6 +32,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:backgroundTint="@color/divider_color"
+                        android:imeOptions="actionDone"
+                        android:layout_marginLeft="8dp"
+                        android:imeActionId="123"
+                        android:singleLine="true"
                         android:visibility="gone"
                         android:id = "@+id/search_text"
                         />
@@ -37,18 +46,27 @@
                         android:visibility="gone"
                         android:src = "@drawable/ic_baseline_keyboard_voice_24"
                         />
+                    <Space
+                        android:layout_width="8dp"
+                        android:layout_height="0dp"/>
                     <ImageView
                         style="@style/icon"
                         android:id = "@+id/search"
                         android:visibility="gone"
+                        android:layout_marginRight="16dp"
                         android:src = "@drawable/ic_baseline_search_24"
                         />
-                    <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/toolbar"
-                        android:layout_width="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"/>
             </LinearLayout>
+            <include layout="@layout/block_filters"
+                android:id = "@+id/block_filters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         <View
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
@@ -76,4 +94,11 @@
         app:layout_anchor="@id/layout"
         app:menu="@menu/bottom_menu" />
 
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+    <include layout="@layout/popup_window"
+        android:id = "@+id/popup_window"
+        android:visibility="gone"
+        />
+</FrameLayout>
