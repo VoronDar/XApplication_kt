@@ -36,20 +36,21 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
     val feedBackArticleStorage:LiveData<FeedBackStorage>
     get() = _feedBackArticleStorage
 
-    fun loadArticle(id: Int) {
+    fun setArticle(article:Article) {
         feedBackAdviceListener = OnAdviceFeetBackListenerImpl(viewModelScope, repository)
 
         viewModelScope.launch {
-            // load article
-            _article.value = repository.getArticle(id)
-            val ap = ArticlePresentable(article.value!!)
+            _article.value = article
+            val ap = ArticlePresentable(article)
             _element.value = ap
+
             _feedBackArticleStorage.value =
-                FeedBackStorage(ap.likes, ap.dislikes, ap.feedBackState!!, this@ArticleViewModel)
+                FeedBackStorage(ap.likes, ap.dislikes, ap.feedBackState, this@ArticleViewModel)
 
             // load items
-            article.value!!.items = repository.getItemsForArticle(id)
-            _article.value = article.value
+            article.items = repository.getItemsForArticle(article.id)
+            // reload liveData to update UI
+            _article.value = article
         }
     }
 

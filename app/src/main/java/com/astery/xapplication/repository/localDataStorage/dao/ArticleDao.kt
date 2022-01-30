@@ -23,19 +23,19 @@ interface ArticleDao {
     @Transaction
     suspend fun getArticleById(articleId: Int): Article
 
-    @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
+    @Query("SELECT * FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
             "  AND ArticleAndTag.tagId IN (:tags) GROUP BY Article.ID")
     fun getArticlesWithTag(tags: List<Int>): PagingSource<Int, Article>
-    @Query("SELECT Article.id, likes, dislikes, name FROM Article")
+    @Query("SELECT * FROM Article")
     fun getArticles(): PagingSource<Int, Article>
 
 
-    @Query("SELECT  Article.id, likes, dislikes, Article.name FROM Article JOIN ArticleFts ON Article.name = ArticleFts.name WHERE (ArticleFts MATCH '*' || :key || '*' )")
+    @Query("SELECT  * FROM Article JOIN ArticleFts ON Article.name = ArticleFts.name WHERE (ArticleFts MATCH '*' || :key || '*' )")
     fun getArticlesWithKeyWord(key:String):PagingSource<Int, Article>
 
 
     /** return articles */
-    @Query("SELECT Article.id, likes, dislikes, Article.name FROM Article " +
+    @Query("SELECT * FROM Article " +
             "INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId " +
             "AND ArticleAndTag.tagId IN (:tags) " +
             "JOIN ArticleFts ON Article.name = ArticleFts.name WHERE (ArticleFts MATCH '*' || :key || '*')  " +

@@ -16,7 +16,7 @@ import kotlinx.parcelize.Parcelize
 @Entity
 @TypeConverters(ArrayConverter::class, FeedbackStateConverter::class)
 data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
-                   var likes:Int, var dislikes:Int, val feedBack: FeedBackState?=FeedBackState.None):
+                   var likes:Int, var dislikes:Int, val feedBack: FeedBackState=FeedBackState.None):
     Parcelable
 {
     @Ignore

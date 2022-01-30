@@ -2,6 +2,7 @@ package com.astery.xapplication.ui.fragments.article
 
 import android.graphics.Bitmap
 import com.astery.xapplication.model.entities.Article
+import com.astery.xapplication.model.entities.FeedBackState
 import com.astery.xapplication.model.entities.Item
 
 /** decorator for item and article */
@@ -16,7 +17,7 @@ import com.astery.xapplication.model.entities.Item
         override val image = article.image
         val likes = article.likes
         val dislikes = article.dislikes
-        val feedBackState = article.feedBack
+        val feedBackState:FeedBackState = article.feedBack
     }
     
     class ItemPresentable(val item: Item): Presentable() {

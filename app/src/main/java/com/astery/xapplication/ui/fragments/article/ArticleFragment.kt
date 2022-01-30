@@ -14,7 +14,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentArticleBinding
 import com.astery.xapplication.model.entities.Article
 import com.astery.xapplication.ui.adviceUtils.AdviceRenderer
@@ -41,8 +40,8 @@ class ArticleFragment : XFragment() {
         super.onCreate(savedInstanceState)
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
 
-        arguments?.let {
-            it.getParcelable<Article>("article")?.let { it1 -> viewModel.loadArticle(it1.id) }
+        arguments?.let {bundle->
+            bundle.getParcelable<Article>("article")?.let { value -> viewModel.setArticle(value) }
         }
     }
 
@@ -86,11 +85,11 @@ class ArticleFragment : XFragment() {
                         Timber.d("$downY $upY")
 
                         // scroll down and there is the end of the scroll view
-                        if (downY >= (upY+minSlideRange) && isScrollWasInTheEnd) {
+                        if (downY >= (upY + minSlideRange) && isScrollWasInTheEnd) {
                             articleAdapter?.slidePage(true)
                         }
                         // scroll up and there is the start of the scroll view
-                        else if (downY <= (upY-minSlideRange) && binding.page.parent.scrollY == 0) {
+                        else if (downY <= (upY - minSlideRange) && binding.page.parent.scrollY == 0) {
                             articleAdapter?.slidePage(false)
                         }
                     }
@@ -129,6 +128,7 @@ class ArticleFragment : XFragment() {
             if (it.items != null) {
                 articleAdapter!!.pageCount = it.items!!.size + 1
             }
+            setTitle()
         }
         viewModel.element.observe(viewLifecycleOwner) {
             fade(false)
@@ -140,7 +140,7 @@ class ArticleFragment : XFragment() {
             }
         }
         // TODO(maybe... maybe... find a way to completely move in databind)
-        viewModel.feedBackArticleStorage.observe(viewLifecycleOwner){
+        viewModel.feedBackArticleStorage.observe(viewLifecycleOwner) {
             binding.page.pageFeedback.feedBackStorage = viewModel.feedBackArticleStorage.value
         }
     }
@@ -173,9 +173,8 @@ class ArticleFragment : XFragment() {
         }
     }
 
-    override fun getFragmentTitle(): String {
-        //TODO(add article name)
-        return requireContext().resources.getString(R.string.title_new_event)
+    override fun getFragmentTitle(): String? {
+        return viewModel.article.value?.name
     }
 
     /** is the view scrolled down or up */
@@ -187,7 +186,9 @@ class ArticleFragment : XFragment() {
         // this line here because fade(hide = false) called just after loading screen from element.observe
         if (!hide && binding.page.parent.alpha == 1f) return null
 
-        if (hide) isChangingPage = true
+        if (isChangingPage) return null
+
+        isChangingPage = true
 
         this.moveDown = moveDown
         val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
@@ -214,6 +215,7 @@ class ArticleFragment : XFragment() {
         }
         if (hide) {
             valueAnimator.doOnEnd {
+                isChangingPage = false
                 if (moveDown) {
                     binding.page.parent.translationY = startTranslationY + factor
                 } else {
