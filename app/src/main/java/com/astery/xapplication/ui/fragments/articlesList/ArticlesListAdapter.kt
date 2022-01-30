@@ -14,7 +14,7 @@ import com.astery.xapplication.ui.adapterUtils.BlockListener
 import com.astery.xapplication.ui.pageFeetback.FeedBackStorage
 import timber.log.Timber
 
-class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewHolder>(ArticleDiffUtils()), Blockable {
+class ArticlesListAdapter(val viewModel:ArticlesListViewModel, val recyclerView: RecyclerView) : PagingDataAdapter<Article, ArticlesListAdapter.ViewHolder>(ArticleDiffUtils()), Blockable {
     private var isBlocked = false
     override fun setEnabled(enable: Boolean) {
         isBlocked = !enable
@@ -22,10 +22,29 @@ class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewH
     /** important: listen for id, not for position */
     var blockListener:BlockListener? = null
 
+    var triedToLoadImage = ArrayList<Int>()
+
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         // TODO(null pointer exception)
-        if (getItem(position) != null)
+        // TODO(на рендеринге нулевого изображения случается failed to render an image)
+        if (getItem(position) != null) {
             holder.bind(getItem(position)!!)
+
+
+            Timber.d("pos - $position, item - ${getItem(position)} ")
+
+            if (!triedToLoadImage.contains(position)){
+                triedToLoadImage.add(position)
+                viewModel.getImage(getItem(position)!!, position, this)
+            }
+        }
+
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,8 +60,13 @@ class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewH
                 if (isBlocked) return@setOnClickListener
                 blockListener?.onClick(article)
             }
+
+            if (article.image != null)
+                binding.itemImage.setImageBitmap(article.image!!)
         }
     }
+
+
 
     class ArticleDiffUtils : DiffUtil.ItemCallback<Article>() {
         override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean = oldItem.id == newItem.id

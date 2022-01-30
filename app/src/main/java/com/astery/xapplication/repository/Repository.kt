@@ -50,13 +50,25 @@ class Repository @Inject constructor(
     }
 
     suspend fun getImageForEventTemplate(eventTemplate: EventTemplate): Bitmap? {
-        var bitmap = localStorage.getImage(eventTemplate.id.toString())
+        return getImage(eventTemplate.id, StorageSource.Templates)
+    }
+
+    suspend fun getImageForArticle(id: Int): Bitmap? {
+        return getImage(id, StorageSource.Articles)
+    }
+    suspend fun getImageForItem(id: Int): Bitmap? {
+        return getImage(id, StorageSource.Items)
+    }
+
+    private suspend fun getImage(id:Int, source:StorageSource):Bitmap?{
+        var bitmap = localStorage.getImage(id.toString(), source)
         if (bitmap == null && isOnline()) {
-            bitmap = remoteStorage.getImg(eventTemplate.id.toString())
-            if (bitmap != null) localStorage.addImage(bitmap, eventTemplate.name)
+            bitmap = remoteStorage.getImg(source, id.toString())
+            if (bitmap != null) localStorage.addImage(bitmap, id.toString(), source)
         }
         return bitmap
     }
+
 
     suspend fun addEvent(event: Event) {
         localStorage.addEvent(event)
@@ -300,6 +312,7 @@ class Repository @Inject constructor(
         }
         return l
     }
+
 
     companion object {
         /** prepare calendar to be used for db (left just date)

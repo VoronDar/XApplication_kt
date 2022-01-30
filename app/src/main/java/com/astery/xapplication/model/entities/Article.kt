@@ -7,6 +7,7 @@ import androidx.room.*
 import com.astery.xapplication.model.entities.converters.ArrayConverter
 import com.astery.xapplication.model.entities.converters.FeedbackStateConverter
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 
 /**
  * the hugest thing. Has several items. Can be found in article pool.
@@ -25,6 +26,12 @@ data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
     var items: List<Item>? = null
     @Ignore
     var image: Bitmap? = null
+    set(value) {
+        if (id == 100){
+            Timber.d("THEY ARE CHANGED MY BITMAP $image")
+        }
+        field = value
+    }
 
     @Ignore
     var ta:String? = null
@@ -45,7 +52,7 @@ data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
     }
 
     override fun toString(): String {
-        return "Article(id=$id, name='$name', body=$body, likes=$likes, dislikes=$dislikes, feedBack=$feedBack)"
+        return "Article(id=$id, name='$name', body=$body, likes=$likes, dislikes=$dislikes, feedBack=$feedBack, bitmap=$image)"
     }
 
     override fun equals(other: Any?): Boolean {

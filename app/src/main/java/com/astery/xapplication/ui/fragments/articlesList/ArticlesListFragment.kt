@@ -71,7 +71,7 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
 
     override fun prepareAdapters() {
         articleListAdapter =
-            ArticlesListAdapter()
+            ArticlesListAdapter(viewModel, binding.recyclerView)
         binding.recyclerView.adapter = articleListAdapter
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -106,6 +106,7 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
     private fun requestArticleFlow() {
         lifecycleScope.launch {
             viewModel.requestFlow(keywords, tags).collectLatest { source ->
+                articleListAdapter?.triedToLoadImage?.clear()
                 articleListAdapter?.submitData(source)
             }
         }

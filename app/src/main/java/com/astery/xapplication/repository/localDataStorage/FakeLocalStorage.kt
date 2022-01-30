@@ -7,6 +7,7 @@ import com.astery.xapplication.model.entities.values.AdviceType
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.model.entities.values.WarningCategory
 import com.astery.xapplication.repository.FeedbackResult
+import com.astery.xapplication.repository.remoteDataStorage.StorageSource
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -350,9 +351,12 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
     override suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {}
     override suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState) {}
 
-    override suspend fun addImage(bitmap: Bitmap, name: String) {}
-    override suspend fun getImage(name: String): Bitmap? {
-        return null
+    override suspend fun addImage(bitmap: Bitmap, name: String, source: StorageSource) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getImage(name: String, source: StorageSource): Bitmap? {
+        TODO("Not yet implemented")
     }
 
     override fun getArticlesWithKeyWord(sequence: String): PagingSource<Int, Article> {

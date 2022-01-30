@@ -70,6 +70,10 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
                 _element.value = ItemPresentable(item)
             }
         }
+        viewModelScope.launch {
+            item.image = repository.getImageForItem(item.id)
+            _element.value = ItemPresentable(item)
+        }
     }
 
 

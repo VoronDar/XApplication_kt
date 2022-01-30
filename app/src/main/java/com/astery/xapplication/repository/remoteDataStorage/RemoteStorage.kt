@@ -2,6 +2,7 @@ package com.astery.xapplication.repository.remoteDataStorage
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.model.remote.AdviceFromRemote
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -192,24 +194,34 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
     }
 
 
-    suspend fun getImg(name: String): Bitmap? {
-        //TODO(ADD FIRESTORAGE LATER)
-        /*
+    suspend fun getImg(source:StorageSource, name: String): Bitmap? {
         val ONE_MEGABYTE = (1024 * 1024).toLong()
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.getReference()
-        val child = storageRef.child("$name.jpg")
+        val storageRef = storage.reference
+        val child = storageRef.child("${source.getFolderName()}/$name.jpg")
 
         lateinit var wa: WA
-        child.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytes ->
-            wa.bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length)
-        }.addOnFailureListener {
-            wa.bitmap = null
-        }.await()
+        try {
+            child.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytes ->
+                wa = WA(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
+                Timber.d("got an image '${source.getFolderName()}/$name.jpg'")
+            }.addOnFailureListener {
+                wa = WA(null)
+                Timber.d(
+                    "failed to get an image '${source.getFolderName()}/$name.jpg'\n" +
+                            "exception - ${it.localizedMessage}"
+                )
+            }
+                .await()
+        } catch(e:java.lang.Exception){
+            wa = WA(null)
+            Timber.d(
+                "failed to get an image '${source.getFolderName()}/$name.jpg'\n" +
+                        "exception - ${e.localizedMessage}"
+            )
+        }
         return wa.bitmap
 
-         */
-        return null
     }
 
     suspend fun updateArticleField(id: Int, feedbackResult: FeedbackResult): Boolean {
@@ -264,5 +276,15 @@ class AnswerCommand(private val q: Question){
                         t.result.documents[k].id.replace(" ", "").toInt()
                 }
             }.await()
+    }
+}
+
+enum class StorageSource{
+    Items,
+    Articles,
+    Templates;
+
+    fun getFolderName():String{
+        return this.name.lowercase()
     }
 }

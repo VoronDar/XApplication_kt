@@ -2,18 +2,18 @@ package com.astery.xapplication.ui.fragments.article
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.ContextWrapper
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.LinearInterpolator
 import androidx.core.animation.doOnEnd
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentArticleBinding
 import com.astery.xapplication.model.entities.Article
 import com.astery.xapplication.ui.adviceUtils.AdviceRenderer
@@ -132,8 +132,8 @@ class ArticleFragment : XFragment() {
         }
         viewModel.element.observe(viewLifecycleOwner) {
             fade(false)
+            renderImage(it)
             clearSpecialInfo()
-
             when (it) {
                 is ArticlePresentable -> renderArticleInfo(it)
                 is ItemPresentable -> renderItemInfo(it)
@@ -143,6 +143,11 @@ class ArticleFragment : XFragment() {
         viewModel.feedBackArticleStorage.observe(viewLifecycleOwner) {
             binding.page.pageFeedback.feedBackStorage = viewModel.feedBackArticleStorage.value
         }
+    }
+
+    private fun renderImage(presentable: Presentable){
+        if (presentable.image != null) binding.page.itemImage.setImageBitmap(presentable.image!!)
+        else binding.page.itemImage.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.dating))
     }
 
     /** clear everything that may be created by renderArticleInfo or renderItemInfo */

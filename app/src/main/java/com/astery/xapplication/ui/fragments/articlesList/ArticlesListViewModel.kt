@@ -12,6 +12,7 @@ import com.astery.xapplication.ui.fragments.articlesList.model.ArticlePagingSour
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -37,6 +38,27 @@ class ArticlesListViewModel @Inject constructor() : ViewModel(){
     private fun cleanSearchSequence(searchSequence: String):String{
         return searchSequence.replace("\"", "").lowercase()
     }
+
+    fun getImage(article:Article, articlePosition:Int, adapter:ArticlesListAdapter){
+        viewModelScope.launch {
+            Timber.d("want to notify ${articlePosition} ${article.id}")
+            article.image = repository.getImageForArticle(article.id)
+            if (article.image != null) {
+                var isNotified = false
+                do {
+                    try {
+                        adapter.notifyItemChanged(articlePosition)
+                        isNotified = true
+                        Timber.d("${articlePosition} - ${article.id} notified")
+                    } catch (e: Exception) {
+                        Timber.d("failed to render an image")
+                        delay(100)
+                    }
+                } while (!isNotified)
+            }
+        }
+    }
+
 
 
     companion object{

@@ -13,7 +13,6 @@ class FeedBackStorage(
         override fun onCancelLike() {}
         override fun onDislike() {}
         override fun onCancelDislike() {}
-        override fun onChangeFeetBackState(feedBackState: FeedBackState) {}
     }
 ) {
 

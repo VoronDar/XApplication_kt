@@ -28,12 +28,6 @@ class AdviceFeetBackDelegate(val i: Advice, val binding:UnitAdviceBinding, val f
                 binding.feedBack = binding.feedBack
                 feedbackListener?.onCancelDisLike(i.id, i.likes, i.dislikes)
             }
-
-            override fun onChangeFeetBackState(feedBackState: FeedBackState) {
-                binding.feedBack = binding.feedBack
-                //TODO()
-                //feedbackListener?.onCancelDisLike(i.id, i.likes, i.dislikes)
-            }
         })
     }
 }
