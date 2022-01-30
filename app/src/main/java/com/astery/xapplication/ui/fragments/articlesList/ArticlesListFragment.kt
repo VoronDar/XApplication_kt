@@ -1,5 +1,6 @@
 package com.astery.xapplication.ui.fragments.articlesList
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,9 +23,11 @@ import com.astery.xapplication.ui.activity.popupDialogue.Blockable
 import com.astery.xapplication.ui.activity.popupDialogue.DialogueHolder
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.addEvent.customizeEvent.AddEventFragmentDirections
+import com.astery.xapplication.ui.fragments.article.ArticleFragment
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
@@ -48,10 +51,13 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
+    }
+
+    override fun onStart() {
+        super.onStart()
         parentActivity.showSearchBar(true, this)
         parentActivity.showFilters(true, this)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,11 +77,12 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         articleListAdapter!!.blockListener = object: ArticlesListAdapter.BlockListener {
             override fun onClick(article:Article) {
-                setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
-                    move(ArticlesListFragmentDirections.actionArticlesListFragmentToArticleFragment(article))
+                moveToArticle(article)
             }
         }
     }
+
+
 
     override fun getFragmentTitle(): String? {
         return null
@@ -149,9 +156,19 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
         return tags
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStop() {
+        super.onStop()
         parentActivity.showSearchBar(false, this)
         parentActivity.showFilters(false, this)
+    }
+
+    private fun moveToArticle(article:Article) {
+        parentActivity.stopSearching()
+        setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
+        move(
+            ArticlesListFragmentDirections.actionArticlesListFragmentToArticleFragment(
+                article
+            )
+        )
     }
 }

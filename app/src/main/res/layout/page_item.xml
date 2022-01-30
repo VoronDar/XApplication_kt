@@ -59,6 +59,8 @@
             <LinearLayout
                 android:id="@+id/tips_layout"
                 android:layout_marginTop="15dp"
+                android:paddingBottom="20dp"
+                android:clipToPadding="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />

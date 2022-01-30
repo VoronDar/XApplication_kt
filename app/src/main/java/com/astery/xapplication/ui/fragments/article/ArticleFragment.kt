@@ -230,7 +230,12 @@ class ArticleFragment : XFragment() {
         return valueAnimator
     }
 
-    fun fade(hide: Boolean) {
+    private fun fade(hide: Boolean) {
         fade(hide, moveDown)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = ArticleFragment()
     }
 }
