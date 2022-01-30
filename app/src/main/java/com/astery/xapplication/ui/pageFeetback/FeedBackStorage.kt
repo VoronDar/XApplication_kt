@@ -17,6 +17,8 @@ class FeedBackStorage(
     }
 ) {
 
+    var isSomethingPressed:Boolean = false
+
     /** called from xml (dataBinding) when press like or dislike.
      * feetBackbutton can be only like or dislike
      * change feetback state, call listener funtions

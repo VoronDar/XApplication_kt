@@ -8,9 +8,13 @@ import com.astery.xapplication.model.remote.AdviceFromRemote
 import com.astery.xapplication.model.remote.EventTemplateFromRemote
 import com.astery.xapplication.model.remote.ItemFromRemote
 import com.astery.xapplication.model.remote.QuestionFromRemote
+import com.astery.xapplication.repository.FeedbackAction
+import com.astery.xapplication.repository.FeedbackField
+import com.astery.xapplication.repository.FeedbackResult
 import com.astery.xapplication.repository.RemoteEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
@@ -206,10 +210,34 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
          */
         return null
     }
+
+    suspend fun updateArticleField(id: Int, feedbackResult: FeedbackResult): Boolean {
+        val db = Firebase.firestore
+        TODO()
+    }
+
+    suspend fun updateAdviceField(id: Int, feedbackResult: FeedbackResult): Boolean {
+        val db = Firebase.firestore
+        val map = HashMap<String, FieldValue>()
+        map[if (feedbackResult.field == FeedbackField.Like) "likes" else "dislikes"] =
+            FieldValue.increment(if (feedbackResult.action == FeedbackAction.Do) 1 else -1)
+
+        lateinit var isSuccess:WAA
+
+        db.collection(adviceCollection).document(id.toString()).update(map as Map<String, Any>).addOnSuccessListener{
+            isSuccess = WAA(true)
+        }.addOnFailureListener {
+            isSuccess = WAA(false)
+        }.addOnCanceledListener {
+            isSuccess = WAA(true)
+        }.await()
+        return isSuccess.isCompleted
+    }
 }
 
 // TODO(sorry, but lateinit requires notnull, and also it doesn't let me to add Result<Bitmap>)
 class WA(var bitmap: Bitmap?)
+class WAA(var isCompleted: Boolean)
 class AnswerCommand(private val q: Question){
     private val answerCollection = "ANSWERS"
     suspend fun loadAnswer(db:FirebaseFirestore){

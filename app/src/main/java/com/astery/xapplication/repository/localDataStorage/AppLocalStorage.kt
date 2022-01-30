@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.paging.PagingSource
 import com.astery.xapplication.model.entities.*
-import com.astery.xapplication.model.entities.converters.EventCategoryConverter
 import com.astery.xapplication.model.entities.values.EventCategory
+import com.astery.xapplication.repository.FeedbackAction
+import com.astery.xapplication.repository.FeedbackField
+import com.astery.xapplication.repository.FeedbackResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -100,9 +102,14 @@ class AppLocalStorage @Inject constructor(
         return appDatabase.articleDao().getArticlesWithTag(convertListOfTagsToListOfId(tags))
     }
 
-    override fun getArticlesWithTagAndKeyWord(tags: List<ArticleTag>, key: String): PagingSource<Int, Article> {
-        return appDatabase.articleDao().getArticlesWIthTagAndKeyWord(convertListOfTagsToListOfId(tags), key)
+    override fun getArticlesWithTagAndKeyWord(
+        tags: List<ArticleTag>,
+        key: String
+    ): PagingSource<Int, Article> {
+        return appDatabase.articleDao()
+            .getArticlesWIthTagAndKeyWord(convertListOfTagsToListOfId(tags), key)
     }
+
     override fun getArticlesWithKeyWord(key: String): PagingSource<Int, Article> {
         return appDatabase.articleDao().getArticlesWithKeyWord(key)
     }
@@ -111,9 +118,9 @@ class AppLocalStorage @Inject constructor(
         return appDatabase.articleDao().getArticles()
     }
 
-    private fun convertListOfTagsToListOfId(tags:List<ArticleTag>):List<Int>{
+    private fun convertListOfTagsToListOfId(tags: List<ArticleTag>): List<Int> {
         val list = arrayListOf<Int>()
-        for (i in tags){
+        for (i in tags) {
             list.add(i.id)
         }
         return list
@@ -195,7 +202,7 @@ class AppLocalStorage @Inject constructor(
         appDatabase.articleDao().addAdvises(advices)
     }
 
-    override suspend fun addImage(bitmap:Bitmap, name:String) {
+    override suspend fun addImage(bitmap: Bitmap, name: String) {
         CoroutineScope(Dispatchers.IO).launch {
             runCatching {
                 val f: File = File(context.cacheDir, "$name.jpeg")
@@ -216,11 +223,41 @@ class AppLocalStorage @Inject constructor(
 
     }
 
-    override suspend fun getImage(name:String):Bitmap?{
-        val f:File = File(context.cacheDir, "$name.jpeg")
+    override suspend fun getImage(name: String): Bitmap? {
+        val f: File = File(context.cacheDir, "$name.jpeg")
         return BitmapFactory.decodeFile(f.absolutePath)
     }
 
+    override suspend fun updateAdviceField(id: Int, result: FeedbackResult) {
+
+        when (result.field) {
+            FeedbackField.Like -> appDatabase.articleDao().likeAdvice(
+                id,
+                if (result.action == FeedbackAction.Do) result.nowLikes + 1 else result.nowLikes - 1
+            )
+            FeedbackField.Dislike -> appDatabase.articleDao().dislikeAdvice(
+                id,
+                if (result.action == FeedbackAction.Do) result.nowLikes + 1 else result.nowDislikes - 1
+            )
+        }
+    }
+
+    override suspend fun updateArticleField(
+        id: Int,
+        result: FeedbackResult
+    ) {
+        when (result.field) {
+            FeedbackField.Like -> appDatabase.articleDao().likeArticle(
+                id,
+                if (result.action == FeedbackAction.Do) result.nowLikes + 1 else result.nowLikes - 1
+            )
+            FeedbackField.Dislike -> appDatabase.articleDao().dislikeArticle(
+                id,
+                if (result.action == FeedbackAction.Do) result.nowDislikes + 1 else result.nowDislikes - 1
+            )
+        }
+
+    }
 
     override suspend fun reset() {
         appDatabase.eventDao().deleteEventTemplates()

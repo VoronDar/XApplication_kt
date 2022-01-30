@@ -67,7 +67,13 @@ class Repository @Inject constructor(
     }
 
     suspend fun getItemsForArticle(articleId: Int): List<Item> {
-        return getValues(localStorage::getItemsForArticle, remoteStorage::getItemsForArticle, localStorage::addItems, articleId, null)
+        return getValues(
+            localStorage::getItemsForArticle,
+            remoteStorage::getItemsForArticle,
+            localStorage::addItems,
+            articleId,
+            null
+        )
     }
 
     // TODO(show in UI that there is no advices loaded)
@@ -90,7 +96,13 @@ class Repository @Inject constructor(
     suspend fun setItemBody(item: Item): Item {
         // TODO(может вернуться null)
         //val gotItem = localStorage.getItemBody(item.id!!)
-        val gotItem =  getValues(localStorage::getItemBody, remoteStorage::getItemById, localStorage::addItems, item.id!!, null)
+        val gotItem = getValues(
+            localStorage::getItemBody,
+            remoteStorage::getItemById,
+            localStorage::addItems,
+            item.id,
+            null
+        )
         if (gotItem.isEmpty()) return item
         return item.clone(name = gotItem[0].name, body = gotItem[0].body)
     }
@@ -110,10 +122,13 @@ class Repository @Inject constructor(
         localStorage.deleteEvent(event)
     }
 
-    fun getArticles(sequence:String, tags:List<ArticleTag>): PagingSource<Int, Article> {
+    fun getArticles(sequence: String, tags: List<ArticleTag>): PagingSource<Int, Article> {
         //TODO (make for remote also)
         if (sequence.isEmpty() && tags.isEmpty()) return localStorage.getArticles()
-        if (sequence.isNotEmpty() && tags.isNotEmpty()) return localStorage.getArticlesWithTagAndKeyWord(tags, sequence)
+        if (sequence.isNotEmpty() && tags.isNotEmpty()) return localStorage.getArticlesWithTagAndKeyWord(
+            tags,
+            sequence
+        )
         return if (sequence.isNotEmpty()) localStorage.getArticlesWithKeyWord(sequence)
         else localStorage.getArticlesWithTag(tags)
     }
@@ -123,18 +138,65 @@ class Repository @Inject constructor(
     }
 
 
-    suspend fun likeAdvice(id: Int) {}
-    suspend fun dislikeAdvice(id: Int) {}
-    suspend fun cancelLikeAdvice(id: Int) {}
-    suspend fun cancelDislikeAdvice(id: Int) {}
+    suspend fun likeAdvice(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
+        return rateAdvice(
+            id,
+            FeedbackResult(FeedbackField.Like, FeedbackAction.Do, nowLikes, nowDislikes)
+        )
+    }
+
+    suspend fun dislikeAdvice(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
+        return rateAdvice(
+            id,
+            FeedbackResult(FeedbackField.Dislike, FeedbackAction.Do, nowLikes, nowDislikes)
+        )}
+
+    suspend fun cancelLikeAdvice(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
+        return rateAdvice(
+            id,
+            FeedbackResult(FeedbackField.Like, FeedbackAction.Cancel, nowLikes, nowDislikes)
+        )}
+
+    suspend fun cancelDislikeAdvice(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
+        return rateAdvice(
+            id,
+            FeedbackResult(FeedbackField.Dislike, FeedbackAction.Cancel, nowLikes, nowDislikes)
+        )}
+
+
+    private suspend fun rateAdvice(id: Int, result: FeedbackResult): Boolean {
+        if (!isOnline()) return false
+        val isComplete = remoteStorage.updateAdviceField(id, result)
+        if (isComplete) localStorage.updateAdviceField(id, result)
+        return isComplete
+    }
+
     suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {
         localStorage.changeFeetBackStateForAdvice(id, feedBackState)
     }
 
-    suspend fun likeArticle(id: Int) {}
-    suspend fun dislikeArticle(id: Int) {}
-    suspend fun cancelLikeArticle(id: Int) {}
-    suspend fun cancelDislikeArticle(id: Int) {}
+    suspend fun likeArticle(id: Int): Boolean {
+        /*
+        if (!isOnline()) return false
+        val isComplete = remoteStorage.updateArticleField(id, FeedbackResult(FeedbackField.Like, FeedbackAction.Do))
+        if (isComplete) localStorage.updateArticleField(id, FeedbackResult(FeedbackField.Like, FeedbackAction.Do))
+        return isComplete
+         */
+        TODO()
+    }
+
+    suspend fun dislikeArticle(id: Int): Boolean {
+        TODO()
+    }
+
+    suspend fun cancelLikeArticle(id: Int): Boolean {
+        TODO()
+    }
+
+    suspend fun cancelDislikeArticle(id: Int): Boolean {
+        TODO()
+    }
+
     suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState) {
         localStorage.changeFeetBackStateForArticle(id, feedBackState)
     }
@@ -212,7 +274,7 @@ class Repository @Inject constructor(
         if (remoteList.isNotEmpty() && remUpdate != null) {
             askForUpdateMgr.setUpdated(
                 remUpdate,
-                remoteList.maxByOrNull { it.lastUpdated!! }!!.lastUpdated!!
+                remoteList.maxByOrNull { it.lastUpdated }!!.lastUpdated
             )
         }
         return list
@@ -242,7 +304,22 @@ class Repository @Inject constructor(
 }
 
 interface RemoteEntity<T> {
-    var id:Int
-    var lastUpdated:Int
+    var id: Int
+    var lastUpdated: Int
     fun convertFromRemote(): T
+}
+
+data class FeedbackResult(
+    val field: FeedbackField,
+    val action: FeedbackAction,
+    val nowLikes: Int = 0,
+    val nowDislikes: Int = 0
+)
+
+enum class FeedbackField {
+    Like, Dislike
+}
+
+enum class FeedbackAction {
+    Do, Cancel
 }

@@ -7,9 +7,9 @@ import com.astery.xapplication.model.entities.FeedBackState
  * It stores there because there are many fragments that have advices
  * */
     interface OnAdviceFeetbackListener{
-        fun onLike(id:Int)
-        fun onDislike(id:Int)
-        fun onCancelLike(id:Int)
-        fun onCancelDisLike(id:Int)
+        fun onLike(id:Int, nowLikes:Int, nowDislikes:Int)
+        fun onDislike(id:Int, nowLikes:Int, nowDislikes:Int)
+        fun onCancelLike(id:Int, nowLikes:Int, nowDislikes:Int)
+        fun onCancelDisLike(id:Int, nowLikes:Int, nowDislikes:Int)
         fun onChangeFeetbackState(id:Int, feedBackState: FeedBackState)
     }

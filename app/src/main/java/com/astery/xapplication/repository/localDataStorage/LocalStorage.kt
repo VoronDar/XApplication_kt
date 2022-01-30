@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.paging.PagingSource
 import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.values.EventCategory
+import com.astery.xapplication.repository.FeedbackResult
 import java.util.*
 
 interface LocalStorage {
@@ -53,6 +54,9 @@ interface LocalStorage {
     suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState)
     suspend fun addImage(bitmap: Bitmap, name: String)
     suspend fun getImage(name:String):Bitmap?
+
+    suspend fun updateAdviceField(id: Int, result: FeedbackResult)
+    suspend fun updateArticleField(id: Int, result: FeedbackResult)
 
     suspend fun reset()
     fun getArticlesWithKeyWord(sequence: String): PagingSource<Int, Article>

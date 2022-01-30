@@ -6,6 +6,7 @@ import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.values.AdviceType
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.model.entities.values.WarningCategory
+import com.astery.xapplication.repository.FeedbackResult
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -371,6 +372,14 @@ class FakeLocalStorage @Inject constructor() : LocalStorage {
     }
 
     override fun getArticles(): PagingSource<Int, Article> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateAdviceField(id: Int, feedbackResult: FeedbackResult) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateArticleField(id: Int, feedbackResult: FeedbackResult) {
         TODO("Not yet implemented")
     }
 }

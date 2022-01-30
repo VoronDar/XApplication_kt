@@ -2,6 +2,7 @@ package com.astery.xapplication.model.entities
 
 import com.astery.xapplication.repository.feetback.OnFeedbackListener
 import com.astery.xapplication.ui.pageFeetback.FeedBackStorage
+import timber.log.Timber
 
 enum class FeedBackState {
     Like {
@@ -17,6 +18,7 @@ enum class FeedBackState {
             listener: OnFeedbackListener,
             likesDislikes: Pair<Int, Int>
         ): Pair<Int, Int> {
+
             listener.onCancelLike()
             return Pair(likesDislikes.first - 1, likesDislikes.second)
         }
@@ -34,6 +36,7 @@ enum class FeedBackState {
             listener: OnFeedbackListener,
             likesDislikes: Pair<Int, Int>
         ): Pair<Int, Int> {
+            Timber.d("on cancel dislike")
             listener.onCancelDislike()
             return Pair(likesDislikes.first, likesDislikes.second - 1)
         }
@@ -54,18 +57,39 @@ enum class FeedBackState {
             storage: FeedBackStorage,
             feedBackButton: FeedBackState,
         ) {
-            var likesDislikes = storage.feedBackState.unPress(
-                storage.listener,
-                Pair(storage.likes, storage.dislikes)
-            )
-            storage.feedBackState = if (feedBackButton == storage.feedBackState)
+            var likesDislikes = Pair(storage.likes, storage.dislikes)
+
+
+            val oldState = storage.feedBackState
+
+            storage.feedBackState = if (feedBackButton == storage.feedBackState) {
                 None
+            }
             else
                 feedBackButton
-            likesDislikes = storage.feedBackState.pressOnMe(storage.listener, likesDislikes)
-            storage.likes = likesDislikes.first
-            storage.dislikes = likesDislikes.second
-            storage.listener.onChangeFeetBackState(storage.feedBackState)
+
+            Timber.d("storage ${storage.feedBackState}, old state - ${oldState}")
+
+            when(storage.feedBackState){
+                // если сейчас ничего не нажато
+                None -> {
+                    likesDislikes = oldState.unPress(storage.listener, likesDislikes)
+                    storage.likes = likesDislikes.first
+                    storage.dislikes = likesDislikes.second
+                }
+                // если сейчас что-то нажато
+                else -> {
+                    likesDislikes = storage.feedBackState.pressOnMe(storage.listener, likesDislikes)
+                    storage.likes = likesDislikes.first
+                    storage.dislikes = likesDislikes.second
+                    // если раньше было что-то нажато (нужно отжать старое)
+                    if (oldState != None){
+                        likesDislikes = oldState.unPress(storage.listener, likesDislikes)
+                        storage.likes = likesDislikes.first
+                        storage.dislikes = likesDislikes.second
+                    }
+                }
+            }
         }
     }
 }
