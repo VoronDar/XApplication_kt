@@ -1,15 +1,44 @@
 package com.astery.xapplication.model.entities
 
 import com.astery.xapplication.R
+import timber.log.Timber
 
 /**
  * tags that can be used to search articles
  * */
+
 interface ArticleTag{
     /** each articleTag must have a unique code */
     val id:Int
     /** string resource id */
     val nameId:Int
+
+
+    companion object{
+        fun convertToIdList(list:List<ArticleTag>):List<Int>{
+            val result = ArrayList<Int>()
+            for (i in list){
+                result.add(i.id)
+            }
+            Timber.d("convert to id ${result}")
+            return result
+        }
+        fun convertFromIdList(list:List<Int>):MutableList<ArticleTag>{
+            Timber.d("convert from id ${list}")
+            val result = ArrayList<ArticleTag>()
+            for (i in ArticleTagType.values()){
+                K@ for (k in i.getTagsForType()){
+                    for (j in list){
+                        if (j == k.id){
+                            result.add(k)
+                            continue@K
+                        }
+                    }
+                }
+            }
+            return result
+        }
+    }
 }
 
 /** enum of types of tags. Using it you can get every tag*/

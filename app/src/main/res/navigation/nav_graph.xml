@@ -84,6 +84,16 @@
                 android:name="article"
                 app:argType="com.astery.xapplication.model.entities.Article" />
         </action>
+        <action
+            android:id="@+id/articleList_reload"
+            app:destination="@id/articlesListFragment">
+            <argument
+                android:name="tags"
+                app:argType="integer[]" />
+            <argument
+                android:name="keyword"
+                app:argType="java.lang.String" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/articleFragment"
