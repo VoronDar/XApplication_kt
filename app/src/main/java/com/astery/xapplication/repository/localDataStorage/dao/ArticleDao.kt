@@ -102,6 +102,19 @@ interface ArticleDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateItems(items: List<Item>)
 
+
+    @Query("UPDATE advice SET likes = :nowLike WHERE id = :id")
+    suspend fun likeAdvice(id:Int, nowLike:Int)
+
+    @Query("UPDATE advice SET dislikes = :nowLike WHERE id = :id")
+    suspend fun dislikeAdvice(id:Int, nowLike:Int)
+
+    @Query("UPDATE article SET likes = :nowLike WHERE id = :id")
+    suspend fun likeArticle(id:Int, nowLike:Int)
+
+    @Query("UPDATE article SET dislikes = :nowLike WHERE id = :id")
+    suspend fun dislikeArticle(id:Int, nowLike:Int)
+
     @Query("DELETE FROM ArticleAndTag")
     suspend fun deleteArticleAndTagRelations()
 

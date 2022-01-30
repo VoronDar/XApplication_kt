@@ -1,9 +1,7 @@
 package com.astery.xapplication.model.remote
 
 import com.astery.xapplication.model.entities.Advice
-import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.model.entities.values.AdviceType
-import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.repository.RemoteEntity
 
 
@@ -17,6 +15,12 @@ class AdviceFromRemote() : Advice(),
     override var lastUpdated: Int = 0
 
     override fun convertFromRemote(): Advice {
-        return Advice(id, likes, dislikes, AdviceType.values()[aType], body, ItemId)
+        return Advice(id, likes, dislikes, AdviceType.values()[aType], body, itemId)
     }
+
+    override fun toString(): String {
+        return "AdviceFromRemote(aType=$aType, lastUpdated=$lastUpdated, parent ->  ${super.toString()})"
+    }
+
+
 }

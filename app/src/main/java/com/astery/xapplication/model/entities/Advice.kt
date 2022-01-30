@@ -23,9 +23,15 @@ open class Advice(@PrimaryKey var id: Int, var likes:Int,
                   var dislikes:Int,
                   val type:AdviceType = AdviceType.Alert,
                   val body: String,
-                  val ItemId: Int,
+                  val itemId: Int,
                   var feedback:FeedBackState = FeedBackState.None
 ):Parcelable{
     @Ignore
     constructor() : this(0, 0, 0, AdviceType.Alert, "", 0)
+
+    override fun toString(): String {
+        return "Advice(id=$id, likes=$likes, dislikes=$dislikes, type=$type, body='$body', ItemId=$itemId, feedback=$feedback)"
+    }
+
+
 }

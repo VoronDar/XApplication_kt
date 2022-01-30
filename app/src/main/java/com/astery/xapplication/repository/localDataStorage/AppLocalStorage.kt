@@ -237,7 +237,7 @@ class AppLocalStorage @Inject constructor(
             )
             FeedbackField.Dislike -> appDatabase.articleDao().dislikeAdvice(
                 id,
-                if (result.action == FeedbackAction.Do) result.nowLikes + 1 else result.nowDislikes - 1
+                if (result.action == FeedbackAction.Do) result.nowDislikes + 1 else result.nowDislikes - 1
             )
         }
     }
