@@ -1,5 +1,7 @@
 package com.astery.xapplication.ui.fragments.articlesList
 
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
@@ -12,6 +14,7 @@ import com.astery.xapplication.repository.remoteDataStorage.FirestorePagingSourc
 import com.astery.xapplication.ui.fragments.articlesList.model.ArticlePagingSource
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -41,7 +44,7 @@ class ArticlesListViewModel @Inject constructor() : ViewModel(){
 
     fun requestFlow(searchSequence:String, filters:List<ArticleTag>): Flow<PagingData<Article>> {
         //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)
-        articlesFlow = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12, enablePlaceholders = true)){
+        articlesFlow = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12)){
             repository.getArticles(cleanSearchSequence(searchSequence), filters) }.flow.cachedIn(viewModelScope)
         //articlesFlow = Pager(PagingConfig(4)){ FirestorePagingSource(FirebaseFirestore.getInstance()) }.flow.cachedIn(viewModelScope)
 

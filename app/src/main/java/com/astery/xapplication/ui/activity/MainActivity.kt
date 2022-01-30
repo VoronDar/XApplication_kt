@@ -218,6 +218,14 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
 
     }
 
+    override fun stopSearching() {
+        val s = findViewById<EditText>(R.id.search_text)
+        if (s != null) {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(s.windowToken, 0)
+        }
+    }
+
     override fun onBackPressed() {
         if (DialoguePanel.isOpened) infoPanel.closePanel()
         else super.onBackPressed()

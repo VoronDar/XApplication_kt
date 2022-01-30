@@ -25,13 +25,13 @@
     <string name="calendar_november">November</string>
     <string name="calendar_december">December</string>
 
-    <string name = "calendar_monday">Mo</string>
-    <string name = "calendar_tuesday">Tu</string>
-    <string name = "calendar_wednesday">We</string>
-    <string name = "calendar_thursday">Th</string>
-    <string name = "calendar_friday">Fr</string>
-    <string name = "calendar_saturday">Sa</string>
-    <string name = "calendar_sunday">Su</string>
+    <string name="calendar_monday">Mo</string>
+    <string name="calendar_tuesday">Tu</string>
+    <string name="calendar_wednesday">We</string>
+    <string name="calendar_thursday">Th</string>
+    <string name="calendar_friday">Fr</string>
+    <string name="calendar_saturday">Sa</string>
+    <string name="calendar_sunday">Su</string>
 
 
     <string name="calendar_no_event_info">You haven\'t added any events</string>
@@ -68,4 +68,6 @@
         <item>Menstrual cycle</item>
         <item>Sexual life</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
