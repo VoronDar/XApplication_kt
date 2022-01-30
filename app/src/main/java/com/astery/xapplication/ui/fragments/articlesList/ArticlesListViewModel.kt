@@ -8,7 +8,9 @@ import com.astery.xapplication.model.entities.Article
 import com.astery.xapplication.model.entities.ArticleTag
 import com.astery.xapplication.model.entities.GenderTag
 import com.astery.xapplication.repository.Repository
+import com.astery.xapplication.repository.remoteDataStorage.FirestorePagingSource
 import com.astery.xapplication.ui.fragments.articlesList.model.ArticlePagingSource
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -33,18 +35,6 @@ class ArticlesListViewModel @Inject constructor() : ViewModel(){
                 article.tags = listOf(GenderTag.Woman)
                 repository.localStorage.addArticleWithTag(article)
             }
-
-            for (i in 0..5) {
-                val article = Article(i + 200, "keyword tips $i", "key collection", 12, 13)
-                article.tags = listOf(GenderTag.Woman)
-                repository.localStorage.addArticleWithTag(article)
-            }
-
-            for (i in 0..5) {
-                val article = Article(i + 200, "keyword tips $i", "key collection", 12, 13)
-                article.tags = listOf(GenderTag.Woman)
-                repository.localStorage.addArticleWithTag(article)
-            }
         }
     }
     private var articlesFlow:Flow<PagingData<Article>>? = null
@@ -53,6 +43,8 @@ class ArticlesListViewModel @Inject constructor() : ViewModel(){
         //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)
         articlesFlow = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12, enablePlaceholders = true)){
             repository.getArticles(cleanSearchSequence(searchSequence), filters) }.flow.cachedIn(viewModelScope)
+        //articlesFlow = Pager(PagingConfig(4)){ FirestorePagingSource(FirebaseFirestore.getInstance()) }.flow.cachedIn(viewModelScope)
+
         return articlesFlow!!
     }
 

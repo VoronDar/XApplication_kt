@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentArticleBinding
+import com.astery.xapplication.model.entities.Article
 import com.astery.xapplication.ui.adviceUtils.AdviceRenderer
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
@@ -27,6 +28,7 @@ import timber.log.Timber
 /**
  * menu -> select article -> Article
  * */
+
 @AndroidEntryPoint
 class ArticleFragment : XFragment() {
     private val binding: FragmentArticleBinding
@@ -39,11 +41,9 @@ class ArticleFragment : XFragment() {
         super.onCreate(savedInstanceState)
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
 
-        /* TODO(add arguments from news)
         arguments?.let {
-            viewModel.selectedDay = it.getSerializable("article") as Article
+            it.getParcelable<Article>("article")?.let { it1 -> viewModel.loadArticle(it1.id) }
         }
-         */
     }
 
 
@@ -124,7 +124,6 @@ class ArticleFragment : XFragment() {
     }
 
     override fun setViewModelListeners() {
-        viewModel.loadArticle(1)
 
         viewModel.article.observe(viewLifecycleOwner) {
             if (it.items != null) {

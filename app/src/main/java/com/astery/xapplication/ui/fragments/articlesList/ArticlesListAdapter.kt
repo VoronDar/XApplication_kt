@@ -12,6 +12,7 @@ import com.astery.xapplication.repository.feetback.OnFeedbackListener
 import com.astery.xapplication.ui.activity.popupDialogue.Blockable
 import com.astery.xapplication.ui.adapterUtils.BlockListener
 import com.astery.xapplication.ui.pageFeetback.FeedBackStorage
+import timber.log.Timber
 
 class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewHolder>(ArticleDiffUtils()), Blockable {
     private var isBlocked = false
@@ -22,7 +23,9 @@ class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewH
     var blockListener:BlockListener? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position)!!)
+        // TODO(null pointer exception)
+        if (getItem(position) != null)
+            holder.bind(getItem(position)!!)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -36,7 +39,7 @@ class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewH
 
             binding.root.setOnClickListener {
                 if (isBlocked) return@setOnClickListener
-                blockListener?.onClick(article.id)
+                blockListener?.onClick(article)
             }
         }
     }
@@ -44,5 +47,9 @@ class ArticlesListAdapter : PagingDataAdapter<Article, ArticlesListAdapter.ViewH
     class ArticleDiffUtils : DiffUtil.ItemCallback<Article>() {
         override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean = oldItem == newItem
+    }
+
+    interface BlockListener{
+        fun onClick(article:Article)
     }
 }

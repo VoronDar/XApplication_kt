@@ -67,7 +67,7 @@ class Repository @Inject constructor(
     }
 
     suspend fun getItemsForArticle(articleId: Int): List<Item> {
-        return localStorage.getItemsForArticle(articleId)
+        return getValues(localStorage::getItemsForArticle, remoteStorage::getItemsForArticle, localStorage::addItems, articleId, null)
     }
 
     // TODO(show in UI that there is no advices loaded)

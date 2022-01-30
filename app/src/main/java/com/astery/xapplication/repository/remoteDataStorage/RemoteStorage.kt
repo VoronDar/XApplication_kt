@@ -6,7 +6,7 @@ import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.model.remote.AdviceFromRemote
 import com.astery.xapplication.model.remote.EventTemplateFromRemote
-import com.astery.xapplication.model.remote.ItemRemoteEntity
+import com.astery.xapplication.model.remote.ItemFromRemote
 import com.astery.xapplication.model.remote.QuestionFromRemote
 import com.astery.xapplication.repository.RemoteEntity
 import com.google.android.gms.tasks.Task
@@ -85,16 +85,40 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
         return result
     }
 
+    /**
+     * lastUpdated doesn't mean anything. It always equal -1. It is required for repository.getValues
+     * */
+    suspend fun getItemsForArticle(articleId:Int, lastUpdated: Int):List<ItemFromRemote>{
+        Timber.d("ask for items with articleId = $articleId")
+        lateinit var result: List<ItemFromRemote>
+        val db = Firebase.firestore
+        db.collection(itemCollection)
+            .whereEqualTo("articleId", articleId)
+            .get()
+            .addOnCompleteListener { task ->
+                val res = ArrayList(task.result.toObjects(ItemFromRemote::class.java))
+                extrudeId(res as ArrayList<RemoteEntity<Item>>, task)
+                result = res
+                Timber.d("got items $result")
+            }
+            .addOnFailureListener { e ->
+                result = listOf()
+                Timber.d("got no items. Error -  $e")
+            }
+            .await()
+        return result
+    }
+
     /** lastUpdated means nothing. Return list with zero or one item*/
-    suspend fun getItemById(itemId:Int, lastUpdated: Int):List<ItemRemoteEntity>{
+    suspend fun getItemById(itemId:Int, lastUpdated: Int):List<ItemFromRemote>{
         Timber.d("ask for item with itemId = $itemId")
-        lateinit var result: List<ItemRemoteEntity>
+        lateinit var result: List<ItemFromRemote>
         val db = Firebase.firestore
         db.collection(itemCollection).document(itemId.toString())
             .get()
             .addOnCompleteListener { task ->
                 try{
-                val res = task.result.toObject(ItemRemoteEntity::class.java)
+                val res = task.result.toObject(ItemFromRemote::class.java)
                 if (res != null) {
                     // TODO (check nonnull)
                     res.id = task.result.id.toInt()
@@ -102,7 +126,7 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
                 result = if (res == null) listOf()
                 else listOf(res)
                 Timber.d("got item $result")
-                } catch(e:Exception){ listOf<ItemRemoteEntity>()}
+                } catch(e:Exception){ listOf<ItemFromRemote>()}
             }
             .addOnFailureListener { e ->
                 result = listOf()

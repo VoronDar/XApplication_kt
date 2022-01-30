@@ -8,24 +8,27 @@ import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.insertHeaderItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.astery.xapplication.databinding.DialogFilterBinding
 import com.astery.xapplication.databinding.FragmentCategoryBinding
+import com.astery.xapplication.model.entities.Article
 import com.astery.xapplication.model.entities.ArticleTag
 import com.astery.xapplication.model.entities.ArticleTagType
 import com.astery.xapplication.ui.activity.interfaces.FiltersUsable
 import com.astery.xapplication.ui.activity.interfaces.SearchUsable
 import com.astery.xapplication.ui.activity.popupDialogue.Blockable
 import com.astery.xapplication.ui.activity.popupDialogue.DialogueHolder
-import com.astery.xapplication.ui.adapterUtils.BlockListener
 import com.astery.xapplication.ui.fragments.XFragment
+import com.astery.xapplication.ui.fragments.addEvent.customizeEvent.AddEventFragmentDirections
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
+import timber.log.Timber
 
 
 /**
@@ -66,9 +69,10 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
         binding.recyclerView.adapter = articleListAdapter
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        articleListAdapter!!.blockListener = object:BlockListener{
-            override fun onClick(id: Int) {
-                Toast.makeText(requireContext(), "clicked on article $id", Toast.LENGTH_SHORT).show()
+        articleListAdapter!!.blockListener = object: ArticlesListAdapter.BlockListener {
+            override fun onClick(article:Article) {
+                setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
+                    move(ArticlesListFragmentDirections.actionArticlesListFragmentToArticleFragment(article))
             }
         }
     }
