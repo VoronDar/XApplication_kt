@@ -11,5 +11,4 @@ import com.astery.xapplication.model.entities.FeedBackState
         fun onDislike(id:Int, nowLikes:Int, nowDislikes:Int)
         fun onCancelLike(id:Int, nowLikes:Int, nowDislikes:Int)
         fun onCancelDisLike(id:Int, nowLikes:Int, nowDislikes:Int)
-        fun onChangeFeetbackState(id:Int, feedBackState: FeedBackState)
     }

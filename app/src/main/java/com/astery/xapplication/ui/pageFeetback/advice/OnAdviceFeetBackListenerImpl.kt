@@ -31,11 +31,5 @@ class OnAdviceFeetBackListenerImpl(private val viewModelScope:CoroutineScope, va
             repository.cancelDislikeAdvice(id, nowLikes, nowDislikes)
         }
     }
-
-    override fun onChangeFeetbackState(id: Int, feedBackState: FeedBackState) {
-        viewModelScope.launch {
-            repository.changeFeetBackStateForAdvice(id, feedBackState)
-        }
-    }
 }
 

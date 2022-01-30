@@ -5,10 +5,7 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import com.astery.xapplication.model.entities.AgeTag
-import com.astery.xapplication.model.entities.Article
-import com.astery.xapplication.model.entities.ArticleTag
-import com.astery.xapplication.model.entities.GenderTag
+import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.repository.Repository
 import com.astery.xapplication.repository.remoteDataStorage.FirestorePagingSource
 import com.astery.xapplication.ui.fragments.articlesList.model.ArticlePagingSource
@@ -26,20 +23,6 @@ class ArticlesListViewModel @Inject constructor() : ViewModel(){
     @set:Inject
     lateinit var repository: Repository
 
-    init{
-        viewModelScope.launch {
-            for (i in 0..8) {
-                val article = Article(i, "name $i", "body", 12, 13)
-                article.tags = listOf(GenderTag.Man, AgeTag.Adult)
-                repository.localStorage.addArticleWithTag(article)
-            }
-            for (i in 0..6) {
-                val article = Article(i +  100, "woman $i", "body", 12, 13)
-                article.tags = listOf(GenderTag.Woman)
-                repository.localStorage.addArticleWithTag(article)
-            }
-        }
-    }
     private var articlesFlow:Flow<PagingData<Article>>? = null
 
     fun requestFlow(searchSequence:String, filters:List<ArticleTag>): Flow<PagingData<Article>> {

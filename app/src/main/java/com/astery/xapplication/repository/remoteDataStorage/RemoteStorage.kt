@@ -33,6 +33,7 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
     val questionCollection = "QUESTIONS"
     val adviceCollection = "TIPS"
     val itemCollection = "ITEMS"
+    val articleCollection = "ARTICLES"
 
 
     init {
@@ -213,7 +214,20 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
 
     suspend fun updateArticleField(id: Int, feedbackResult: FeedbackResult): Boolean {
         val db = Firebase.firestore
-        TODO()
+        val map = HashMap<String, FieldValue>()
+        map[if (feedbackResult.field == FeedbackField.Like) "likes" else "dislikes"] =
+            FieldValue.increment(if (feedbackResult.action == FeedbackAction.Do) 1 else -1)
+
+        lateinit var isSuccess:WAA
+
+        db.collection(articleCollection).document(id.toString()).update(map as Map<String, Any>).addOnSuccessListener{
+            isSuccess = WAA(true)
+        }.addOnFailureListener {
+            isSuccess = WAA(false)
+        }.addOnCanceledListener {
+            isSuccess = WAA(true)
+        }.await()
+        return isSuccess.isCompleted
     }
 
     suspend fun updateAdviceField(id: Int, feedbackResult: FeedbackResult): Boolean {

@@ -21,7 +21,6 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
     lateinit var repository: Repository
 
 
-
     /** selected page (article or item) */
     private val _element = MutableLiveData<Presentable>()
     override val element: LiveData<Presentable>
@@ -33,10 +32,10 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
 
     var feedBackAdviceListener: OnAdviceFeetbackListener? = null
     private val _feedBackArticleStorage: MutableLiveData<FeedBackStorage> = MutableLiveData()
-    val feedBackArticleStorage:LiveData<FeedBackStorage>
-    get() = _feedBackArticleStorage
+    val feedBackArticleStorage: LiveData<FeedBackStorage>
+        get() = _feedBackArticleStorage
 
-    fun setArticle(article:Article) {
+    fun setArticle(article: Article) {
         feedBackAdviceListener = OnAdviceFeetBackListenerImpl(viewModelScope, repository)
 
         viewModelScope.launch {
@@ -67,52 +66,56 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
 
         if (item.advices == null) {
             viewModelScope.launch {
-                item.advices = repository.getAdvicesForItem(item.id!!)
+                item.advices = repository.getAdvicesForItem(item.id)
                 _element.value = ItemPresentable(item)
             }
         }
     }
 
 
-
-
     // MARK: feedback for article
     override fun onLike() {
         reloadStorage()
         viewModelScope.launch {
-            repository.likeArticle(article.value!!.id)
+            repository.likeArticle(
+                article.value!!.id,
+                article.value!!.likes,
+                article.value!!.dislikes
+            )
         }
     }
 
     override fun onCancelLike() {
         reloadStorage()
         viewModelScope.launch {
-            repository.cancelLikeArticle(article.value!!.id)
+            repository.cancelLikeArticle(
+                article.value!!.id,
+                article.value!!.likes,
+                article.value!!.dislikes)
         }
     }
 
     override fun onDislike() {
         reloadStorage()
         viewModelScope.launch {
-            repository.dislikeArticle(article.value!!.id)
+            repository.dislikeArticle(
+                article.value!!.id,
+                article.value!!.likes,
+                article.value!!.dislikes)
         }
     }
 
     override fun onCancelDislike() {
         reloadStorage()
         viewModelScope.launch {
-            repository.cancelDislikeArticle(article.value!!.id)
+            repository.cancelDislikeArticle(
+                article.value!!.id,
+                article.value!!.likes,
+                article.value!!.dislikes)
         }
     }
 
-    override fun onChangeFeetBackState(feedBackState: FeedBackState) {
-        reloadStorage()
-        viewModelScope.launch {
-            repository.changeFeetBackStateForArticle(article.value!!.id, feedBackState)
-        }
-    }
-
-    private fun reloadStorage(){
+    private fun reloadStorage() {
         _feedBackArticleStorage.value = _feedBackArticleStorage.value
     }
 

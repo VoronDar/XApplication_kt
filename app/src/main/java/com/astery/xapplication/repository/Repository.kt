@@ -171,30 +171,43 @@ class Repository @Inject constructor(
         return isComplete
     }
 
+    private suspend fun rateArticle(id: Int, result: FeedbackResult): Boolean {
+        if (!isOnline()) return false
+        val isComplete = remoteStorage.updateArticleField(id, result)
+        if (isComplete) localStorage.updateArticleField(id, result)
+        return isComplete
+    }
+
     suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {
         localStorage.changeFeetBackStateForAdvice(id, feedBackState)
     }
 
-    suspend fun likeArticle(id: Int): Boolean {
-        /*
-        if (!isOnline()) return false
-        val isComplete = remoteStorage.updateArticleField(id, FeedbackResult(FeedbackField.Like, FeedbackAction.Do))
-        if (isComplete) localStorage.updateArticleField(id, FeedbackResult(FeedbackField.Like, FeedbackAction.Do))
-        return isComplete
-         */
-        TODO()
+    suspend fun likeArticle(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
+        return rateArticle(
+            id,
+            FeedbackResult(FeedbackField.Like, FeedbackAction.Do, nowLikes, nowDislikes)
+        )
     }
 
-    suspend fun dislikeArticle(id: Int): Boolean {
-        TODO()
+    suspend fun dislikeArticle(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
+        return rateArticle(
+            id,
+            FeedbackResult(FeedbackField.Dislike, FeedbackAction.Do, nowLikes, nowDislikes)
+        )
     }
 
-    suspend fun cancelLikeArticle(id: Int): Boolean {
-        TODO()
+    suspend fun cancelLikeArticle(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
+        return rateArticle(
+            id,
+            FeedbackResult(FeedbackField.Like, FeedbackAction.Cancel, nowLikes, nowDislikes)
+        )
     }
 
-    suspend fun cancelDislikeArticle(id: Int): Boolean {
-        TODO()
+    suspend fun cancelDislikeArticle(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
+        return rateArticle(
+            id,
+            FeedbackResult(FeedbackField.Dislike, FeedbackAction.Cancel, nowLikes, nowDislikes)
+        )
     }
 
     suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState) {

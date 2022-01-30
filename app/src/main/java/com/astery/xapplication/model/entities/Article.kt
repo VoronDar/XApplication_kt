@@ -16,7 +16,7 @@ import kotlinx.parcelize.Parcelize
 @Entity
 @TypeConverters(ArrayConverter::class, FeedbackStateConverter::class)
 data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
-                   var likes:Int, var dislikes:Int, val feedBack: FeedBackState=FeedBackState.None):
+                   var likes:Int = 0, var dislikes:Int = 0, val feedBack: FeedBackState=FeedBackState.None):
     Parcelable
 {
     @Ignore
@@ -28,6 +28,12 @@ data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
 
     @Ignore
     var ta:String? = null
+
+    init{
+        // TODO(Sometimes likes or dislikes are less, than zero. I don't know exactly how to handle it. But I made this to make it less visible)
+        if (likes < 0) likes = 0
+        if (dislikes < 0) dislikes = 0
+    }
 
 
     @Ignore
