@@ -75,6 +75,7 @@ class AddEventWithTemplateFragment : XFragment() {
         viewModel.templates.observe(viewLifecycleOwner){
             Timber.i("got templates")
             adapter!!.units = it
+            viewModel.loadImages(adapter!!)
         }
     }
 
