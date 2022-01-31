@@ -53,8 +53,13 @@ class CalendarFragment : XFragment() {
         return bind.root
     }
 
+    private var isCreated = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        if (isCreated) {
+            prepareAdapters()
+        } else
+            super.onViewCreated(view, savedInstanceState)
+        isCreated = true
     }
 
     override fun onResume() {
@@ -70,19 +75,20 @@ class CalendarFragment : XFragment() {
     override fun setListeners() {
         binding.backIcon.setOnClickListener { showEventContainer(false) }
         binding.noCardInfo.setOnClickListener { moveToAddNewEvent() }
-        binding.deleteIcon.setOnClickListener{ deleteEvent() }
+        binding.deleteIcon.setOnClickListener { deleteEvent() }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun prepareAdapters() {
-        if (cAdapter != null) return
         // calendar
-        cAdapter = CalendarAdapter(viewModel.getDayUnitList(), requireContext())
-        cAdapter!!.blockListener = (object : BlockListener {
-            override fun onClick(position: Int) {
-                viewModel.changeDay(cAdapter!!.units!![position].day)
-            }
-        })
+        if (cAdapter == null) {
+            cAdapter = CalendarAdapter(viewModel.getDayUnitList(), requireContext())
+            cAdapter!!.blockListener = (object : BlockListener {
+                override fun onClick(position: Int) {
+                    viewModel.changeDay(cAdapter!!.units!![position].day)
+                }
+            })
+        }
 
         binding.recyclerView.adapter = cAdapter
         binding.recyclerView.layoutManager =
@@ -90,16 +96,18 @@ class CalendarFragment : XFragment() {
 
 
         // events for one day
-        eAdapter = EventAdapter(null, requireContext())
-        eAdapter!!.blockListener = (object : BlockListener {
-            override fun onClick(position: Int) {
-                if (position == 0) {
-                    moveToAddNewEvent()
-                } else {
-                    viewModel.setSelectedEvent(position)
+        if (eAdapter == null) {
+            eAdapter = EventAdapter(null, requireContext())
+            eAdapter!!.blockListener = (object : BlockListener {
+                override fun onClick(position: Int) {
+                    if (position == 0) {
+                        moveToAddNewEvent()
+                    } else {
+                        viewModel.setSelectedEvent(position)
+                    }
                 }
-            }
-        })
+            })
+        }
 
         binding.eventRecycler.adapter = eAdapter
         binding.eventRecycler.layoutManager =
@@ -130,7 +138,7 @@ class CalendarFragment : XFragment() {
         })
 
 
-        viewModel.selectedEvent.observe(viewLifecycleOwner) {eventPair->
+        viewModel.selectedEvent.observe(viewLifecycleOwner) { eventPair ->
             binding.eventContent.getATip.setOnClickListener {
                 moveToActionForTip()
             }
@@ -179,7 +187,7 @@ class CalendarFragment : XFragment() {
     }
 
     /** animate noCards from events and vice versa */
-    private fun renderChangeNoEventsState(noEvents:Boolean) {
+    private fun renderChangeNoEventsState(noEvents: Boolean) {
         val sharedAxis = MaterialSharedAxis(MaterialSharedAxis.Y, true)
         TransitionManager.beginDelayedTransition(binding.eventRoot, sharedAxis)
         binding.eventRecycler.isGone = noEvents
@@ -187,25 +195,30 @@ class CalendarFragment : XFragment() {
         binding.noCardInfo.isGone = !noEvents
     }
 
+    private var isShownEventContainer = false
+
     /** swap event list and event info */
     private fun showEventContainer(show: Boolean) {
-        // prevent this block from executing when container is already opened
-        if (binding.eventContainer.isVisible != show) {
-            val sharedAxis = MaterialSharedAxis(MaterialSharedAxis.Y, show)
-            TransitionManager.beginDelayedTransition(binding.fragmentRoot, sharedAxis)
+        isShownEventContainer = show
+        val sharedAxis = MaterialSharedAxis(MaterialSharedAxis.Y, show)
+        TransitionManager.beginDelayedTransition(binding.fragmentRoot, sharedAxis)
 
-            binding.eventRecycler.isGone = show
-            binding.eventContainer.isGone = !show
-            binding.backIcon.isGone = !show
-            binding.deleteIcon.isGone = !show
-        }
+        binding.eventRecycler.isGone = show
+        binding.eventContainer.isGone = !show
+        binding.backIcon.isGone = !show
+        binding.deleteIcon.isGone = !show
     }
 
-    private fun renderSelectedEventImage(image: Bitmap?){
+    private fun renderSelectedEventImage(image: Bitmap?) {
         if ((image != null))
             binding.eventContent.itemImage.setImageBitmap(image)
         else
-            binding.eventContent.itemImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.dating))
+            binding.eventContent.itemImage.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.dating
+                )
+            )
     }
 
 
@@ -231,16 +244,16 @@ class CalendarFragment : XFragment() {
         )
     }
 
-    private fun deleteEvent(){
+    private fun deleteEvent() {
         DeleteEventDialogue(layoutInflater, requireContext())
-            .setOnOkListener{
+            .setOnOkListener {
                 showEventContainer(false)
                 viewModel.deleteEvent()
             }
             .show()
     }
 
-    private val changeMonthListener:MenuNavListener = object: MenuNavListener() {
+    private val changeMonthListener: MenuNavListener = object : MenuNavListener() {
         override fun click(back: Boolean) {
             viewModel.changeMonth(!back)
             cAdapter?.units = viewModel.getDayUnitList()
@@ -260,13 +273,20 @@ class CalendarFragment : XFragment() {
     }
 
 
-    abstract class MenuNavListener{
+    abstract class MenuNavListener {
         var close = false
-        abstract fun click(back:Boolean)
+        abstract fun click(back: Boolean)
     }
 
 
-
+    override fun onBackPressed(): Boolean {
+        return if (isShownEventContainer){
+            binding.backIcon.performClick()
+            true
+        } else{
+            false
+        }
+    }
 
     object BindingAdapters {
         @BindingAdapter("app:properties")
@@ -286,7 +306,6 @@ class CalendarFragment : XFragment() {
 
         }
     }
-
 
 
 }
