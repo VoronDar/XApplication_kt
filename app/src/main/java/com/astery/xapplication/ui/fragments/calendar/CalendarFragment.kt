@@ -75,6 +75,7 @@ class CalendarFragment : XFragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     override fun prepareAdapters() {
+        if (cAdapter != null) return
         // calendar
         cAdapter = CalendarAdapter(viewModel.getDayUnitList(), requireContext())
         cAdapter!!.blockListener = (object : BlockListener {
@@ -106,10 +107,10 @@ class CalendarFragment : XFragment() {
     }
 
     override fun setViewModelListeners() {
+        prepareAdapters()
         viewModel.selectedDay.observe(viewLifecycleOwner, {
-
+            viewModel.updateEvents(eAdapter!!)
             cAdapter?.selectedDay = (it.get(Calendar.DAY_OF_MONTH))
-            viewModel.updateEvents()
             super.setTitle()
 
         })
