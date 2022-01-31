@@ -3,8 +3,8 @@ package com.astery.xapplication.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -28,6 +28,7 @@ import com.astery.xapplication.ui.activity.popupDialogue.BlockableView
 import com.astery.xapplication.ui.activity.popupDialogue.DialoguePanel
 import com.astery.xapplication.ui.activity.popupDialogue.PanelHolder
 import com.astery.xapplication.ui.activity.spechToText.SpeechToText
+import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.articlesList.FiltersAdapter
 import com.astery.xapplication.ui.fragments.calendar.CalendarFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -46,28 +47,51 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
     private var _navController: NavController? = null
     private val navController
         get() = _navController!!
+    private var _navHostFragment: NavHostFragment? = null
+    private val navHostFragment
+        get() = _navHostFragment!!
     private var _bottomView: BottomNavigationView? = null
     private val bottomView
         get() = _bottomView!!
 
     private val speechToText: SpeechToText = SpeechToText(this)
-    private val infoPanel = DialoguePanel(this)
+    private val popupDialoguePanel = DialoguePanel(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.hostFragment) as NavHostFragment
-        _navController = navHostFragment.navController
-
-        setSupportActionBar(findViewById(R.id.toolbar)!!)
-
-        _bottomView = findViewById(R.id.bottom_navigation)
-        bottomView.setupWithNavController(navController)
+        setupNavHostFragment()
+        setupToolBar()
+        setupBottomNavigation()
 
         doSearchCommands()
         doFilterCommands()
+
+    }
+
+    private fun setupNavHostFragment() {
+        _navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.hostFragment) as NavHostFragment
+        _navController = navHostFragment.navController
+    }
+
+    private fun setupToolBar() {
+        setSupportActionBar(findViewById(R.id.toolbar)!!)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // hide back button. Probably it's better to check backstack, but I have some problems with it
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val starts = listOf(R.id.articlesListFragment, R.id.calendarFragment)
+            supportActionBar?.setDisplayHomeAsUpEnabled(!(destination.id in starts))
+        }
+
+    }
+
+
+    private fun setupBottomNavigation() {
+        _bottomView = findViewById(R.id.bottom_navigation)
+        bottomView.setupWithNavController(navController)
     }
 
 
@@ -96,6 +120,15 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
     }
 
 
+    /** handle back click */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    /** handle clicks on custom menu items */
     private fun setMenuListeners(menu: Menu?) {
         menu?.findItem(R.id.action_back)?.setOnMenuItemClickListener {
             menuMonthListener?.click(true)
@@ -160,7 +193,7 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
         recyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         findViewById<View>(R.id.add_filter).setOnClickListener {
-            infoPanel.openPanel(fragment.getDialogueHolder(), fragment.getBlockable())
+            popupDialoguePanel.openPanel(fragment.getDialogueHolder(), fragment.getBlockable())
         }
 
     }
@@ -226,9 +259,13 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
         }
     }
 
+    private fun getActualFragment():XFragment{
+        return navHostFragment.childFragmentManager.fragments[0] as XFragment
+    }
+
     override fun onBackPressed() {
-        if (DialoguePanel.isOpened) infoPanel.closePanel()
-        else super.onBackPressed()
+        if (DialoguePanel.isOpened) popupDialoguePanel.closePanel()
+        else if (!getActualFragment().onBackPressed())  super.onBackPressed()
     }
 
     data class SearchCommand(val show: Boolean, val fragment: SearchUsable)
