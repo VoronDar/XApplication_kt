@@ -50,6 +50,9 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
             val event = events.value!![position]!!
             event.template = repository.getDescriptionForEvent(event)
             _selectedEvent.value = Pair(events.value!![position]!!, position)
+
+            event.image = repository.getImageForEventTemplate(event.template!!)
+            _selectedEvent.value = selectedEvent.value
         }
     }
 
