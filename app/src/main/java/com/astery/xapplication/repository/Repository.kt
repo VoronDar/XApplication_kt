@@ -104,7 +104,7 @@ class Repository @Inject constructor(
         return localStorage.getQuestionsAndSelectedAnswersForEvent(eventId)
     }
 
-    /** we have itemId, and advices. We need body and name. Get item from db, combine*/
+    /** we have itemId, and advices. We need body, name and image. Get item from db, combine*/
     suspend fun setItemBody(item: Item): Item {
         // TODO(может вернуться null)
         //val gotItem = localStorage.getItemBody(item.id!!)
@@ -115,6 +115,8 @@ class Repository @Inject constructor(
             item.id,
             null
         )
+        item.image = this.getImageForItem(item.id)
+
         if (gotItem.isEmpty()) return item
         return item.clone(name = gotItem[0].name, body = gotItem[0].body)
     }

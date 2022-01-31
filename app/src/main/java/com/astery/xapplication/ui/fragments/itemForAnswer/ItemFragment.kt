@@ -14,6 +14,7 @@ import com.astery.xapplication.model.entities.Item
 import com.astery.xapplication.ui.adviceUtils.AdviceRenderer
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.article.ItemPresentable
+import com.astery.xapplication.ui.fragments.article.Presentable
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,6 +55,7 @@ class ItemFragment : XFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setRootPadding()
+        binding.itemImage.isGone = true
         binding.pageFeedback.root.isGone = true
         super.onViewCreated(view, savedInstanceState)
     }
@@ -79,9 +81,14 @@ class ItemFragment : XFragment() {
         viewModel.loadItemBody()
         viewModel.element.observe(viewLifecycleOwner) {
             renderItemInfo(it as ItemPresentable)
+            renderImage(it)
         }
     }
 
+    private fun renderImage(item:Presentable){
+        binding.itemImage.isGone = item.image == null
+        if (item.image != null) binding.itemImage.setImageBitmap(item.image)
+    }
 
     /** render advices */
     private fun renderItemInfo(item: ItemPresentable) {
