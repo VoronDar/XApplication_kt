@@ -1,16 +1,19 @@
 package com.astery.xapplication.ui.fragments.articlesList
 
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
-import androidx.paging.cachedIn
-import com.astery.xapplication.model.entities.Article
-import com.astery.xapplication.model.entities.GenderTag
+import androidx.paging.*
+import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.repository.Repository
+import com.astery.xapplication.repository.remoteDataStorage.FirestorePagingSource
 import com.astery.xapplication.ui.fragments.articlesList.model.ArticlePagingSource
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -21,31 +24,44 @@ class ArticlesListViewModel @Inject constructor() : ViewModel(){
     @set:Inject
     lateinit var repository: Repository
 
-    init{
+    private var articlesFlow:Flow<PagingData<Article>>? = null
+
+    fun requestFlow(searchSequence:String, filters:List<ArticleTag>): Flow<PagingData<Article>> {
+        //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)
+        articlesFlow = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12)){
+            repository.getArticles(cleanSearchSequence(searchSequence), filters) }.flow.cachedIn(viewModelScope)
+        //articlesFlow = Pager(PagingConfig(4)){ FirestorePagingSource(FirebaseFirestore.getInstance()) }.flow.cachedIn(viewModelScope)
+
+        return articlesFlow!!
+    }
+
+    private fun cleanSearchSequence(searchSequence: String):String{
+        return searchSequence.replace("\"", "").lowercase()
+    }
+
+    fun getImage(article:Article, articlePosition:Int, adapter:ArticlesListAdapter){
         viewModelScope.launch {
-            for (i in 0..10) {
-                val article = Article(i, "name $i", "body", 12, 13)
-                article.tags = listOf(GenderTag.Man)
-                repository.localStorage.addArticleWithTag(article)
+            Timber.d("want to notify ${articlePosition} ${article.id}")
+            article.image = repository.getImageForArticle(article.id)
+            if (article.image != null) {
+                var isNotified = false
+                do {
+                    try {
+                        adapter.notifyItemChanged(articlePosition)
+                        isNotified = true
+                        Timber.d("${articlePosition} - ${article.id} notified")
+                    } catch (e: Exception) {
+                        Timber.d("failed to render an image")
+                        delay(100)
+                    }
+                } while (!isNotified)
             }
         }
     }
 
-    /*
-    var articlesFlow = Pager(PagingConfig(PAGED_SIZE)){ ArticlePagingSource(listOf())}
-        .flow
-        .cachedIn(viewModelScope)
 
-    fun setArticleFlow(tags:List<Int>){
-        articlesFlow = Pager(PagingConfig(PAGED_SIZE)) { ArticlePagingSource(tags) }
-            .flow
-            .cachedIn(viewModelScope)
-    }*/
-
-    var articlesFlow = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 30, enablePlaceholders = true)){
-        repository.getArticles() }.flow.cachedIn(viewModelScope)
 
     companion object{
-        const val PAGED_SIZE = 5
+        const val PAGED_SIZE = 4
     }
 }

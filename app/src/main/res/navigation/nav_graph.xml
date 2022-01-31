@@ -80,6 +80,9 @@
         <action
             android:id="@+id/action_articlesListFragment_to_articleFragment"
             app:destination="@id/articleFragment">
+            <argument
+                android:name="article"
+                app:argType="com.astery.xapplication.model.entities.Article" />
         </action>
     </fragment>
     <fragment

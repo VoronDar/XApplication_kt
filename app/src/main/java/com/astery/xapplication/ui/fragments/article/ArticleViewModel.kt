@@ -21,7 +21,6 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
     lateinit var repository: Repository
 
 
-
     /** selected page (article or item) */
     private val _element = MutableLiveData<Presentable>()
     override val element: LiveData<Presentable>
@@ -33,23 +32,24 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
 
     var feedBackAdviceListener: OnAdviceFeetbackListener? = null
     private val _feedBackArticleStorage: MutableLiveData<FeedBackStorage> = MutableLiveData()
-    val feedBackArticleStorage:LiveData<FeedBackStorage>
-    get() = _feedBackArticleStorage
+    val feedBackArticleStorage: LiveData<FeedBackStorage>
+        get() = _feedBackArticleStorage
 
-    fun loadArticle(id: Int) {
+    fun setArticle(article: Article) {
         feedBackAdviceListener = OnAdviceFeetBackListenerImpl(viewModelScope, repository)
 
         viewModelScope.launch {
-            // load article
-            _article.value = repository.getArticle(id)
-            val ap = ArticlePresentable(article.value!!)
+            _article.value = article
+            val ap = ArticlePresentable(article)
             _element.value = ap
+
             _feedBackArticleStorage.value =
-                FeedBackStorage(ap.likes, ap.dislikes, ap.feedBackState!!, this@ArticleViewModel)
+                FeedBackStorage(ap.likes, ap.dislikes, ap.feedBackState, this@ArticleViewModel)
 
             // load items
-            article.value!!.items = repository.getItemsForArticle(id)
-            _article.value = article.value
+            article.items = repository.getItemsForArticle(article.id)
+            // reload liveData to update UI
+            _article.value = article
         }
     }
 
@@ -66,52 +66,60 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
 
         if (item.advices == null) {
             viewModelScope.launch {
-                item.advices = repository.getAdvicesForItem(item.id!!)
+                item.advices = repository.getAdvicesForItem(item.id)
                 _element.value = ItemPresentable(item)
             }
         }
+        viewModelScope.launch {
+            item.image = repository.getImageForItem(item.id)
+            _element.value = ItemPresentable(item)
+        }
     }
-
-
 
 
     // MARK: feedback for article
     override fun onLike() {
         reloadStorage()
         viewModelScope.launch {
-            repository.likeArticle(article.value!!.id)
+            repository.likeArticle(
+                article.value!!.id,
+                article.value!!.likes,
+                article.value!!.dislikes
+            )
         }
     }
 
     override fun onCancelLike() {
         reloadStorage()
         viewModelScope.launch {
-            repository.cancelLikeArticle(article.value!!.id)
+            repository.cancelLikeArticle(
+                article.value!!.id,
+                article.value!!.likes,
+                article.value!!.dislikes)
         }
     }
 
     override fun onDislike() {
         reloadStorage()
         viewModelScope.launch {
-            repository.dislikeArticle(article.value!!.id)
+            repository.dislikeArticle(
+                article.value!!.id,
+                article.value!!.likes,
+                article.value!!.dislikes)
         }
     }
 
     override fun onCancelDislike() {
         reloadStorage()
         viewModelScope.launch {
-            repository.cancelDislikeArticle(article.value!!.id)
+            repository.cancelDislikeArticle(
+                article.value!!.id,
+                article.value!!.likes,
+                article.value!!.dislikes)
         }
     }
 
-    override fun onChangeFeetBackState(feedBackState: FeedBackState) {
-        reloadStorage()
-        viewModelScope.launch {
-            repository.changeFeetBackStateForArticle(article.value!!.id, feedBackState)
-        }
-    }
-
-    private fun reloadStorage(){
+    private fun reloadStorage() {
         _feedBackArticleStorage.value = _feedBackArticleStorage.value
     }
 

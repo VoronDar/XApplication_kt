@@ -4,36 +4,31 @@ import com.astery.xapplication.model.entities.FeedBackState
 import com.astery.xapplication.repository.Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class OnAdviceFeetBackListenerImpl(private val viewModelScope:CoroutineScope, val repository: Repository): OnAdviceFeetbackListener {
-    override fun onLike(id: Int) {
+    override fun onLike(id: Int, nowLikes:Int, nowDislikes:Int) {
         viewModelScope.launch {
-            repository.likeAdvice(id)
+            repository.likeAdvice(id, nowLikes, nowDislikes)
         }
     }
 
-    override fun onDislike(id: Int) {
+    override fun onDislike(id: Int, nowLikes:Int, nowDislikes:Int) {
         viewModelScope.launch {
-            repository.dislikeAdvice(id)
+            repository.dislikeAdvice(id, nowLikes, nowDislikes)
         }
     }
 
-    override fun onCancelLike(id: Int) {
+    override fun onCancelLike(id: Int, nowLikes:Int, nowDislikes:Int) {
         viewModelScope.launch {
-            repository.cancelLikeAdvice(id)
+            repository.cancelLikeAdvice(id, nowLikes, nowDislikes)
         }
     }
 
-    override fun onCancelDisLike(id: Int) {
+    override fun onCancelDisLike(id: Int, nowLikes:Int, nowDislikes:Int) {
         viewModelScope.launch {
-            repository.cancelDislikeAdvice(id)
-        }
-    }
-
-    override fun onChangeFeetbackState(id: Int, feedBackState: FeedBackState) {
-        viewModelScope.launch {
-            repository.changeFeetBackStateForAdvice(id, feedBackState)
+            repository.cancelDislikeAdvice(id, nowLikes, nowDislikes)
         }
     }
 }

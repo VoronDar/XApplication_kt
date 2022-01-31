@@ -8,8 +8,10 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/advice_background_good.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/advice_background_try.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/alert_dialogue_background.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/dialog_panel.xml" value="0.22604166666666667" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_add.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_back.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.31296296296296294" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_delete.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_dislike.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_filled_dislike.xml" value="0.3769230769230769" />
@@ -25,11 +27,15 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/font/font.xml" value="0.3574074074074074" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/alert_delete_card.xml" value="0.20677083333333332" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/block_filters.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/content_main.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/dialog_filter.xml" value="0.2" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/dialog_header.xml" value="0.254981884057971" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_add_event.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_advices.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_article.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_article_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_blank.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_calendar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_category.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/fragment_done_event.xml" value="0.25" />
@@ -38,16 +44,20 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/page_event.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/page_feetback.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/page_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/popup_window.xml" value="0.10277777777777777" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_advice.xml" value="0.2171875" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_answer.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_answer_with_advices.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_article.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_article.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_article_page.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_calendar.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_category.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_close_event.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_event.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_filter.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_question.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_select_filter.xml" value="0.25" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/layout/unit_select_tag_with_type.xml" value="0.254981884057971" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/menu/bottom_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/menu/menu_main.xml" value="0.19947916666666668" />
       </map>

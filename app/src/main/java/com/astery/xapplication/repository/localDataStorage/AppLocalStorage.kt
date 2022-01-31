@@ -5,17 +5,17 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.paging.PagingSource
 import com.astery.xapplication.model.entities.*
-import com.astery.xapplication.model.entities.converters.EventCategoryConverter
 import com.astery.xapplication.model.entities.values.EventCategory
+import com.astery.xapplication.repository.FeedbackAction
+import com.astery.xapplication.repository.FeedbackField
+import com.astery.xapplication.repository.FeedbackResult
+import com.astery.xapplication.repository.remoteDataStorage.StorageSource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -96,12 +96,32 @@ class AppLocalStorage @Inject constructor(
         return appDatabase.articleDao().getArticleById(id)
     }
 
-    override fun getArticlesWithTag(tags: List<Int>): PagingSource<Int, Article> {
-        return appDatabase.articleDao().getArticlesWithTag(tags)
+    override fun getArticlesWithTag(tags: List<ArticleTag>): PagingSource<Int, Article> {
+        return appDatabase.articleDao().getArticlesWithTag(convertListOfTagsToListOfId(tags))
     }
 
-    override suspend fun getArticlesWithTagAndKeyWord(tags: List<Int>, key: String): List<Article> {
-        return appDatabase.articleDao().getArticlesWIthTagAndKeyWord(tags, key)
+    override fun getArticlesWithTagAndKeyWord(
+        tags: List<ArticleTag>,
+        key: String
+    ): PagingSource<Int, Article> {
+        return appDatabase.articleDao()
+            .getArticlesWIthTagAndKeyWord(convertListOfTagsToListOfId(tags), key)
+    }
+
+    override fun getArticlesWithKeyWord(key: String): PagingSource<Int, Article> {
+        return appDatabase.articleDao().getArticlesWithKeyWord(key)
+    }
+
+    override fun getArticles(): PagingSource<Int, Article> {
+        return appDatabase.articleDao().getArticles()
+    }
+
+    private fun convertListOfTagsToListOfId(tags: List<ArticleTag>): List<Int> {
+        val list = arrayListOf<Int>()
+        for (i in tags) {
+            list.add(i.id)
+        }
+        return list
     }
 
     override suspend fun deleteArticles() {
@@ -171,9 +191,6 @@ class AppLocalStorage @Inject constructor(
         appDatabase.articleDao().updateArticleFeedbackState(id, feedBackState)
     }
 
-    override suspend fun getArticlesWithTagPaged(tags: List<Int>, size: Int): List<Article> {
-        return appDatabase.articleDao().getArticlesWithTagPaged(tags, size)
-    }
 
     override suspend fun addArticleWithTag(article: Article) {
         appDatabase.articleDao().addArticleWithTags(article)
@@ -183,10 +200,10 @@ class AppLocalStorage @Inject constructor(
         appDatabase.articleDao().addAdvises(advices)
     }
 
-    override suspend fun addImage(bitmap:Bitmap, name:String) {
+    override suspend fun addImage(bitmap: Bitmap, name: String, storage: StorageSource) {
         CoroutineScope(Dispatchers.IO).launch {
             runCatching {
-                val f: File = File(context.cacheDir, "$name.jpeg")
+                val f = File(context.cacheDir, getImageName(name, storage))
                 try {
                     f.createNewFile()
                     val bos = ByteArrayOutputStream()
@@ -197,18 +214,60 @@ class AppLocalStorage @Inject constructor(
                     fos.flush()
                     fos.close()
                 } catch (e: IOException) {
-                    e.printStackTrace()
+                    Timber.d("failed to create file ${name}.jpeg ${e.localizedMessage}")
                 }
             }
         }
 
     }
 
-    override suspend fun getImage(name:String):Bitmap?{
-        val f:File = File(context.cacheDir, "$name.jpeg")
-        return BitmapFactory.decodeFile(f.absolutePath)
+    override suspend fun getImage(name: String, storage: StorageSource): Bitmap? {
+        val f = File(context.cacheDir, getImageName(name, storage))
+        var fis: FileInputStream? = null
+        try {
+            fis = FileInputStream(f)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+        val bitmap = BitmapFactory.decodeStream(fis)
+        fis?.close()
+        Timber.d("trying to get bitmap from local - $name.jpeg - $bitmap")
+        return bitmap
+    }
+    private fun getImageName(name:String, storage: StorageSource):String{
+        return "${storage.getFolderName()}_$name.jpeg"
     }
 
+    override suspend fun updateAdviceField(id: Int, result: FeedbackResult) {
+
+        when (result.field) {
+            FeedbackField.Like -> appDatabase.articleDao().likeAdvice(
+                id,
+                if (result.action == FeedbackAction.Do) result.nowLikes + 1 else result.nowLikes - 1
+            )
+            FeedbackField.Dislike -> appDatabase.articleDao().dislikeAdvice(
+                id,
+                if (result.action == FeedbackAction.Do) result.nowDislikes + 1 else result.nowDislikes - 1
+            )
+        }
+    }
+
+    override suspend fun updateArticleField(
+        id: Int,
+        result: FeedbackResult
+    ) {
+        when (result.field) {
+            FeedbackField.Like -> appDatabase.articleDao().likeArticle(
+                id,
+                if (result.action == FeedbackAction.Do) result.nowLikes + 1 else result.nowLikes - 1
+            )
+            FeedbackField.Dislike -> appDatabase.articleDao().dislikeArticle(
+                id,
+                if (result.action == FeedbackAction.Do) result.nowDislikes + 1 else result.nowDislikes - 1
+            )
+        }
+
+    }
 
     override suspend fun reset() {
         appDatabase.eventDao().deleteEventTemplates()

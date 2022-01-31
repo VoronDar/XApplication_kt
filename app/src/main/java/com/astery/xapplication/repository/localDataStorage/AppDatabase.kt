@@ -12,7 +12,7 @@ import com.astery.xapplication.repository.localDataStorage.dao.DesireDao
 @Database(
     entities = [Article::class, Item::class, Advice::class, Answer::class,
         EventTemplate::class, Event::class, ArticleAndTag::class, AnswerAndEvent::class,
-               Question::class],
+               Question::class, ArticleFts::class],
     version = 2,
     exportSchema = false
 )
@@ -32,7 +32,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context,
                     AppDatabase::class.java,
-                    "database_14")
+                    "database_17")
                     .build()
                 INSTANCE = instance
 

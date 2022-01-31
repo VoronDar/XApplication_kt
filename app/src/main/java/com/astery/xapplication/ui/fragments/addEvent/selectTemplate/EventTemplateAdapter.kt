@@ -8,6 +8,7 @@ import com.astery.xapplication.databinding.UnitEventBinding
 import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
+import timber.log.Timber
 
 class EventTemplateAdapter(context: Context) :
     BaseAdapter<EventTemplateAdapter.ViewHolder, EventTemplate>(null, context) {
@@ -20,8 +21,12 @@ class EventTemplateAdapter(context: Context) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(h: BaseViewHolder, position: Int) {
         val binding = (h as ViewHolder).binding
-        binding.title = units!![position].name
-        binding.description = units!![position].body
+        val unit = units!![position]
+        binding.title = unit.name
+        binding.description = unit.body
+        Timber.d("bind item on the pos $position, item = ${unit.image}")
+        if (unit.image != null)
+            binding.image.setImageBitmap(unit.image!!)
     }
 
     override fun onViewDetachedFromWindow(h: BaseViewHolder) {

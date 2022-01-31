@@ -23,22 +23,24 @@ interface ArticleDao {
     @Transaction
     suspend fun getArticleById(articleId: Int): Article
 
-    /** return articles */
-    @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
+    @Query("SELECT * FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
             "  AND ArticleAndTag.tagId IN (:tags) GROUP BY Article.ID")
     fun getArticlesWithTag(tags: List<Int>): PagingSource<Int, Article>
+    @Query("SELECT * FROM Article")
+    fun getArticles(): PagingSource<Int, Article>
 
 
-    /** return articles*/
-    @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
-            "  AND ArticleAndTag.tagId IN (:tags) GROUP BY Article.ID LIMIT :loadSize ")
-    suspend fun getArticlesWithTagPaged(tags: List<Int>, loadSize:Int): List<Article>
+    @Query("SELECT  * FROM Article JOIN ArticleFts ON Article.name = ArticleFts.name WHERE (ArticleFts MATCH '*' || :key || '*' )")
+    fun getArticlesWithKeyWord(key:String):PagingSource<Int, Article>
 
 
     /** return articles */
-    @Query("SELECT Article.id, likes, dislikes, name FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId  " +
-            "AND ArticleAndTag.tagId IN (:tags) AND (name LIKE '%' || :key || '%' OR body LIKE '%' || :key || '%') GROUP BY Article.ID")
-    suspend fun getArticlesWIthTagAndKeyWord(tags: List<Int>, key:String): List<Article>
+    @Query("SELECT * FROM Article " +
+            "INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId " +
+            "AND ArticleAndTag.tagId IN (:tags) " +
+            "JOIN ArticleFts ON Article.name = ArticleFts.name WHERE (ArticleFts MATCH '*' || :key || '*')  " +
+            "GROUP BY Article.ID")
+    fun getArticlesWIthTagAndKeyWord(tags: List<Int>, key:String): PagingSource<Int, Article>
 
     @Query("SELECT * from advice where itemId = :parentId")
     suspend fun getAdvisesForItem(parentId: Int): List<Advice>
@@ -99,6 +101,19 @@ interface ArticleDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateItems(items: List<Item>)
+
+
+    @Query("UPDATE advice SET likes = :nowLike WHERE id = :id")
+    suspend fun likeAdvice(id:Int, nowLike:Int)
+
+    @Query("UPDATE advice SET dislikes = :nowLike WHERE id = :id")
+    suspend fun dislikeAdvice(id:Int, nowLike:Int)
+
+    @Query("UPDATE article SET likes = :nowLike WHERE id = :id")
+    suspend fun likeArticle(id:Int, nowLike:Int)
+
+    @Query("UPDATE article SET dislikes = :nowLike WHERE id = :id")
+    suspend fun dislikeArticle(id:Int, nowLike:Int)
 
     @Query("DELETE FROM ArticleAndTag")
     suspend fun deleteArticleAndTagRelations()

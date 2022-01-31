@@ -8,5 +8,4 @@ interface OnFeedbackListener{
     fun onCancelLike()
     fun onDislike()
     fun onCancelDislike()
-    fun onChangeFeetBackState(feedBackState: FeedBackState)
 }

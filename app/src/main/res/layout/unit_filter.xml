@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+        <data>
+                <variable
+                    name="tag"
+                    type="com.astery.xapplication.model.entities.ArticleTag" />
+                <variable
+                    name="isOdd"
+                    type="java.lang.Boolean" />
+        </data>
+<com.google.android.material.card.MaterialCardView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id = "@+id/card"
+    android:clickable="false"
+    android:focusable="false"
+    android:layout_margin="4dp"
+    app:contentPadding="5dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@{isOdd ? @color/tag_odd : @color/tag_even}"
+    app:cardCornerRadius="5dp">
+        <TextView
+            style="@style/ArticleText"
+            android:id="@+id/day"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text = "@{tag.nameId}"
+            android:textColor = "@color/tag_text_color"/>
+</com.google.android.material.card.MaterialCardView>
+</layout>
+

@@ -2,6 +2,7 @@ package com.astery.xapplication.ui.adapterUtils
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
+import com.astery.xapplication.ui.activity.popupDialogue.Blockable
 
 /**
  * abstraction for all adapters

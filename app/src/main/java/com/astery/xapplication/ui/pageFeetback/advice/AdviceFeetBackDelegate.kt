@@ -11,27 +11,22 @@ class AdviceFeetBackDelegate(val i: Advice, val binding:UnitAdviceBinding, val f
         return FeedBackStorage(i.likes, i.dislikes, i.feedback, object: OnFeedbackListener {
             override fun onLike(){
                 binding.feedBack = binding.feedBack
-                feedbackListener?.onLike(i.id)
+                feedbackListener?.onLike(i.id, i.likes, i.dislikes)
             }
 
             override fun onCancelLike() {
                 binding.feedBack = binding.feedBack
-                feedbackListener?.onCancelLike(i.id)
+                feedbackListener?.onCancelLike(i.id, i.likes, i.dislikes)
             }
 
             override fun onDislike(){
                 binding.feedBack = binding.feedBack
-                feedbackListener?.onDislike(i.id)
+                feedbackListener?.onDislike(i.id, i.likes, i.dislikes)
             }
 
             override fun onCancelDislike() {
                 binding.feedBack = binding.feedBack
-                feedbackListener?.onCancelLike(i.id)
-            }
-
-            override fun onChangeFeetBackState(feedBackState: FeedBackState) {
-                binding.feedBack = binding.feedBack
-                feedbackListener?.onCancelDisLike(i.id)
+                feedbackListener?.onCancelDisLike(i.id, i.likes, i.dislikes)
             }
         })
     }

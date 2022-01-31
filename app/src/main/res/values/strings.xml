@@ -25,13 +25,13 @@
     <string name="calendar_november">November</string>
     <string name="calendar_december">December</string>
 
-    <string name = "calendar_monday">Mo</string>
-    <string name = "calendar_tuesday">Tu</string>
-    <string name = "calendar_wednesday">We</string>
-    <string name = "calendar_thursday">Th</string>
-    <string name = "calendar_friday">Fr</string>
-    <string name = "calendar_saturday">Sa</string>
-    <string name = "calendar_sunday">Su</string>
+    <string name="calendar_monday">Mo</string>
+    <string name="calendar_tuesday">Tu</string>
+    <string name="calendar_wednesday">We</string>
+    <string name="calendar_thursday">Th</string>
+    <string name="calendar_friday">Fr</string>
+    <string name="calendar_saturday">Sa</string>
+    <string name="calendar_sunday">Su</string>
 
 
     <string name="calendar_no_event_info">You haven\'t added any events</string>
@@ -43,6 +43,23 @@
     <string name="title_new_event">Add new event</string>
 
 
+    <string name="ar_tag_gender_man">For men</string>
+    <string name="ar_tag_gender_woman">For women</string>
+
+    <string name="ar_tag_age_adult">For adults</string>
+    <string name="ar_tag_age_teen">For teens</string>
+    <string name="ar_tag_age_child">For children</string>
+
+    <string name="ar_tag_topic_health">Health</string>
+    <string name="ar_tag_topic_relations">Relations</string>
+    <string name="ar_tag_topic_sex">Sex</string>
+
+    <string name="ar_tag_type_gender">Gender</string>
+    <string name="ar_tag_type_age">Age</string>
+    <string name="ar_tag_type_topic">Topic</string>
+    <string name="filters">Filters</string>
+    <string name="accept">Accept</string>
+
 
     <string-array name="event_category">
         <item>Mood</item>
@@ -51,4 +68,6 @@
         <item>Menstrual cycle</item>
         <item>Sexual life</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

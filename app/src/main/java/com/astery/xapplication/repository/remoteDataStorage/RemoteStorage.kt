@@ -2,19 +2,25 @@ package com.astery.xapplication.repository.remoteDataStorage
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.model.remote.AdviceFromRemote
 import com.astery.xapplication.model.remote.EventTemplateFromRemote
-import com.astery.xapplication.model.remote.ItemRemoteEntity
+import com.astery.xapplication.model.remote.ItemFromRemote
 import com.astery.xapplication.model.remote.QuestionFromRemote
+import com.astery.xapplication.repository.FeedbackAction
+import com.astery.xapplication.repository.FeedbackField
+import com.astery.xapplication.repository.FeedbackResult
 import com.astery.xapplication.repository.RemoteEntity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -29,6 +35,7 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
     val questionCollection = "QUESTIONS"
     val adviceCollection = "TIPS"
     val itemCollection = "ITEMS"
+    val articleCollection = "ARTICLES"
 
 
     init {
@@ -85,16 +92,40 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
         return result
     }
 
+    /**
+     * lastUpdated doesn't mean anything. It always equal -1. It is required for repository.getValues
+     * */
+    suspend fun getItemsForArticle(articleId:Int, lastUpdated: Int):List<ItemFromRemote>{
+        Timber.d("ask for items with articleId = $articleId")
+        lateinit var result: List<ItemFromRemote>
+        val db = Firebase.firestore
+        db.collection(itemCollection)
+            .whereEqualTo("articleId", articleId)
+            .get()
+            .addOnCompleteListener { task ->
+                val res = ArrayList(task.result.toObjects(ItemFromRemote::class.java))
+                extrudeId(res as ArrayList<RemoteEntity<Item>>, task)
+                result = res
+                Timber.d("got items $result")
+            }
+            .addOnFailureListener { e ->
+                result = listOf()
+                Timber.d("got no items. Error -  $e")
+            }
+            .await()
+        return result
+    }
+
     /** lastUpdated means nothing. Return list with zero or one item*/
-    suspend fun getItemById(itemId:Int, lastUpdated: Int):List<ItemRemoteEntity>{
+    suspend fun getItemById(itemId:Int, lastUpdated: Int):List<ItemFromRemote>{
         Timber.d("ask for item with itemId = $itemId")
-        lateinit var result: List<ItemRemoteEntity>
+        lateinit var result: List<ItemFromRemote>
         val db = Firebase.firestore
         db.collection(itemCollection).document(itemId.toString())
             .get()
             .addOnCompleteListener { task ->
                 try{
-                val res = task.result.toObject(ItemRemoteEntity::class.java)
+                val res = task.result.toObject(ItemFromRemote::class.java)
                 if (res != null) {
                     // TODO (check nonnull)
                     res.id = task.result.id.toInt()
@@ -102,7 +133,7 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
                 result = if (res == null) listOf()
                 else listOf(res)
                 Timber.d("got item $result")
-                } catch(e:Exception){ listOf<ItemRemoteEntity>()}
+                } catch(e:Exception){ listOf<ItemFromRemote>()}
             }
             .addOnFailureListener { e ->
                 result = listOf()
@@ -163,29 +194,76 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
     }
 
 
-    suspend fun getImg(name: String): Bitmap? {
-        //TODO(ADD FIRESTORAGE LATER)
-        /*
+    suspend fun getImg(source:StorageSource, name: String): Bitmap? {
         val ONE_MEGABYTE = (1024 * 1024).toLong()
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.getReference()
-        val child = storageRef.child("$name.jpg")
+        val storageRef = storage.reference
+        val child = storageRef.child("${source.getFolderName()}/$name.jpg")
 
         lateinit var wa: WA
-        child.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytes ->
-            wa.bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length)
-        }.addOnFailureListener {
-            wa.bitmap = null
-        }.await()
+        try {
+            child.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytes ->
+                wa = WA(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
+                Timber.d("got an image '${source.getFolderName()}/$name.jpg'")
+            }.addOnFailureListener {
+                wa = WA(null)
+                Timber.d(
+                    "failed to get an image '${source.getFolderName()}/$name.jpg'\n" +
+                            "exception - ${it.localizedMessage}"
+                )
+            }
+                .await()
+        } catch(e:java.lang.Exception){
+            wa = WA(null)
+            Timber.d(
+                "failed to get an image '${source.getFolderName()}/$name.jpg'\n" +
+                        "exception - ${e.localizedMessage}"
+            )
+        }
         return wa.bitmap
 
-         */
-        return null
+    }
+
+    suspend fun updateArticleField(id: Int, feedbackResult: FeedbackResult): Boolean {
+        val db = Firebase.firestore
+        val map = HashMap<String, FieldValue>()
+        map[if (feedbackResult.field == FeedbackField.Like) "likes" else "dislikes"] =
+            FieldValue.increment(if (feedbackResult.action == FeedbackAction.Do) 1 else -1)
+
+        lateinit var isSuccess:WAA
+
+        db.collection(articleCollection).document(id.toString()).update(map as Map<String, Any>).addOnSuccessListener{
+            isSuccess = WAA(true)
+        }.addOnFailureListener {
+            isSuccess = WAA(false)
+        }.addOnCanceledListener {
+            isSuccess = WAA(true)
+        }.await()
+        return isSuccess.isCompleted
+    }
+
+    suspend fun updateAdviceField(id: Int, feedbackResult: FeedbackResult): Boolean {
+        val db = Firebase.firestore
+        val map = HashMap<String, FieldValue>()
+        map[if (feedbackResult.field == FeedbackField.Like) "likes" else "dislikes"] =
+            FieldValue.increment(if (feedbackResult.action == FeedbackAction.Do) 1 else -1)
+
+        lateinit var isSuccess:WAA
+
+        db.collection(adviceCollection).document(id.toString()).update(map as Map<String, Any>).addOnSuccessListener{
+            isSuccess = WAA(true)
+        }.addOnFailureListener {
+            isSuccess = WAA(false)
+        }.addOnCanceledListener {
+            isSuccess = WAA(true)
+        }.await()
+        return isSuccess.isCompleted
     }
 }
 
 // TODO(sorry, but lateinit requires notnull, and also it doesn't let me to add Result<Bitmap>)
 class WA(var bitmap: Bitmap?)
+class WAA(var isCompleted: Boolean)
 class AnswerCommand(private val q: Question){
     private val answerCollection = "ANSWERS"
     suspend fun loadAnswer(db:FirebaseFirestore){
@@ -198,5 +276,15 @@ class AnswerCommand(private val q: Question){
                         t.result.documents[k].id.replace(" ", "").toInt()
                 }
             }.await()
+    }
+}
+
+enum class StorageSource{
+    Items,
+    Articles,
+    Templates;
+
+    fun getFolderName():String{
+        return this.name.lowercase()
     }
 }

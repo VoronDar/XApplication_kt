@@ -8,8 +8,15 @@ class FeedBackStorage(
     var likes: Int,
     var dislikes: Int,
     var feedBackState: FeedBackState = FeedBackState.None,
-    val listener: OnFeedbackListener
+    val listener: OnFeedbackListener = object:OnFeedbackListener{
+        override fun onLike() {}
+        override fun onCancelLike() {}
+        override fun onDislike() {}
+        override fun onCancelDislike() {}
+    }
 ) {
+
+    var isSomethingPressed:Boolean = false
 
     /** called from xml (dataBinding) when press like or dislike.
      * feetBackbutton can be only like or dislike

@@ -2,13 +2,12 @@ package com.astery.xapplication.ui.fragments.article
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.ContextWrapper
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.LinearInterpolator
 import androidx.core.animation.doOnEnd
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentArticleBinding
+import com.astery.xapplication.model.entities.Article
 import com.astery.xapplication.ui.adviceUtils.AdviceRenderer
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
@@ -27,6 +27,7 @@ import timber.log.Timber
 /**
  * menu -> select article -> Article
  * */
+
 @AndroidEntryPoint
 class ArticleFragment : XFragment() {
     private val binding: FragmentArticleBinding
@@ -39,11 +40,9 @@ class ArticleFragment : XFragment() {
         super.onCreate(savedInstanceState)
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
 
-        /* TODO(add arguments from news)
-        arguments?.let {
-            viewModel.selectedDay = it.getSerializable("article") as Article
+        arguments?.let {bundle->
+            bundle.getParcelable<Article>("article")?.let { value -> viewModel.setArticle(value) }
         }
-         */
     }
 
 
@@ -86,11 +85,11 @@ class ArticleFragment : XFragment() {
                         Timber.d("$downY $upY")
 
                         // scroll down and there is the end of the scroll view
-                        if (downY >= (upY+minSlideRange) && isScrollWasInTheEnd) {
+                        if (downY >= (upY + minSlideRange) && isScrollWasInTheEnd) {
                             articleAdapter?.slidePage(true)
                         }
                         // scroll up and there is the start of the scroll view
-                        else if (downY <= (upY-minSlideRange) && binding.page.parent.scrollY == 0) {
+                        else if (downY <= (upY - minSlideRange) && binding.page.parent.scrollY == 0) {
                             articleAdapter?.slidePage(false)
                         }
                     }
@@ -124,26 +123,31 @@ class ArticleFragment : XFragment() {
     }
 
     override fun setViewModelListeners() {
-        viewModel.loadArticle(1)
 
         viewModel.article.observe(viewLifecycleOwner) {
             if (it.items != null) {
                 articleAdapter!!.pageCount = it.items!!.size + 1
             }
+            setTitle()
         }
         viewModel.element.observe(viewLifecycleOwner) {
             fade(false)
+            renderImage(it)
             clearSpecialInfo()
-
             when (it) {
                 is ArticlePresentable -> renderArticleInfo(it)
                 is ItemPresentable -> renderItemInfo(it)
             }
         }
         // TODO(maybe... maybe... find a way to completely move in databind)
-        viewModel.feedBackArticleStorage.observe(viewLifecycleOwner){
+        viewModel.feedBackArticleStorage.observe(viewLifecycleOwner) {
             binding.page.pageFeedback.feedBackStorage = viewModel.feedBackArticleStorage.value
         }
+    }
+
+    private fun renderImage(presentable: Presentable){
+        if (presentable.image != null) binding.page.itemImage.setImageBitmap(presentable.image!!)
+        else binding.page.itemImage.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.dating))
     }
 
     /** clear everything that may be created by renderArticleInfo or renderItemInfo */
@@ -174,9 +178,8 @@ class ArticleFragment : XFragment() {
         }
     }
 
-    override fun getFragmentTitle(): String {
-        //TODO(add article name)
-        return requireContext().resources.getString(R.string.title_new_event)
+    override fun getFragmentTitle(): String? {
+        return viewModel.article.value?.name
     }
 
     /** is the view scrolled down or up */
@@ -188,7 +191,9 @@ class ArticleFragment : XFragment() {
         // this line here because fade(hide = false) called just after loading screen from element.observe
         if (!hide && binding.page.parent.alpha == 1f) return null
 
-        if (hide) isChangingPage = true
+        if (isChangingPage) return null
+
+        isChangingPage = true
 
         this.moveDown = moveDown
         val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
@@ -215,6 +220,7 @@ class ArticleFragment : XFragment() {
         }
         if (hide) {
             valueAnimator.doOnEnd {
+                isChangingPage = false
                 if (moveDown) {
                     binding.page.parent.translationY = startTranslationY + factor
                 } else {
@@ -229,7 +235,12 @@ class ArticleFragment : XFragment() {
         return valueAnimator
     }
 
-    fun fade(hide: Boolean) {
+    private fun fade(hide: Boolean) {
         fade(hide, moveDown)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = ArticleFragment()
     }
 }
