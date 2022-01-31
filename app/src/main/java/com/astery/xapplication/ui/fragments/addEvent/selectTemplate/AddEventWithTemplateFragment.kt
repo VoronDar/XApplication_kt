@@ -54,6 +54,13 @@ class AddEventWithTemplateFragment : XFragment() {
         return bind.root
     }
 
+    private var isCreated = false
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (isCreated){
+            prepareAdapters()
+        } else super.onViewCreated(view, savedInstanceState)
+        isCreated
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun prepareAdapters(){
