@@ -10,6 +10,7 @@ import com.astery.xapplication.ui.activity.interfaces.ParentActivity
 import com.astery.xapplication.ui.fragments.transitionHelpers.NavigationTransition
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.google.android.material.transition.MaterialSharedAxis
+import timber.log.Timber
 
 /**
  * base fragment for all
