@@ -6,6 +6,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.PageItemBinding
@@ -53,6 +54,7 @@ class ItemFragment : XFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setRootPadding()
+        binding.pageFeedback.root.isGone = true
         super.onViewCreated(view, savedInstanceState)
     }
 
