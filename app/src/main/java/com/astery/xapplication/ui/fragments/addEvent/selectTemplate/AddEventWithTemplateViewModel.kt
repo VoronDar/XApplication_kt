@@ -24,10 +24,15 @@ class AddEventWithTemplateViewModel @Inject constructor(): ViewModel() {
         if (templates.value == null) {
             viewModelScope.launch {
                 _templates.value = repository.getEventTemplatesForCategory(category)
-                for (i in templates.value!!){
-                    i.image = repository.getImageForEventTemplate(i)
-                    Timber.d("for ${i.name} got bitmap ${i.image}")
-                }
+            }
+        }
+    }
+    fun loadImages(a:EventTemplateAdapter){
+        for (i in templates.value!!.indices){
+            viewModelScope.launch {
+                templates.value!![i].image =
+                    repository.getImageForEventTemplate(templates.value!![i])
+                a.notifyItemChanged(i)
             }
         }
     }
