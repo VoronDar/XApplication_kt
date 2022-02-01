@@ -34,6 +34,8 @@ open class EventTemplate(
     @Ignore
     constructor() : this(0, "", "", EventCategory.Dating)
 
+    @Ignore
+    constructor(id:Int) : this(id, "", "", EventCategory.Dating)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

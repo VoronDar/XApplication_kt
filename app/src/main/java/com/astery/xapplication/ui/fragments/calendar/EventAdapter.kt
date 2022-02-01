@@ -6,10 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.astery.xapplication.R
 import com.astery.xapplication.model.entities.Event
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
+import com.astery.xapplication.ui.fragments.calendar.calendar_adapter.CalendarAdapter
+import com.astery.xapplication.ui.utils.setDrawable
 import java.util.*
 
 class EventAdapter(units: ArrayList<Event?>?, context: Context) :
@@ -21,10 +24,15 @@ class EventAdapter(units: ArrayList<Event?>?, context: Context) :
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-        //val unit = units?.get(position)
-        //SD.Companion.setDrawable(holder.image, R.drawable.dating, context)
-        // TODO - set custom images
+    override fun onBindViewHolder(h: BaseViewHolder, position: Int) {
+        val holder = h as ViewHolder
+        val unit = units?.get(position)
+        if (position == 0) return
+        if (unit?.image == null){
+            holder.image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dating))
+        } else{
+            holder.image.setImageBitmap(unit.image)
+        }
     }
 
     inner class ViewHolder(itemView: View) : BaseViewHolder(blockListener, itemView) {

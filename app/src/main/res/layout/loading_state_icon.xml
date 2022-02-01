@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <import type="kotlin.jvm.functions.Function1"/>
+        <import type="kotlin.Unit"/>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="loadingState"
+            type="com.astery.xapplication.ui.loadingState.LoadingStateTemplate" />
+    </data>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_span="20"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="70dp"
+        android:id = "@+id/icon"
+        android:layout_height="70dp"
+        android:scaleType="centerInside"
+        android:src = "@{loadingState.getIconDrawable(context)}"
+        />
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="15dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        style="@style/ArticleText"
+        android:textColor="@color/neutralIconTextColor"
+        android:text = "@{loadingState.getTitle(context.resources)}"
+        />
+
+    <Button
+        style="@style/CommonButton"
+        android:layout_marginTop="20dp"
+        android:onClick="@{_ -> loadingState.reloadListener.invoke() }"
+        android:visibility="@{(loadingState.isReloadable()) ? View.VISIBLE  : View.GONE}"
+        android:text = "@string/button_reload"
+        />
+
+</LinearLayout>
+</layout>

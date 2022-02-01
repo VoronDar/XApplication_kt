@@ -58,7 +58,7 @@ abstract class XFragment : Fragment() {
 
     /** do smt when backPressed
      * @return false if there is no special action for back*/
-    open fun onBackPressed():Boolean {return true}
+    open fun onBackPressed():Boolean {return false}
 
     protected fun setTitle(){
         parentActivity.changeTitle(getFragmentTitle())

@@ -51,6 +51,9 @@
     <color name="calendar_week">#26356B</color>
     <color name="calendar_unit_stroke_color">#CDD8FF</color>
 
+    <color name = "neutralIconColor">#99ECD4</color>
+    <color name = "neutralIconTextColor">#508878</color>
+    <color name = "neutralSurfaceColor">#E2F6F0</color>
 
 
     <color name="advice_background_do">#669BD378</color>

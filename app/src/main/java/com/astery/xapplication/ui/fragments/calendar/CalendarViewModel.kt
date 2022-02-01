@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astery.xapplication.R
 import com.astery.xapplication.model.entities.Event
+import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.repository.Repository
 import com.astery.xapplication.ui.fragments.calendar.calendar_adapter.DayUnit
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -88,10 +89,17 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
     }
 
     /** get events for this day  */
-    fun updateEvents() {
-
+    fun updateEvents(adapter:EventAdapter) {
         viewModelScope.launch {
             _events.value = addFirstItem(repository.getEventsByDay(selectedDay.value!!))
+            // load images for all units (except first - it is not event, it is add button)
+            for (i in 1 until _events.value!!.size){
+                viewModelScope.launch {
+                    _events.value!![i]?.image = repository.getImageForEventTemplate(EventTemplate(_events.value!![i]!!.templateId))
+                    Timber.d("loaded image for event $i")
+                    adapter.notifyItemChanged(i)
+                }
+            }
         }
     }
 

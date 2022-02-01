@@ -4,12 +4,14 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.animation.ValueAnimator.REVERSE
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
@@ -73,6 +75,7 @@ class CalendarFragment : XFragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     override fun prepareAdapters() {
+        if (cAdapter != null) return
         // calendar
         cAdapter = CalendarAdapter(viewModel.getDayUnitList(), requireContext())
         cAdapter!!.blockListener = (object : BlockListener {
@@ -104,10 +107,10 @@ class CalendarFragment : XFragment() {
     }
 
     override fun setViewModelListeners() {
+        prepareAdapters()
         viewModel.selectedDay.observe(viewLifecycleOwner, {
-
+            viewModel.updateEvents(eAdapter!!)
             cAdapter?.selectedDay = (it.get(Calendar.DAY_OF_MONTH))
-            viewModel.updateEvents()
             super.setTitle()
 
         })
@@ -127,12 +130,13 @@ class CalendarFragment : XFragment() {
         })
 
 
-        viewModel.selectedEvent.observe(viewLifecycleOwner) {
+        viewModel.selectedEvent.observe(viewLifecycleOwner) {eventPair->
             binding.eventContent.getATip.setOnClickListener {
                 moveToActionForTip()
             }
             showEventContainer(true)
-            viewModel.selectedEvent.value!!.first.isAdvices
+            renderSelectedEventImage(eventPair.first.image)
+            //eventPair.first.isAdvices
         }
     }
 
@@ -185,14 +189,25 @@ class CalendarFragment : XFragment() {
 
     /** swap event list and event info */
     private fun showEventContainer(show: Boolean) {
-        val sharedAxis = MaterialSharedAxis(MaterialSharedAxis.Y, show)
-        TransitionManager.beginDelayedTransition(binding.fragmentRoot, sharedAxis)
+        // prevent this block from executing when container is already opened
+        if (binding.eventContainer.isVisible != show) {
+            val sharedAxis = MaterialSharedAxis(MaterialSharedAxis.Y, show)
+            TransitionManager.beginDelayedTransition(binding.fragmentRoot, sharedAxis)
 
-        binding.eventRecycler.isGone = show
-        binding.eventContainer.isGone = !show
-        binding.backIcon.isGone = !show
-        binding.deleteIcon.isGone = !show
+            binding.eventRecycler.isGone = show
+            binding.eventContainer.isGone = !show
+            binding.backIcon.isGone = !show
+            binding.deleteIcon.isGone = !show
+        }
     }
+
+    private fun renderSelectedEventImage(image: Bitmap?){
+        if ((image != null))
+            binding.eventContent.itemImage.setImageBitmap(image)
+        else
+            binding.eventContent.itemImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.dating))
+    }
+
 
     override fun getFragmentTitle(): String? {
         val now = viewModel.selectedDay.value
