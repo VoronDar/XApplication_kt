@@ -48,7 +48,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:text = "@string/accept"/>
+            android:text = "@string/button_accept"/>
     </LinearLayout>
     </FrameLayout>
 </layout>

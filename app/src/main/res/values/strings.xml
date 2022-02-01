@@ -58,7 +58,18 @@
     <string name="ar_tag_type_age">Age</string>
     <string name="ar_tag_type_topic">Topic</string>
     <string name="filters">Filters</string>
-    <string name="accept">Accept</string>
+
+
+    <string name="button_accept">Accept</string>
+    <string name="button_reload">Reload</string>
+
+
+    <string name="loading_state_loading">Loading…</string>
+    <string name="loading_state_nothing">There is no result found</string>
+    <string name="loading_state_error">Some data failed to load\n%s</string>
+
+    <string name="loading_state_error_internet">Please check your internet connection</string>
+    <string name="loading_state_error_bug">Please try again later</string>
 
 
     <string-array name="event_category">
