@@ -63,4 +63,8 @@ class EndEventFragment : XFragment() {
         move(EndEventFragmentDirections.actionEndEventFragmentToAdvicesFragment(event!!.template!!.questions!!.toTypedArray()))
     }
 
+    override fun onBackPressed(): Boolean {
+        moveToCalendar()
+        return true
+    }
 }
