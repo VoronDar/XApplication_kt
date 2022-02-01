@@ -3,7 +3,6 @@
 <layout>
 
     <data>
-
         <variable
             name="viewModel"
             type="com.astery.xapplication.ui.fragments.article.HasPresentable" />
