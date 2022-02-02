@@ -24,6 +24,7 @@ class ArticlesListViewModel @Inject constructor() : ViewModel() {
 
     fun requestFlow(searchSequence: String, filters: List<ArticleTag>): Flow<PagingData<Article>> {
 
+        /*
         viewModelScope.launch {
             for (i in 500001..500003) {
                 repository.localStorage.addArticle(Article(i, "name $i", "body", 12, 12))
@@ -31,7 +32,7 @@ class ArticlesListViewModel @Inject constructor() : ViewModel() {
             for (i in 100..102) {
                 repository.localStorage.addArticle(Article(i, "with items $i", "ara ara", 142, 0))
             }
-        }
+        }*/
 
 
         //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)

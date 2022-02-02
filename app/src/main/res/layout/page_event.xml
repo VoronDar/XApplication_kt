@@ -80,7 +80,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_height="0dp"
                     app:layout_constraintDimensionRatio="1:1"
-                    android:src="@drawable/dating"
+                    android:src="@drawable/event_placeholder"
                     android:scaleType="centerCrop"
                     android:contentDescription="@string/item_image_CD" />
             </androidx.constraintlayout.widget.ConstraintLayout>

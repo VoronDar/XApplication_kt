@@ -36,7 +36,6 @@ enum class FeedBackState {
             listener: OnFeedbackListener,
             likesDislikes: Pair<Int, Int>
         ): Pair<Int, Int> {
-            Timber.d("on cancel dislike")
             listener.onCancelDislike()
             return Pair(likesDislikes.first, likesDislikes.second - 1)
         }
@@ -68,7 +67,7 @@ enum class FeedBackState {
             else
                 feedBackButton
 
-            Timber.d("storage ${storage.feedBackState}, old state - ${oldState}")
+            Timber.d("storage ${storage.feedBackState}, old state - $oldState")
 
             when(storage.feedBackState){
                 // если сейчас ничего не нажато

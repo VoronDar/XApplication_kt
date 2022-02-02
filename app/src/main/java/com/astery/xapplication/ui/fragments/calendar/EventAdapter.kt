@@ -29,7 +29,7 @@ class EventAdapter(units: ArrayList<Event?>?, context: Context) :
         val unit = units?.get(position)
         if (position == 0) return
         if (unit?.image == null){
-            holder.image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dating))
+            holder.image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.event_placeholder))
         } else{
             holder.image.setImageBitmap(unit.image)
         }

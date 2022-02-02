@@ -66,6 +66,24 @@ class ItemFragment : XFragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
+
+
+    override fun onPause() {
+        super.onPause()
+        loadingState?.doOnPauseUI()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadingState?.doOnResumeUI()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        loadingState?.doOnDestroyUI()
+    }
+
+
     /** page_event used in two places. So, it must have different top padding in different places */
     private fun setRootPadding() {
         val typedValue = TypedValue()
@@ -86,13 +104,14 @@ class ItemFragment : XFragment() {
     override fun setViewModelListeners() {
         askForItemBody()
         viewModel.element.observe(viewLifecycleOwner) {
-            Timber.d("result ${it.isSuccess}")
             if (it.isSuccess) {
                 renderItemInfo(it.getOrThrow() as ItemPresentable)
                 renderImage(it.getOrThrow())
                 binding.parent.isVisible = true
                 LoadingStateView.removeView()
-            } else loadingState = LoadingStateView.addViewToViewGroup(LoadingStateError(it.exceptionOrNull()!! as LoadingErrorReason,::askForItemBody), layoutInflater, binding.frame)
+            } else loadingState = LoadingStateView.addViewToViewGroup(
+                LoadingStateError(it.exceptionOrNull()!! as LoadingErrorReason,::askForItemBody),
+                layoutInflater, binding.frame)
         }
     }
 

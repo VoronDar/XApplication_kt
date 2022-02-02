@@ -209,7 +209,7 @@ class CalendarFragment : XFragment() {
             binding.eventContent.itemImage.setImageDrawable(
                 ContextCompat.getDrawable(
                     requireContext(),
-                    R.drawable.dating
+                    R.drawable.event_placeholder
                 )
             )
     }
