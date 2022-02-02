@@ -61,12 +61,12 @@ class AppLocalStorage @Inject constructor(
     override suspend fun addEvent(event: Event) {
         val eventId = appDatabase.eventDao().addEvent(event)
         if (event.template!!.questions != null)
-        for (i in event.template!!.questions!!) {
-            if (i.selectedAnswer != null) {
-                appDatabase.eventDao()
-                    .addAnswerAndEvent(AnswerAndEvent(eventId.toInt(), i.selectedAnswer!!.id))
+            for (i in event.template!!.questions!!) {
+                if (i.selectedAnswer != null) {
+                    appDatabase.eventDao()
+                        .addAnswerAndEvent(AnswerAndEvent(eventId.toInt(), i.selectedAnswer!!.id))
+                }
             }
-        }
     }
 
     override suspend fun addTemplate(template: EventTemplate) {
@@ -109,8 +109,8 @@ class AppLocalStorage @Inject constructor(
             .getArticlesWIthTagAndKeyWord(convertListOfTagsToListOfId(tags), key)
     }
 
-    override fun getArticlesWithKeyWord(key: String): PagingSource<Int, Article> {
-        return appDatabase.articleDao().getArticlesWithKeyWord(key)
+    override fun getArticlesWithKeyWord(sequence: String): PagingSource<Int, Article> {
+        return appDatabase.articleDao().getArticlesWithKeyWord(sequence)
     }
 
     override fun getArticles(): PagingSource<Int, Article> {
@@ -201,10 +201,10 @@ class AppLocalStorage @Inject constructor(
         appDatabase.articleDao().addAdvises(advices)
     }
 
-    override suspend fun addImage(bitmap: Bitmap, name: String, storage: StorageSource) {
+    override suspend fun addImage(bitmap: Bitmap, name: String, source: StorageSource) {
         CoroutineScope(Dispatchers.IO).launch {
             runCatching {
-                val f = File(context.cacheDir, getImageName(name, storage))
+                val f = File(context.cacheDir, getImageName(name, source))
                 try {
                     f.createNewFile()
                     val bos = ByteArrayOutputStream()
@@ -222,8 +222,8 @@ class AppLocalStorage @Inject constructor(
 
     }
 
-    override suspend fun getImage(name: String, storage: StorageSource): Bitmap? {
-        val f = File(context.cacheDir, getImageName(name, storage))
+    override suspend fun getImage(name: String, source: StorageSource): Bitmap? {
+        val f = File(context.cacheDir, getImageName(name, source))
         var fis: FileInputStream? = null
         try {
             fis = FileInputStream(f)
@@ -235,7 +235,8 @@ class AppLocalStorage @Inject constructor(
         Timber.d("trying to get bitmap from local - $name.jpeg - $bitmap")
         return bitmap
     }
-    private fun getImageName(name:String, storage: StorageSource):String{
+
+    private fun getImageName(name: String, storage: StorageSource): String {
         return "${storage.getFolderName()}_$name.jpeg"
     }
 
@@ -244,11 +245,13 @@ class AppLocalStorage @Inject constructor(
         when (result.field) {
             FeedbackField.Like -> appDatabase.articleDao().likeAdvice(
                 id,
-                if (result.action == FeedbackAction.Do) result.nowLikes + 1 else result.nowLikes - 1
+                if (result.action == FeedbackAction.Do) result.nowLikes + 1 else result.nowLikes - 1,
+                if (result.action == FeedbackAction.Do) FeedBackState.Like else FeedBackState.None
             )
             FeedbackField.Dislike -> appDatabase.articleDao().dislikeAdvice(
                 id,
-                if (result.action == FeedbackAction.Do) result.nowDislikes + 1 else result.nowDislikes - 1
+                if (result.action == FeedbackAction.Do) result.nowDislikes + 1 else result.nowDislikes - 1,
+                if (result.action == FeedbackAction.Do) FeedBackState.Dislike else FeedBackState.None
             )
         }
     }
@@ -260,11 +263,13 @@ class AppLocalStorage @Inject constructor(
         when (result.field) {
             FeedbackField.Like -> appDatabase.articleDao().likeArticle(
                 id,
-                if (result.action == FeedbackAction.Do) result.nowLikes + 1 else result.nowLikes - 1
+                if (result.action == FeedbackAction.Do) result.nowLikes + 1 else result.nowLikes - 1,
+                if (result.action == FeedbackAction.Do) FeedBackState.Like else FeedBackState.None
             )
             FeedbackField.Dislike -> appDatabase.articleDao().dislikeArticle(
                 id,
-                if (result.action == FeedbackAction.Do) result.nowDislikes + 1 else result.nowDislikes - 1
+                if (result.action == FeedbackAction.Do) result.nowDislikes + 1 else result.nowDislikes - 1,
+                if (result.action == FeedbackAction.Do) FeedBackState.Dislike else FeedBackState.None
             )
         }
 

@@ -4,7 +4,10 @@ import androidx.paging.DataSource
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.astery.xapplication.model.entities.*
+import com.astery.xapplication.model.entities.converters.FeedbackStateConverter
+import com.astery.xapplication.repository.FeedbackResult
 
+@TypeConverters(FeedbackStateConverter::class)
 @Dao
 interface ArticleDao {
     /** return items with all of its advises  */
@@ -103,17 +106,17 @@ interface ArticleDao {
     suspend fun updateItems(items: List<Item>)
 
 
-    @Query("UPDATE advice SET likes = :nowLike WHERE id = :id")
-    suspend fun likeAdvice(id:Int, nowLike:Int)
+    @Query("UPDATE advice SET likes = :nowLike, feedback = :feedBackState WHERE id = :id")
+    suspend fun likeAdvice(id:Int, nowLike:Int, feedBackState: FeedBackState)
 
-    @Query("UPDATE advice SET dislikes = :nowLike WHERE id = :id")
-    suspend fun dislikeAdvice(id:Int, nowLike:Int)
+    @Query("UPDATE advice SET dislikes = :nowLike, feedback = :feedBackState  WHERE id = :id")
+    suspend fun dislikeAdvice(id:Int, nowLike:Int, feedBackState: FeedBackState)
 
-    @Query("UPDATE article SET likes = :nowLike WHERE id = :id")
-    suspend fun likeArticle(id:Int, nowLike:Int)
+    @Query("UPDATE article SET likes = :nowLike, feedback = :feedBackState  WHERE id = :id")
+    suspend fun likeArticle(id:Int, nowLike:Int, feedBackState: FeedBackState)
 
-    @Query("UPDATE article SET dislikes = :nowLike WHERE id = :id")
-    suspend fun dislikeArticle(id:Int, nowLike:Int)
+    @Query("UPDATE article SET dislikes = :nowLike, feedback = :feedBackState  WHERE id = :id")
+    suspend fun dislikeArticle(id:Int, nowLike:Int, feedBackState: FeedBackState)
 
     @Query("DELETE FROM ArticleAndTag")
     suspend fun deleteArticleAndTagRelations()

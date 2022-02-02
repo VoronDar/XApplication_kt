@@ -7,8 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.astery.xapplication.model.entities.Item
 import com.astery.xapplication.model.entities.Question
 import com.astery.xapplication.repository.Repository
-import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetBackListenerImpl
-import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetbackListener
+import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeedbackListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -29,7 +28,7 @@ class AdvicesViewModel @Inject constructor() : ViewModel() {
     }
 
     fun loadAdvices() {
-        feedbackListener = OnAdviceFeetBackListenerImpl(viewModelScope, repository)
+        feedbackListener = OnAdviceFeedbackListener(_questions.value!!, viewModelScope, repository)
 
         viewModelScope.launch {
             if (units.value.isNullOrEmpty()) {
@@ -52,6 +51,6 @@ class AdvicesViewModel @Inject constructor() : ViewModel() {
         return _questions.value!![units.value!![position].position].selectedAnswer!!.item!!
     }
 
-    var feedbackListener: OnAdviceFeetbackListener? = null
+    var feedbackListener: OnAdviceFeedbackListener? = null
 
 }

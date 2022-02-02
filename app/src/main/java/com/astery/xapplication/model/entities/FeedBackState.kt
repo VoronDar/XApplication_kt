@@ -79,15 +79,16 @@ enum class FeedBackState {
                 }
                 // если сейчас что-то нажато
                 else -> {
-                    likesDislikes = storage.feedBackState.pressOnMe(storage.listener, likesDislikes)
-                    storage.likes = likesDislikes.first
-                    storage.dislikes = likesDislikes.second
                     // если раньше было что-то нажато (нужно отжать старое)
                     if (oldState != None){
                         likesDislikes = oldState.unPress(storage.listener, likesDislikes)
                         storage.likes = likesDislikes.first
                         storage.dislikes = likesDislikes.second
                     }
+                    // нажать на новое
+                    likesDislikes = storage.feedBackState.pressOnMe(storage.listener, likesDislikes)
+                    storage.likes = likesDislikes.first
+                    storage.dislikes = likesDislikes.second
                 }
             }
         }

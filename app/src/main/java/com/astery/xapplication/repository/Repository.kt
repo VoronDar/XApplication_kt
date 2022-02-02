@@ -92,16 +92,23 @@ class Repository @Inject constructor(
         )
     }
 
+    /** get data from remote, get feedback from local, combine, save*/
     suspend fun getAdvicesForItem(itemId: Int): Result<List<Advice>> {
         Timber.d("ask for advices - $itemId")
-        return getValues(
-            localStorage::getAdvicesForItem,
-            remoteStorage::getAdvicesForItem,
-            localStorage::addAdvices,
-            itemId,
-            null,
-            isCanBeNothing = true
-        )
+
+        val result = remoteStorage.getAdvicesForItem(itemId, -1)
+        if (result.isSuccess){
+            val list = convertFromRemote(result.getOrThrow())
+            val fromLocal = localStorage.getAdvicesForItem(itemId)
+            for (i in list){
+                if (fromLocal.contains(i)){
+                    val ad = fromLocal[fromLocal.indexOf(i)]
+                    i.feedback = ad.feedback
+                }
+            }
+            localStorage.addAdvices(list)
+            return Result.success(list)
+        } else return Result.failure(result.exceptionOrNull()!!)
     }
 
     suspend fun getEventDescription(eventId: Int): List<Question> {
@@ -181,10 +188,11 @@ class Repository @Inject constructor(
             FeedbackResult(FeedbackField.Dislike, FeedbackAction.Cancel, nowLikes, nowDislikes)
         )}
 
-
+    /** like/dislike advice (or remove them). Update the field in remote, if it was successful - update in local*/
     private suspend fun rateAdvice(id: Int, result: FeedbackResult): Boolean {
         if (!isOnline()) return false
         val isComplete = remoteStorage.updateAdviceField(id, result)
+        Timber.d("tried to rate advice $id. isSuccess - $isComplete")
         if (isComplete) localStorage.updateAdviceField(id, result)
         return isComplete
     }

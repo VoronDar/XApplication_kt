@@ -3,13 +3,11 @@ package com.astery.xapplication.ui.fragments.advices
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.astery.xapplication.databinding.UnitAdviceBinding
 import com.astery.xapplication.databinding.UnitAnswerWithAdvicesBinding
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
 import com.astery.xapplication.ui.adviceUtils.AdviceRenderer
-import com.astery.xapplication.ui.pageFeetback.advice.AdviceFeetBackDelegate
-import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetbackListener
+import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeedbackListener
 import java.util.*
 
 /**
@@ -19,7 +17,7 @@ import java.util.*
 class AdvicesAdapter(
     units: ArrayList<AdvicesUnit>?,
     context: Context,
-    var feedbackListener: OnAdviceFeetbackListener?
+    var feedbackListener: OnAdviceFeedbackListener?
 ) :
     BaseAdapter<AdvicesAdapter.ViewHolder, AdvicesUnit>(units, context) {
 

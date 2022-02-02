@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astery.xapplication.model.entities.Article
+import com.astery.xapplication.model.entities.Question
 import com.astery.xapplication.repository.Repository
 import com.astery.xapplication.repository.feetback.OnFeedbackListener
 import com.astery.xapplication.ui.pageFeetback.FeedBackStorage
-import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetBackListenerImpl
-import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetbackListener
+import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeedbackListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,13 +35,12 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
     val article: LiveData<Article>
         get() = _article
 
-    var feedBackAdviceListener: OnAdviceFeetbackListener? = null
+    var feedBackAdviceListener: OnAdviceFeedbackListener? = null
     private val _feedBackArticleStorage: MutableLiveData<FeedBackStorage> = MutableLiveData()
     val feedBackArticleStorage: LiveData<FeedBackStorage>
         get() = _feedBackArticleStorage
 
     fun setArticle(article: Article) {
-        feedBackAdviceListener = OnAdviceFeetBackListenerImpl(viewModelScope, repository)
 
         viewModelScope.launch {
             _article.value = article
@@ -61,13 +60,15 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
 
     /** change presentable (selected page) to article */
     fun selectArticle() {
-         setPresentable(ArticlePresentable(article.value!!))
+        setPresentable(ArticlePresentable(article.value!!))
     }
 
     /** change presentable (selected page) to item*/
     fun selectItem(pos: Int) {
         val item = article.value!!.items!![pos]
         setPresentable(ItemPresentable(item))
+        feedBackAdviceListener =
+            OnAdviceFeedbackListener(listOf(Question(item)), viewModelScope, repository)
 
         if (item.advices == null) {
             viewModelScope.launch {
@@ -83,7 +84,7 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
         }
     }
 
-    private fun setPresentable(value:Presentable){
+    private fun setPresentable(value: Presentable) {
         _element.value = Result.success(value)
         _presentable.value = value
     }

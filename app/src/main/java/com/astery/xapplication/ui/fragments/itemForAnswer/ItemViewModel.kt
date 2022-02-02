@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astery.xapplication.model.entities.Item
+import com.astery.xapplication.model.entities.Question
 import com.astery.xapplication.repository.Repository
 import com.astery.xapplication.ui.fragments.article.HasPresentable
 import com.astery.xapplication.ui.fragments.article.ItemPresentable
 import com.astery.xapplication.ui.fragments.article.Presentable
 import com.astery.xapplication.ui.loadingState.UnexpectedBugException
-import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetBackListenerImpl
-import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetbackListener
+import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeedbackListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -35,7 +35,6 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
 
     /** load required parts of item:body and name */
     fun loadItemBody() {
-        feedbackListener = OnAdviceFeetBackListenerImpl(viewModelScope, repository)
         viewModelScope.launch {
             if (item == null) {
                 _element.value = Result.failure(UnexpectedBugException())
@@ -44,8 +43,10 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
             }
 
             val it = repository.setItemBody(item!!)
-            if (it.isSuccess)
+            if (it.isSuccess) {
                 _element.value = Result.success(ItemPresentable(it.getOrThrow()))
+                feedbackListener = OnAdviceFeedbackListener(listOf(Question(it.getOrThrow())), viewModelScope, repository)
+            }
             else
                 _element.value = Result.failure(it.exceptionOrNull()!!)
 
@@ -55,5 +56,5 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
     }
 
 
-    var feedbackListener: OnAdviceFeetbackListener? = null
+    var feedbackListener: OnAdviceFeedbackListener? = null
 }
