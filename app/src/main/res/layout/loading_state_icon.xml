@@ -8,7 +8,7 @@
 
         <variable
             name="loadingState"
-            type="com.astery.xapplication.ui.loadingState.LoadingStateTemplate" />
+            type="com.astery.xapplication.ui.loadingState.LoadingStateView" />
     </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"

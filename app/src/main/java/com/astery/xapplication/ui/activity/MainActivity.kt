@@ -42,8 +42,6 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
 
-    // TODO (make custom behaviour onBack)
-
     private var _navController: NavController? = null
     private val navController
         get() = _navController!!
@@ -83,7 +81,7 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
         // hide back button. Probably it's better to check backstack, but I have some problems with it
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val starts = listOf(R.id.articlesListFragment, R.id.calendarFragment)
-            supportActionBar?.setDisplayHomeAsUpEnabled(!(destination.id in starts))
+            supportActionBar?.setDisplayHomeAsUpEnabled(destination.id !in starts)
         }
 
     }
@@ -160,13 +158,12 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
             }
         }
         findViewById<View>(R.id.search).setOnClickListener {
+            hideSearchKeyboard()
             fragment.getSearchText(findViewById<EditText>(R.id.search_text)!!.text.toString())
         }
         findViewById<View>(R.id.search_text).isGone = !show
         findViewById<View>(R.id.toolbar).isGone = show
         speechToText.fragment = fragment
-
-        // TODO (if I handle done, it doesn't close, but if i don't, i can't search)
 
         findViewById<EditText>(R.id.search_text).setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -177,7 +174,7 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
     }
 
 
-    var fAdapter: FiltersAdapter? = null
+    private var fAdapter: FiltersAdapter? = null
     override fun showFilters(show: Boolean, fragment: FiltersUsable) {
         try {
             findViewById<View>(R.id.block_filters).isGone = !show
@@ -251,7 +248,7 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
 
     }
 
-    override fun stopSearching() {
+    override fun hideSearchKeyboard() {
         val s = findViewById<EditText>(R.id.search_text)
         if (s != null) {
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -259,13 +256,13 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
         }
     }
 
-    private fun getActualFragment():XFragment{
+    private fun getActualFragment(): XFragment {
         return navHostFragment.childFragmentManager.fragments[0] as XFragment
     }
 
     override fun onBackPressed() {
         if (DialoguePanel.isOpened) popupDialoguePanel.closePanel()
-        else if (!getActualFragment().onBackPressed())  super.onBackPressed()
+        else if (!getActualFragment().onBackPressed()) super.onBackPressed()
     }
 
     data class SearchCommand(val show: Boolean, val fragment: SearchUsable)

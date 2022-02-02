@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id = "@+id/frame"
+        android:layout_height="match_parent">
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:paddingTop="90dp"
         android:scrollbars="none"
         android:nestedScrollingEnabled="false"
         android:overScrollMode="never"
+        android:paddingTop="90dp"
         android:clipToPadding = "false"
         android:layout_marginRight="20dp"
-        android:id="@+id/recyclerView">
-</androidx.recyclerview.widget.RecyclerView>
+        android:id="@+id/recyclerView"/>
+    </FrameLayout>
 </layout>

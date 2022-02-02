@@ -9,12 +9,12 @@ import com.astery.xapplication.repository.Repository
 import com.astery.xapplication.ui.fragments.article.HasPresentable
 import com.astery.xapplication.ui.fragments.article.ItemPresentable
 import com.astery.xapplication.ui.fragments.article.Presentable
+import com.astery.xapplication.ui.loadingState.UnexpectedBugException
 import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetBackListenerImpl
 import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeetbackListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,9 +22,14 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
     @set:Inject
     lateinit var repository: Repository
 
-    private val _element = MutableLiveData<Presentable>()
-    override val element: LiveData<Presentable>
+    private val _element = MutableLiveData<Result<Presentable>>()
+    override val element: LiveData<Result<Presentable>>
         get() = _element
+
+    private val _presentable = MutableLiveData<Presentable>()
+    override val presentable: LiveData<Presentable>
+        get() = _presentable
+
 
     var item: Item? = null
 
@@ -32,11 +37,23 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
     fun loadItemBody() {
         feedbackListener = OnAdviceFeetBackListenerImpl(viewModelScope, repository)
         viewModelScope.launch {
-            if (item == null || item!!.id == null) cancel()
-            if (element.value == null)
-                _element.value = ItemPresentable(repository.setItemBody(item!!))
+            if (item == null) {
+                _element.value = Result.failure(UnexpectedBugException())
+                cancel()
+                return@launch
+            }
+
+            val it = repository.setItemBody(item!!)
+            if (it.isSuccess)
+                _element.value = Result.success(ItemPresentable(it.getOrThrow()))
+            else
+                _element.value = Result.failure(it.exceptionOrNull()!!)
+
+            _presentable.value = element.value!!.getOrNull()
         }
+
     }
 
-    var feedbackListener:OnAdviceFeetbackListener? = null
+
+    var feedbackListener: OnAdviceFeetbackListener? = null
 }

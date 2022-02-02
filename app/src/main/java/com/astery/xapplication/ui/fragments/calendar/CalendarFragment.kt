@@ -29,6 +29,7 @@ import com.astery.xapplication.ui.fragments.calendar.calendar_adapter.CalendarAd
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.util.*
 
 @AndroidEntryPoint
@@ -53,14 +54,6 @@ class CalendarFragment : XFragment() {
         return bind.root
     }
 
-    private var isCreated = false
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (isCreated) {
-            prepareAdapters()
-        } else
-            super.onViewCreated(view, savedInstanceState)
-        isCreated = true
-    }
 
     override fun onResume() {
         super.onResume()
@@ -83,12 +76,12 @@ class CalendarFragment : XFragment() {
         // calendar
         if (cAdapter == null) {
             cAdapter = CalendarAdapter(viewModel.getDayUnitList(), requireContext())
-            cAdapter!!.blockListener = (object : BlockListener {
-                override fun onClick(position: Int) {
-                    viewModel.changeDay(cAdapter!!.units!![position].day)
-                }
-            })
         }
+        cAdapter!!.blockListener = (object : BlockListener {
+            override fun onClick(position: Int) {
+                viewModel.changeDay(cAdapter!!.units!![position].day)
+            }
+        })
 
         binding.recyclerView.adapter = cAdapter
         binding.recyclerView.layoutManager =
@@ -98,16 +91,16 @@ class CalendarFragment : XFragment() {
         // events for one day
         if (eAdapter == null) {
             eAdapter = EventAdapter(null, requireContext())
-            eAdapter!!.blockListener = (object : BlockListener {
-                override fun onClick(position: Int) {
-                    if (position == 0) {
-                        moveToAddNewEvent()
-                    } else {
-                        viewModel.setSelectedEvent(position)
-                    }
-                }
-            })
         }
+        eAdapter!!.blockListener = (object : BlockListener {
+            override fun onClick(position: Int) {
+                if (position == 0) {
+                    moveToAddNewEvent()
+                } else {
+                    viewModel.setSelectedEvent(position)
+                }
+            }
+        })
 
         binding.eventRecycler.adapter = eAdapter
         binding.eventRecycler.layoutManager =
@@ -280,10 +273,10 @@ class CalendarFragment : XFragment() {
 
 
     override fun onBackPressed(): Boolean {
-        return if (isShownEventContainer){
+        return if (isShownEventContainer) {
             binding.backIcon.performClick()
             true
-        } else{
+        } else {
             false
         }
     }

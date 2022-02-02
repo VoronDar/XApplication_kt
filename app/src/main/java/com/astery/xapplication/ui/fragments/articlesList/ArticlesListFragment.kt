@@ -4,29 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.astery.xapplication.R
 import com.astery.xapplication.databinding.DialogFilterBinding
 import com.astery.xapplication.databinding.FragmentCategoryBinding
 import com.astery.xapplication.model.entities.Article
 import com.astery.xapplication.model.entities.ArticleTag
 import com.astery.xapplication.model.entities.ArticleTagType
-import com.astery.xapplication.model.entities.Question
 import com.astery.xapplication.ui.activity.interfaces.FiltersUsable
 import com.astery.xapplication.ui.activity.interfaces.SearchUsable
 import com.astery.xapplication.ui.activity.popupDialogue.Blockable
 import com.astery.xapplication.ui.activity.popupDialogue.DialogueHolder
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
+import com.astery.xapplication.ui.loadingState.LoadingStateLoading
+import com.astery.xapplication.ui.loadingState.LoadingStateNothing
+import com.astery.xapplication.ui.loadingState.LoadingStateView
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -43,22 +43,23 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
     val viewModel: ArticlesListViewModel by viewModels()
     private var articleListAdapter: ArticlesListAdapter? = null
 
-    var keywords: String = ""
-    var tags: MutableList<ArticleTag> = mutableListOf()
+    private var keywords: String = ""
+    private var tags: MutableList<ArticleTag> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
 
-        arguments?.let {bundle->
+        arguments?.let { bundle ->
             bundle.getString("keyword")?.let { value -> keywords = value }
-            bundle.getIntArray("tags")?.let{value ->
-                tags= ArticleTag.convertFromIdList(value.toList())
+            bundle.getIntArray("tags")?.let { value ->
+                tags = ArticleTag.convertFromIdList(value.toList())
                 parentActivity.updateFilters(tags)
                 Timber.d("tags $tags")
             }
         }
     }
+
     override fun onStart() {
         super.onStart()
         parentActivity.showSearchBar(true, this)
@@ -75,8 +76,24 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
         return bind.root
     }
 
-    override fun prepareAdapters() {
 
+    private var loadingState: LoadingStateView? = null
+    override fun onPause() {
+        super.onPause()
+        loadingState?.doOnPauseUI()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadingState?.doOnResumeUI()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        loadingState?.doOnDestroyUI()
+    }
+
+    override fun prepareAdapters() {
         if (articleListAdapter != null) {
             binding.recyclerView.adapter = articleListAdapter!!
             return
@@ -104,13 +121,16 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
     }
 
     // а вот тут у нас обитает дикий костыль. Если вернуться назад на страницу paging adapter откажется показывать что-либо вообще
-    // чтобы это хоть как-то сгладить я просто начинаю новы
-    var isStarted = false
+    // чтобы это хоть как-то сгладить я просто начинаю новый фрагмент с теми же настройками
+    private var isStarted = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (!isStarted) super.onViewCreated(view, savedInstanceState)
-        if (isStarted){
-            Timber.d("print")
-            move(ArticlesListFragmentDirections.articleListReload(ArticleTag.convertToIdList(tags).toIntArray(), keywords))
+        if (isStarted) {
+            move(
+                ArticlesListFragmentDirections.articleListReload(
+                    ArticleTag.convertToIdList(tags).toIntArray(), keywords
+                )
+            )
         }
         isStarted = true
 
@@ -127,15 +147,31 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
     }
 
     private fun requestArticleFlow() {
+        Timber.d("request")
         articleListAdapter?.triedToLoadImage?.clear()
+
+        binding.recyclerView.isGone = true
+        loadingState = LoadingStateView.addViewToViewGroup(
+            LoadingStateLoading(),
+            layoutInflater,
+            binding.frame
+        )
+
         lifecycleScope.launch {
-            Timber.d("ask fro flow, now item count = ${articleListAdapter?.itemCount}")
             viewModel.requestFlow(keywords, tags).collectLatest { source ->
-                articleListAdapter?.submitData(source)
-                Timber.d("data submitted")
                 articleListAdapter?.addOnPagesUpdatedListener {
-                    Timber.d("pages updated")
+                    if (articleListAdapter?.itemCount == 0) {
+                        loadingState = LoadingStateView.addViewToViewGroup(
+                            LoadingStateNothing(),
+                            layoutInflater,
+                            binding.frame
+                        )
+                    } else {
+                        LoadingStateView.removeView()
+                        binding.recyclerView.isVisible = true
+                    }
                 }
+                articleListAdapter?.submitData(source)
             }
         }
     }
@@ -191,7 +227,7 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
     }
 
     private fun moveToArticle(article: Article) {
-        parentActivity.stopSearching()
+        parentActivity.hideSearchKeyboard()
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
         move(
             ArticlesListFragmentDirections.actionArticlesListFragmentToArticleFragment(

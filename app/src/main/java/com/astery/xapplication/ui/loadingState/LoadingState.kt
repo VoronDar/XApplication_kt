@@ -8,14 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import androidx.core.animation.doOnCancel
 import androidx.core.content.ContextCompat
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.LoadingStateIconBinding
 
 /** base class for all loading states. Implements template pattern\n
- * the meaning of each loadingState you can see in the figma design: components
+ * the meaning of each loadingState you can see in the figma design: components: Loading State
  * */
-sealed class LoadingStateTemplate {
+sealed class LoadingStateView {
 
     /** should be called when fragment/activity calls onPause() */
     open fun doOnPauseUI() {}
@@ -40,11 +41,21 @@ sealed class LoadingStateTemplate {
     protected open fun onGetIconView(view: View) {}
 
     companion object{
+        private var lastState:LoadingStateView? = null
         private var lastContainer:ViewGroup? = null
         private var lastBinding:LoadingStateIconBinding? = null
-        fun addRootToViewGroup(me:LoadingStateTemplate, inflater: LayoutInflater, container: ViewGroup) {
+        /**
+         * add LoadingStateView to viewGroup (or just reload it, if it is already placed)
+         *
+         * @param me - new LoadingState
+         * @param container - viewGroup that is used to place LoadingStateView
+         *
+         * @return me
+         * */
+        fun addViewToViewGroup(me:LoadingStateView, inflater: LayoutInflater, container: ViewGroup):LoadingStateView {
             // if
-            if (container != lastContainer) {
+            lastState?.doOnPauseUI()
+            if (container != lastContainer || lastBinding == null) {
                 val binding = LoadingStateIconBinding.inflate(inflater, container, false)
                 binding.loadingState = me
                 me.onGetIconView(binding.icon)
@@ -54,24 +65,32 @@ sealed class LoadingStateTemplate {
                 me.onGetIconView(lastBinding!!.icon)
                 lastBinding?.loadingState = me
             }
+            lastState = me
             lastContainer = container
             me.doOnResumeUI()
-
+            return me
         }
 
+        /** remove LoadingStateView from the last container.
+         * should be called when data is loaded.
+         * You should not call it in onDestroy(), use doOnDestroy() instead
+         * */
         fun removeView(){
             lastContainer?.removeView(lastBinding?.root)
             lastBinding?.unbind()
             lastContainer = null
             lastBinding = null
+            lastState = null
         }
 
     }
 
 
 }
-
-class LoadingStateLoading : LoadingStateTemplate() {
+/**
+ * says: loading...
+ * */
+class LoadingStateLoading : LoadingStateView() {
 
     /** animation for infinite full rotation */
     private val rotationAnimator: ValueAnimator by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
@@ -105,11 +124,15 @@ class LoadingStateLoading : LoadingStateTemplate() {
             val value = it.animatedValue as Float
             view.rotation = value
         }
+        rotationAnimator.doOnCancel {
+            view.rotation = 0f
+        }
     }
 }
 
 
-class LoadingStateNothing : LoadingStateTemplate() {
+/** says: There is no data found (it is possible and it is not an error) */
+class LoadingStateNothing : LoadingStateView() {
     override fun getIconDrawable(context:Context): Drawable {
         return ContextCompat.getDrawable(context, R.drawable.ic_loading_state_nothing)!!
     }
@@ -119,9 +142,9 @@ class LoadingStateNothing : LoadingStateTemplate() {
     }
 }
 
-
+/** says: An error occured + description */
 class LoadingStateError(private val reason: LoadingErrorReason, reloadListener: () -> Unit) :
-    LoadingStateTemplate() {
+    LoadingStateView() {
     init {
         this.reloadListener = reloadListener
     }

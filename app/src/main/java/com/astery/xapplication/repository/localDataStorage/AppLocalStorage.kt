@@ -60,6 +60,7 @@ class AppLocalStorage @Inject constructor(
 
     override suspend fun addEvent(event: Event) {
         val eventId = appDatabase.eventDao().addEvent(event)
+        if (event.template!!.questions != null)
         for (i in event.template!!.questions!!) {
             if (i.selectedAnswer != null) {
                 appDatabase.eventDao()

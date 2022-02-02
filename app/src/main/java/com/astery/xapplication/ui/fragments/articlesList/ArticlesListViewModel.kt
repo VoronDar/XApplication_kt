@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.astery.xapplication.model.entities.Article
 import com.astery.xapplication.model.entities.ArticleTag
 import com.astery.xapplication.repository.Repository
@@ -22,7 +21,19 @@ class ArticlesListViewModel @Inject constructor() : ViewModel() {
 
     private var articlesFlow: Flow<PagingData<Article>>? = null
 
+
     fun requestFlow(searchSequence: String, filters: List<ArticleTag>): Flow<PagingData<Article>> {
+
+        viewModelScope.launch {
+            for (i in 500001..500003) {
+                repository.localStorage.addArticle(Article(i, "name $i", "body", 12, 12))
+            }
+            for (i in 100..102) {
+                repository.localStorage.addArticle(Article(i, "with items $i", "ara ara", 142, 0))
+            }
+        }
+
+
         //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)
         articlesFlow = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12)) {
             repository.getArticles(cleanSearchSequence(searchSequence), filters)

@@ -15,9 +15,9 @@ import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.ui.adapterUtils.BlockListener
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
+import com.astery.xapplication.ui.loadingState.*
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.util.*
 
 /**
@@ -34,6 +34,7 @@ class AddEventWithTemplateFragment : XFragment() {
 
     private var selectedDay: Calendar? = null
     private var selectedCategory: EventCategory? = null
+    private var loadingState: LoadingStateView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,18 +57,18 @@ class AddEventWithTemplateFragment : XFragment() {
 
     private var isCreated = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (isCreated){
+        if (isCreated) {
             prepareAdapters()
         } else super.onViewCreated(view, savedInstanceState)
         isCreated
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun prepareAdapters(){
+    override fun prepareAdapters() {
         adapter = EventTemplateAdapter(requireContext())
-        adapter!!.blockListener = (object: BlockListener {
+        adapter!!.blockListener = (object : BlockListener {
             override fun onClick(position: Int) {
-                moveNext(viewModel.templates.value!![position])
+                moveNext(viewModel.templates.value!!.getOrThrow()[position])
             }
         })
 
@@ -77,12 +78,57 @@ class AddEventWithTemplateFragment : XFragment() {
 
     }
 
+
+    override fun onPause() {
+        super.onPause()
+        loadingState?.doOnPauseUI()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadingState?.doOnResumeUI()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        loadingState?.doOnDestroyUI()
+    }
+
     override fun setViewModelListeners() {
+        loadingState = LoadingStateView.addViewToViewGroup(
+            LoadingStateLoading(),
+            layoutInflater,
+            binding.frame
+        )
+
+
         viewModel.loadTemplates(selectedCategory!!)
-        viewModel.templates.observe(viewLifecycleOwner){
-            Timber.i("got templates")
-            adapter!!.units = it
-            viewModel.loadImages(adapter!!)
+        viewModel.templates.observe(viewLifecycleOwner) {
+            if (it.isFailure) {
+                loadingState =
+                    LoadingStateView.addViewToViewGroup(LoadingStateError(it.exceptionOrNull()!! as LoadingErrorReason) {
+                        loadingState = LoadingStateView.addViewToViewGroup(
+                            LoadingStateLoading(),
+                            layoutInflater,
+                            binding.frame
+                        )
+                        viewModel.loadTemplates(selectedCategory!!)
+                    }, layoutInflater, binding.frame)
+            } else {
+                val list = it.getOrThrow()
+                if (list.isEmpty()) {
+                    loadingState = LoadingStateView.addViewToViewGroup(
+                        LoadingStateNothing(),
+                        layoutInflater,
+                        binding.frame
+                    )
+                } else {
+                    LoadingStateView.removeView()
+                    adapter!!.units = list
+                    viewModel.loadImages(adapter!!)
+                }
+            }
+
         }
     }
 
@@ -91,10 +137,11 @@ class AddEventWithTemplateFragment : XFragment() {
     }
 
     /** move to AddEvent */
-    private fun moveNext(template:EventTemplate){
+    private fun moveNext(template: EventTemplate) {
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
-        move(AddEventWithTemplateFragmentDirections
-            .actionAddEventWithTemplateFragmentToAddEventFragment2(selectedDay!!, template)
+        move(
+            AddEventWithTemplateFragmentDirections
+                .actionAddEventWithTemplateFragmentToAddEventFragment2(selectedDay!!, template)
         )
     }
 

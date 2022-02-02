@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="?attr/actionBarSize"
-        android:layout_marginTop="30dp"
-        android:nestedScrollingEnabled="false"
-        android:overScrollMode="never"
-        android:clipToPadding = "false"
-        android:id="@+id/recyclerView">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            android:paddingTop="?attr/actionBarSize"/>
+    </FrameLayout>
 </layout>

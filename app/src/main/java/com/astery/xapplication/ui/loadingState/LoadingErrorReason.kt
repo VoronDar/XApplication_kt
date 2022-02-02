@@ -8,12 +8,12 @@ import com.astery.xapplication.R
 interface LoadingErrorReason{
     fun getStringForUI(res: Resources):String
 }
-class InternetConnectionException:Throwable(), LoadingErrorReason{
+class InternetConnectionException:Exception(), LoadingErrorReason{
     override fun getStringForUI(res: Resources): String {
         return res.getString(R.string.loading_state_error_internet)
     }
 }
-class UnexpectedBugException:Throwable(), LoadingErrorReason{
+class UnexpectedBugException:Exception(), LoadingErrorReason{
     override fun getStringForUI(res: Resources): String {
         return res.getString(R.string.loading_state_error_bug)
     }

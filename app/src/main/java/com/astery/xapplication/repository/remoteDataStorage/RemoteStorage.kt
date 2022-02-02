@@ -13,11 +13,11 @@ import com.astery.xapplication.repository.FeedbackAction
 import com.astery.xapplication.repository.FeedbackField
 import com.astery.xapplication.repository.FeedbackResult
 import com.astery.xapplication.repository.RemoteEntity
+import com.astery.xapplication.ui.loadingState.InternetConnectionException
+import com.astery.xapplication.ui.loadingState.UnexpectedBugException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -29,13 +29,14 @@ import javax.inject.Singleton
 
 
 @Singleton
+@Suppress("UNCHECKED_CAST")
 class RemoteStorage @Inject constructor(@ApplicationContext val context: Context) {
 
-    val eventTemplateCollection = "EVENT_TEMPLATES"
-    val questionCollection = "QUESTIONS"
-    val adviceCollection = "TIPS"
-    val itemCollection = "ITEMS"
-    val articleCollection = "ARTICLES"
+    private val eventTemplateCollection = "EVENT_TEMPLATES"
+    private val questionCollection = "QUESTIONS"
+    private val adviceCollection = "TIPS"
+    private val itemCollection = "ITEMS"
+    private val articleCollection = "ARTICLES"
 
 
     init {
@@ -46,102 +47,134 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
     suspend fun getTemplatesForCategory(
         category: EventCategory,
         lastUpdated: Int
-    ): List<EventTemplateFromRemote> {
-        Timber.d("ask for templates with latUpdated > $lastUpdated, category = {${category.name}, ${category.ordinal}}")
-        lateinit var result: List<EventTemplateFromRemote>
-        val db = Firebase.firestore
-        db.collection(eventTemplateCollection)
+    ): Result<List<EventTemplateFromRemote>> {
+        val query = Firebase.firestore
+            .collection(eventTemplateCollection)
             .whereEqualTo("category", category.ordinal)
-            .whereGreaterThan("lastUpdated", lastUpdated)
-            .get()
-            .addOnCompleteListener { task ->
-                val res = ArrayList(task.result.toObjects(EventTemplateFromRemote::class.java))
-                extrudeId(res as ArrayList<RemoteEntity<EventTemplate>>, task)
-                result = res
-                Timber.d("got templates $result")
-            }
-            .addOnFailureListener { e ->
-                result = listOf()
-                Timber.d("got no templates. Error -  $e")
-            }
-            .await()
-        return result
+            .whereGreaterThan("lastUpdated", lastUpdated).get()
+
+        val will =
+            "templates with latUpdated > $lastUpdated, category = {${category.name}, ${category.ordinal}}"
+
+        return getValue(query, will) { task ->
+            val res = ArrayList(task.result.toObjects(EventTemplateFromRemote::class.java))
+            extrudeId(res as ArrayList<RemoteEntity<EventTemplate>>, task)
+            return@getValue res
+        }
+
+
+    }
+
+
+    /**
+     * lastUpdated doesn't mean anything. It always equal -1. It is required for repository.getValues
+     * */
+    suspend fun getAdvicesForItem(itemId: Int, lastUpdated: Int): Result<List<AdviceFromRemote>> {
+        val query = Firebase.firestore
+            .collection(adviceCollection)
+            .whereEqualTo("itemId", itemId).get()
+
+        val will = "advices with itemId = $itemId"
+
+        return getValue(query, will) { task ->
+            val res = ArrayList(task.result.toObjects(AdviceFromRemote::class.java))
+            extrudeId(res as ArrayList<RemoteEntity<Advice>>, task)
+            return@getValue res
+        }
     }
 
     /**
      * lastUpdated doesn't mean anything. It always equal -1. It is required for repository.getValues
      * */
-    suspend fun getAdvicesForItem(itemId:Int, lastUpdated: Int):List<AdviceFromRemote>{
-        Timber.d("ask for advices with itemId = $itemId")
-        lateinit var result: List<AdviceFromRemote>
-        val db = Firebase.firestore
-        db.collection(adviceCollection)
-            .whereEqualTo("itemId", itemId)
-            .get()
-            .addOnCompleteListener { task ->
-                val res = ArrayList(task.result.toObjects(AdviceFromRemote::class.java))
-                extrudeId(res as ArrayList<RemoteEntity<Advice>>, task)
-                result = res
-                Timber.d("got advices $result")
-            }
-            .addOnFailureListener { e ->
-                result = listOf()
-                Timber.d("got no advices. Error -  $e")
-            }
-            .await()
-        return result
-    }
+    suspend fun getItemsForArticle(articleId: Int, lastUpdated: Int): Result<List<ItemFromRemote>> {
+        val query = Firebase.firestore
+            .collection(itemCollection)
+            .whereEqualTo("articleId", articleId).get()
 
-    /**
-     * lastUpdated doesn't mean anything. It always equal -1. It is required for repository.getValues
-     * */
-    suspend fun getItemsForArticle(articleId:Int, lastUpdated: Int):List<ItemFromRemote>{
-        Timber.d("ask for items with articleId = $articleId")
-        lateinit var result: List<ItemFromRemote>
-        val db = Firebase.firestore
-        db.collection(itemCollection)
-            .whereEqualTo("articleId", articleId)
-            .get()
-            .addOnCompleteListener { task ->
-                val res = ArrayList(task.result.toObjects(ItemFromRemote::class.java))
-                extrudeId(res as ArrayList<RemoteEntity<Item>>, task)
-                result = res
-                Timber.d("got items $result")
-            }
-            .addOnFailureListener { e ->
-                result = listOf()
-                Timber.d("got no items. Error -  $e")
-            }
-            .await()
-        return result
+        val will = "items with articleId = $articleId"
+
+        return getValue(query, will) { task ->
+            val res = ArrayList(task.result.toObjects(ItemFromRemote::class.java))
+            extrudeId(res as ArrayList<RemoteEntity<Item>>, task)
+            return@getValue res
+        }
     }
 
     /** lastUpdated means nothing. Return list with zero or one item*/
-    suspend fun getItemById(itemId:Int, lastUpdated: Int):List<ItemFromRemote>{
+    suspend fun getItemById(itemId: Int, lastUpdated: Int): Result<List<ItemFromRemote>> {
         Timber.d("ask for item with itemId = $itemId")
-        lateinit var result: List<ItemFromRemote>
-        val db = Firebase.firestore
-        db.collection(itemCollection).document(itemId.toString())
-            .get()
-            .addOnCompleteListener { task ->
-                try{
-                val res = task.result.toObject(ItemFromRemote::class.java)
-                if (res != null) {
-                    // TODO (check nonnull)
-                    res.id = task.result.id.toInt()
+        lateinit var result: WrapperResult<ItemFromRemote>
+        try {
+            val db = Firebase.firestore
+            db.collection(itemCollection).document(itemId.toString())
+                .get()
+                .addOnCompleteListener { task ->
+                    try {
+                        val res = task.result.toObject(ItemFromRemote::class.java)
+                        if (res != null) {
+                            res.id = task.result.id.toInt()
+                        }
+                        result =
+                            if (res == null) WrapperResult(Result.failure(UnexpectedBugException()))
+                            else WrapperResult(Result.success(listOf(res)))
+                    } catch (e: FirebaseFirestoreException) {
+                        Timber.d("got firestore exception ${e.localizedMessage}, ${e.code}")
+                        result = WrapperResult(Result.failure(InternetConnectionException()))
+                    }
                 }
-                result = if (res == null) listOf()
-                else listOf(res)
-                Timber.d("got item $result")
-                } catch(e:Exception){ listOf<ItemFromRemote>()}
-            }
-            .addOnFailureListener { e ->
-                result = listOf()
-                Timber.d("got no items. Error -  $e")
-            }
-            .await()
-        return result
+                .addOnFailureListener { e ->
+                    result = WrapperResult(Result.failure(UnexpectedBugException()))
+                    Timber.d("got no items. Error -  $e")
+                }
+                .await()
+            return result.result
+        } catch (e: Exception) {
+            return Result.failure(UnexpectedBugException())
+        }
     }
+
+
+    /** universal func to get list of values
+     * @param task - db query
+     * @param will - description for logging
+     * @param doOnComplete - func that get task and transfer it to result
+     * */
+    private suspend fun <R> getValue(
+        task: Task<QuerySnapshot>,
+        will: String,
+        doOnComplete: (Task<QuerySnapshot>) -> List<R>
+    ): Result<List<R>> {
+        Timber.d("ask for $will")
+        lateinit var result: WrapperResult<R>
+        try {
+            task.addOnCompleteListener { task ->
+                try {
+                    result = WrapperResult(Result.success(doOnComplete(task)))
+                    Timber.d("for $will got ${result.result.getOrThrow().size} elements")
+                } catch (e: FirebaseFirestoreException) {
+                    Timber.d("for $will got exception ${e.localizedMessage}, ${e.code}")
+                    result = WrapperResult(Result.failure(UnexpectedBugException()))
+                }
+            }.addOnCanceledListener {
+                Timber.d("for $will - cancelled")
+                result = gotFailure(will, null)
+            }.addOnFailureListener {
+                Timber.d("for $will got exception ${it.localizedMessage}")
+                result = gotFailure(will, it)
+            }.await()
+        } catch (e: Exception) {
+            Timber.d("for $will got exception ${e.localizedMessage} ${e::class.simpleName}")
+            result = gotFailure(will, e)
+        }
+
+        return result.result
+    }
+
+    private fun <T> gotFailure(will: String, e: Exception?): WrapperResult<T> {
+        Timber.d("tried to get $will")
+        return WrapperResult(Result.failure(UnexpectedBugException()))
+    }
+
 
     /** get id from task. Transform invalid id. It's not possible to attach questions and image to events with invalid id
      * */
@@ -163,38 +196,32 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
     suspend fun getQuestionsForTemplate(
         templateId: Int,
         lastUpdated: Int
-    ): List<QuestionFromRemote> {
-        Timber.d("ask for questions")
-        lateinit var result: List<QuestionFromRemote>
-        val db = Firebase.firestore
+    ): Result<List<QuestionFromRemote>> {
+        val query = Firebase.firestore
+            .collection(questionCollection)
+            .whereEqualTo("eventTemplateId", templateId)
+            .whereGreaterThan("lastUpdated", lastUpdated).get()
+
+        val will = "questions with templateId = $templateId"
 
         val answerCommands = ArrayList<AnswerCommand>()
-
-        db.collection(questionCollection)
-            .whereEqualTo("eventTemplateId", templateId)
-            .whereGreaterThan("lastUpdated", lastUpdated)
-            .get()
-            .addOnCompleteListener { task ->
-                result = ArrayList(task.result.toObjects(QuestionFromRemote::class.java))
-                for (ind in result.indices) {
-                    val i = result[ind]
-                    i.id = task.result.documents[ind].id.replace(" ", "").toInt()
-                    answerCommands.add(AnswerCommand(i))
-                }
-
+        val result = getValue(query, will) { task ->
+            val list = ArrayList(task.result.toObjects(QuestionFromRemote::class.java))
+            for (ind in list.indices) {
+                val i = list[ind]
+                i.id = task.result.documents[ind].id.replace(" ", "").toInt()
+                answerCommands.add(AnswerCommand(i))
             }
-            .addOnFailureListener { e ->
-                result = listOf()
-                Timber.d("got no templates. Error -  $e")
-            }
-            .await()
+            return@getValue list
+        }
         for (i in answerCommands)
-            i.loadAnswer(db)
+            i.loadAnswer(Firebase.firestore)
         return result
+
     }
 
 
-    suspend fun getImg(source:StorageSource, name: String): Bitmap? {
+    suspend fun getImg(source: StorageSource, name: String): Bitmap? {
         val ONE_MEGABYTE = (1024 * 1024).toLong()
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference
@@ -213,7 +240,7 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
                 )
             }
                 .await()
-        } catch(e:java.lang.Exception){
+        } catch (e: java.lang.Exception) {
             wa = WA(null)
             Timber.d(
                 "failed to get an image '${source.getFolderName()}/$name.jpg'\n" +
@@ -230,16 +257,22 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
         map[if (feedbackResult.field == FeedbackField.Like) "likes" else "dislikes"] =
             FieldValue.increment(if (feedbackResult.action == FeedbackAction.Do) 1 else -1)
 
-        lateinit var isSuccess:WAA
+        lateinit var isSuccess: WAA
 
-        db.collection(articleCollection).document(id.toString()).update(map as Map<String, Any>).addOnSuccessListener{
-            isSuccess = WAA(true)
-        }.addOnFailureListener {
-            isSuccess = WAA(false)
-        }.addOnCanceledListener {
-            isSuccess = WAA(true)
-        }.await()
-        return isSuccess.isCompleted
+        return try {
+            db.collection(articleCollection).document(id.toString()).update(map as Map<String, Any>)
+                .addOnSuccessListener {
+                    isSuccess = WAA(true)
+                }.addOnFailureListener {
+                    isSuccess = WAA(false)
+                }.addOnCanceledListener {
+                    isSuccess = WAA(true)
+                }.await()
+            isSuccess.isCompleted
+        } catch(e:java.lang.Exception){
+            Timber.d("failed to update article field - got ${e.localizedMessage}")
+            false
+        }
     }
 
     suspend fun updateAdviceField(id: Int, feedbackResult: FeedbackResult): Boolean {
@@ -248,28 +281,42 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
         map[if (feedbackResult.field == FeedbackField.Like) "likes" else "dislikes"] =
             FieldValue.increment(if (feedbackResult.action == FeedbackAction.Do) 1 else -1)
 
-        lateinit var isSuccess:WAA
+        lateinit var isSuccess: WAA
 
-        db.collection(adviceCollection).document(id.toString()).update(map as Map<String, Any>).addOnSuccessListener{
-            isSuccess = WAA(true)
-        }.addOnFailureListener {
-            isSuccess = WAA(false)
-        }.addOnCanceledListener {
-            isSuccess = WAA(true)
-        }.await()
-        return isSuccess.isCompleted
+        return try {
+            db.collection(adviceCollection).document(id.toString()).update(map as Map<String, Any>)
+                .addOnSuccessListener {
+                    isSuccess = WAA(true)
+                }.addOnFailureListener {
+                    isSuccess = WAA(false)
+                }.addOnCanceledListener {
+                    isSuccess = WAA(true)
+                }.await()
+            isSuccess.isCompleted
+        }
+        catch(e:java.lang.Exception){
+            Timber.d("failed to update article field - got ${e.localizedMessage}")
+            false
+        }
     }
 }
 
-// TODO(sorry, but lateinit requires notnull, and also it doesn't let me to add Result<Bitmap>)
+// because lateinit can't be used with nullable
+// TODO(return result from func that get image)
 class WA(var bitmap: Bitmap?)
+
+// because lateinit can't be used with bool
 class WAA(var isCompleted: Boolean)
-class AnswerCommand(private val q: Question){
+
+// because lateinit can't be used with result
+data class WrapperResult<T>(val result: Result<List<T>>)
+
+
+class AnswerCommand(private val q: Question) {
     private val answerCollection = "ANSWERS"
-    suspend fun loadAnswer(db:FirebaseFirestore){
+    suspend fun loadAnswer(db: FirebaseFirestore) {
         db.collection(answerCollection).whereEqualTo("questionId", q.id).get()
             .addOnCompleteListener { t ->
-                Timber.d("complete answers for ${q.id}")
                 q.answers = ArrayList(t.result.toObjects(Answer::class.java))
                 for (k in (q.answers as ArrayList<Answer>).indices) {
                     (q.answers as ArrayList<Answer>)[k].id =
@@ -279,12 +326,13 @@ class AnswerCommand(private val q: Question){
     }
 }
 
-enum class StorageSource{
+/** image directories */
+enum class StorageSource {
     Items,
     Articles,
     Templates;
 
-    fun getFolderName():String{
+    fun getFolderName(): String {
         return this.name.lowercase()
     }
 }

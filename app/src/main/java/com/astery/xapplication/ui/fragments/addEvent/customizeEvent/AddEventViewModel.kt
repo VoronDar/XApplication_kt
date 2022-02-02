@@ -59,7 +59,7 @@ class AddEventViewModel @Inject constructor(): ViewModel() {
 
     fun loadQuestions(){
         viewModelScope.launch {
-            template!!.questions = repository.getQuestionsWithAnswers(template!!.id)
+            template!!.questions = repository.getQuestionsWithAnswers(template!!.id).getOrNull()
             if (template!!.questions?.isNotEmpty() == true) _questions = template!!.questions
         }
     }

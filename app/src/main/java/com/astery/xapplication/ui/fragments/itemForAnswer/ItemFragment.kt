@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.PageItemBinding
@@ -16,6 +17,10 @@ import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.article.ItemPresentable
 import com.astery.xapplication.ui.fragments.article.Presentable
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
+import com.astery.xapplication.ui.loadingState.LoadingErrorReason
+import com.astery.xapplication.ui.loadingState.LoadingStateError
+import com.astery.xapplication.ui.loadingState.LoadingStateLoading
+import com.astery.xapplication.ui.loadingState.LoadingStateView
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -31,6 +36,7 @@ class ItemFragment : XFragment() {
         get() = bind as PageItemBinding
 
     val viewModel: ItemViewModel by viewModels()
+    var loadingState: LoadingStateView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,11 +84,22 @@ class ItemFragment : XFragment() {
     }
 
     override fun setViewModelListeners() {
-        viewModel.loadItemBody()
+        askForItemBody()
         viewModel.element.observe(viewLifecycleOwner) {
-            renderItemInfo(it as ItemPresentable)
-            renderImage(it)
+            Timber.d("result ${it.isSuccess}")
+            if (it.isSuccess) {
+                renderItemInfo(it.getOrThrow() as ItemPresentable)
+                renderImage(it.getOrThrow())
+                binding.parent.isVisible = true
+                LoadingStateView.removeView()
+            } else loadingState = LoadingStateView.addViewToViewGroup(LoadingStateError(it.exceptionOrNull()!! as LoadingErrorReason,::askForItemBody), layoutInflater, binding.frame)
         }
+    }
+
+    private fun askForItemBody(){
+        loadingState = LoadingStateView.addViewToViewGroup(LoadingStateLoading(), layoutInflater, binding.frame)
+        binding.parent.isGone = true
+        viewModel.loadItemBody()
     }
 
     private fun renderImage(item:Presentable){

@@ -17,6 +17,8 @@ class ArticlesListAdapter(val viewModel: ArticlesListViewModel, val recyclerView
         isBlocked = !enable
     }
 
+
+
     /** important: listen for id, not for position */
     var blockListener: BlockListener? = null
 

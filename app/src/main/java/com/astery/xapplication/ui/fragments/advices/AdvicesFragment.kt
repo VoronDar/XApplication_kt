@@ -14,6 +14,10 @@ import com.astery.xapplication.model.entities.Question
 import com.astery.xapplication.ui.adapterUtils.BlockListener
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
+import com.astery.xapplication.ui.loadingState.LoadingStateError
+import com.astery.xapplication.ui.loadingState.LoadingStateLoading
+import com.astery.xapplication.ui.loadingState.LoadingStateView
+import com.astery.xapplication.ui.loadingState.UnexpectedBugException
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,6 +31,7 @@ class AdvicesFragment : XFragment() {
 
     private val viewModel: AdvicesViewModel by viewModels()
     private var adapter: AdvicesAdapter? = null
+    private var loadingState: LoadingStateView? = null
 
     @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +53,23 @@ class AdvicesFragment : XFragment() {
         return bind.root
     }
 
+
+    override fun onPause() {
+        super.onPause()
+        loadingState?.doOnPauseUI()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadingState?.doOnResumeUI()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        loadingState?.doOnDestroyUI()
+    }
+
+
     override fun prepareAdapters() {
         adapter = AdvicesAdapter(null, requireContext(), null)
         adapter!!.blockListener = (object : BlockListener {
@@ -62,11 +84,30 @@ class AdvicesFragment : XFragment() {
     }
 
     override fun setViewModelListeners() {
-        viewModel.loadAdvices()
+        askForAdvices()
         viewModel.units.observe(viewLifecycleOwner) { units ->
             adapter?.units = units
             adapter?.feedbackListener = viewModel.feedbackListener
+
+            if (units.isNotEmpty()) LoadingStateView.removeView()
+            else loadingState = LoadingStateView.addViewToViewGroup(
+                LoadingStateError(
+                    UnexpectedBugException(),
+                    ::askForAdvices
+                ), layoutInflater, binding.frame
+            )
+
         }
+    }
+
+    private fun askForAdvices() {
+        loadingState = LoadingStateView.addViewToViewGroup(
+            LoadingStateLoading(),
+            layoutInflater,
+            binding.frame
+        )
+        viewModel.loadAdvices()
+
     }
 
     override fun getFragmentTitle(): String = getString(R.string.title_tips)

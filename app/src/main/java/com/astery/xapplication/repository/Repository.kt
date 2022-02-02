@@ -11,7 +11,10 @@ import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.repository.localDataStorage.LocalStorage
 import com.astery.xapplication.repository.preferences.Preferences
 import com.astery.xapplication.repository.remoteDataStorage.*
+import com.astery.xapplication.ui.loadingState.InternetConnectionException
+import com.astery.xapplication.ui.loadingState.UnexpectedBugException
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -38,14 +41,14 @@ class Repository @Inject constructor(
         return localStorage.getDescriptionForEvent(event)
     }
 
-    suspend fun getEventTemplatesForCategory(category: EventCategory): List<EventTemplate> {
-        // TODO(UI show that there is no event templates)
+    suspend fun getEventTemplatesForCategory(category: EventCategory): Result<List<EventTemplate>> {
         return getValues(
             localStorage::getTemplatesForCategory,
             remoteStorage::getTemplatesForCategory,
             localStorage::addTemplates,
             category,
-            EvTemplateREU(category)
+            EvTemplateREU(category),
+            isCanBeNothing = false
         )
     }
 
@@ -78,25 +81,26 @@ class Repository @Inject constructor(
         return localStorage.getArticle(articleId)
     }
 
-    suspend fun getItemsForArticle(articleId: Int): List<Item> {
+    suspend fun getItemsForArticle(articleId: Int): Result<List<Item>> {
         return getValues(
             localStorage::getItemsForArticle,
             remoteStorage::getItemsForArticle,
             localStorage::addItems,
             articleId,
-            null
+            null,
+            isCanBeNothing = false
         )
     }
 
-    // TODO(show in UI that there is no advices loaded)
-    suspend fun getAdvicesForItem(itemId: Int): List<Advice> {
+    suspend fun getAdvicesForItem(itemId: Int): Result<List<Advice>> {
         Timber.d("ask for advices - $itemId")
         return getValues(
             localStorage::getAdvicesForItem,
             remoteStorage::getAdvicesForItem,
             localStorage::addAdvices,
             itemId,
-            null
+            null,
+            isCanBeNothing = true
         )
     }
 
@@ -105,30 +109,30 @@ class Repository @Inject constructor(
     }
 
     /** we have itemId, and advices. We need body, name and image. Get item from db, combine*/
-    suspend fun setItemBody(item: Item): Item {
-        // TODO(может вернуться null)
-        //val gotItem = localStorage.getItemBody(item.id!!)
+    suspend fun setItemBody(item: Item): Result<Item> {
         val gotItem = getValues(
             localStorage::getItemBody,
             remoteStorage::getItemById,
             localStorage::addItems,
             item.id,
-            null
+            null,
+            isCanBeNothing = false
         )
-        item.image = this.getImageForItem(item.id)
+        if (gotItem.isSuccess) item.image = this.getImageForItem(item.id)
 
-        if (gotItem.isEmpty()) return item
-        return item.clone(name = gotItem[0].name, body = gotItem[0].body)
+        if (gotItem.isFailure) return Result.failure(gotItem.exceptionOrNull()!!)
+        return Result.success(item.clone(name = gotItem.getOrThrow()[0].name, body = gotItem.getOrThrow()[0].body))
     }
 
     /*
      * TODO(do something with answers to questions that may not be exist for now and for questions that were added recently, and the user didn't answered them)
      * TODO(do something with questions that came without answers)
      * */
-    suspend fun getQuestionsWithAnswers(templateId: Int): List<Question> {
+    suspend fun getQuestionsWithAnswers(templateId: Int): Result<List<Question>> {
         return getValues(
             localStorage::getQuestionsWithAnswers, remoteStorage::getQuestionsForTemplate,
-            localStorage::addQuestions, templateId, QuestionREU(templateId)
+            localStorage::addQuestions, templateId, QuestionREU(templateId),
+            isCanBeNothing = true
         )
     }
 
@@ -192,10 +196,6 @@ class Repository @Inject constructor(
         return isComplete
     }
 
-    suspend fun changeFeetBackStateForAdvice(id: Int, feedBackState: FeedBackState) {
-        localStorage.changeFeetBackStateForAdvice(id, feedBackState)
-    }
-
     suspend fun likeArticle(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
         return rateArticle(
             id,
@@ -224,9 +224,6 @@ class Repository @Inject constructor(
         )
     }
 
-    suspend fun changeFeetBackStateForArticle(id: Int, feedBackState: FeedBackState) {
-        localStorage.changeFeetBackStateForArticle(id, feedBackState)
-    }
 
     private fun isOnline(): Boolean {
         val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -246,65 +243,99 @@ class Repository @Inject constructor(
 
     }
 
-    // TODO(lastUpdated выражает версию обновления, но в локалке сохраняется последняя версия.
-    //  Получается будто бы обновилось все. но обновилось только одно. Предполагаемое решеие - сохранять в преференсах уточнение для каждого случая отдельно)
-    // T - parameter. R - result
-    // check if it is time to check for updates. Get data from remote if it is true. Load to local
-    // load dara from remote if there is no data in local. Load from local if everything fine
-    // get empty list if something goes wrong
-    // (in normal case, if there is no internet connection, and the user hasn't loaded data earlier)
+    /**
+     * get values from remote if it is required to check for updates, save them to local storage
+     *
+     * @param localGet - return list from local storage. localSet also work this way
+     * @param remoteGet - return result<list> from remote storage. has a parameter lastUpdated (Int) but actually it may not be used in actual function
+     * @param matcher - parameter for getting data. For example. GetEventTemplateByCategory. Matcher is a category
+     * @param remUpdate - settings for the entity, that has special update settings. (for example, if it is required to check for updates every X days)
+     * if remUpdate == null, this value must always be loaded from remote.
+     * @param isCanBeNothing - when list in local is empty and this variable = true, means that it is ok, return success. Otherwise - return failure
+     *
+     * T - matcher type; R - result type
+     *
+     * @return list with values. throwable in Result.failure must be extended from LoadingErrorReason
+     *
+     */
+
+    // TODO(сделать так,чтобы у тех, кто пришел с ошибкой сбрасывался remUpdate)
+    // TODO(проверить почему загрузка данных, если нажать второй раз - идет бесконечно)
     private suspend fun <T, R> getValues(
         localGet: KSuspendFunction1<T, List<R>>,
-        remoteGet: KSuspendFunction2<T, Int, List<RemoteEntity<R>>>,
+        remoteGet: KSuspendFunction2<T, Int, Result<List<RemoteEntity<R>>>>,
         localSet: KSuspendFunction1<List<R>, Unit>,
         matcher: T,
-        remUpdate: RemEntityUpdate?
-    ): List<R> {
+        remUpdate: RemEntityUpdate?,
+        isCanBeNothing:Boolean
+    ): Result<List<R>> {
+
+        // check if it is need (and it is possible) to get data from remote without looking in local
         if (isOnline() && (remUpdate == null || askForUpdateMgr.isNeedToUpdate(remUpdate))) {
-            if (remUpdate != null)
-                Timber.d("need to check updates for ${remUpdate::class.simpleName}")
+
             val l = getFromRemoteAndSave(
                 matcher,
                 remoteGet,
                 localSet,
                 remUpdate,
-                askForUpdateMgr.getLastUpdated(remUpdate)
+                askForUpdateMgr.getLastUpdated(remUpdate),
+                isCanBeNothing
             )
+            // if (the latest data are always got from remote initialy it's not required to look in local)
             if (remUpdate == null) return l
         }
         val list: List<R> = localGet(matcher)
-        return if (list.isEmpty() && isOnline()) {
+
+        // if there is no data in local, go and check in remote
+        return if (list.isEmpty() && !isCanBeNothing && isOnline()) {
             getFromRemoteAndSave(
                 matcher,
                 remoteGet,
                 localSet,
                 remUpdate,
-                AskForUpdateManager.FIRST_UPDATE.toInt()
+                AskForUpdateManager.FIRST_UPDATE.toInt(),
+                isCanBeNothing
             )
-        } else {
-            if (remUpdate != null)
-                Timber.d("Got ${remUpdate::class.simpleName} from local. Amount of elements - ${list.size}")
-            list
-        }
+        } else if (list.isNotEmpty()) Result.success(list)
+        else if (isCanBeNothing) Result.success(listOf())
+        else if (!isOnline()) Result.failure(InternetConnectionException())
+        else Result.failure(UnexpectedBugException())
     }
+
 
     private suspend fun <T, R> getFromRemoteAndSave(
         matcher: T,
-        remoteGet: KSuspendFunction2<T, Int, List<RemoteEntity<R>>>,
+        remoteGet: KSuspendFunction2<T, Int, Result<List<RemoteEntity<R>>>>,
         localSet: KSuspendFunction1<List<R>, Unit>,
         remUpdate: RemEntityUpdate?,
-        lastUpdated: Int
-    ): List<R> {
-        val remoteList = remoteGet(matcher, lastUpdated)
-        val list = convertFromRemote(remoteList)
-        localSet(list)
-        if (remoteList.isNotEmpty() && remUpdate != null) {
-            askForUpdateMgr.setUpdated(
-                remUpdate,
-                remoteList.maxByOrNull { it.lastUpdated }!!.lastUpdated
-            )
-        }
-        return list
+        lastUpdated: Int,
+        isCanBeNothing: Boolean
+    ): Result<List<R>> {
+        val remoteResult = remoteGet(matcher, lastUpdated)
+        // save to local if the result is successful
+        var result:Result<List<R>>
+        if (remoteResult.isSuccess) {
+
+            val remoteList = remoteResult.getOrThrow()
+            result = Result.success(convertFromRemote(remoteList))
+            localSet(result.getOrThrow())
+
+            if (result.getOrThrow().isEmpty() && !isCanBeNothing)
+                result = Result.failure(InternetConnectionException())
+
+
+
+            // change values that required for checking for updates (if it required)
+            if (remoteList.isNotEmpty() && remUpdate != null) {
+                askForUpdateMgr.setUpdated(
+                    remUpdate,
+                    remoteList.maxByOrNull { it.lastUpdated }!!.lastUpdated
+                )
+            }
+
+        } else
+            result = Result.failure(remoteResult.exceptionOrNull()!!)
+        return result
     }
 
     private fun <T> convertFromRemote(list: List<RemoteEntity<T>>): List<T> {

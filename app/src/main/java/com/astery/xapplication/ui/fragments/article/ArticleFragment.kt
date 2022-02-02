@@ -2,9 +2,11 @@ package com.astery.xapplication.ui.fragments.article
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.ContextWrapper
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
@@ -40,7 +42,7 @@ class ArticleFragment : XFragment() {
         super.onCreate(savedInstanceState)
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
 
-        arguments?.let {bundle->
+        arguments?.let { bundle ->
             bundle.getParcelable<Article>("article")?.let { value -> viewModel.setArticle(value) }
         }
     }
@@ -130,13 +132,21 @@ class ArticleFragment : XFragment() {
             }
             setTitle()
         }
-        viewModel.element.observe(viewLifecycleOwner) {
-            fade(false)
-            renderImage(it)
+        viewModel.element.observe(viewLifecycleOwner) { result->
+            fadeAway()
+
+            if (result.isFailure){
+                // TODO(I have no idea what to do in this case)
+                return@observe
+            }
+
+            val presentable = result.getOrThrow()
+
+            renderImage(presentable)
             clearSpecialInfo()
-            when (it) {
-                is ArticlePresentable -> renderArticleInfo(it)
-                is ItemPresentable -> renderItemInfo(it)
+            when (presentable) {
+                is ArticlePresentable -> renderArticleInfo(presentable)
+                is ItemPresentable -> renderItemInfo(presentable)
             }
         }
         // TODO(maybe... maybe... find a way to completely move in databind)
@@ -145,9 +155,14 @@ class ArticleFragment : XFragment() {
         }
     }
 
-    private fun renderImage(presentable: Presentable){
+    private fun renderImage(presentable: Presentable) {
         if (presentable.image != null) binding.page.itemImage.setImageBitmap(presentable.image!!)
-        else binding.page.itemImage.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.dating))
+        else binding.page.itemImage.setImageDrawable(
+            ContextCompat.getDrawable(
+                context!!,
+                R.drawable.dating
+            )
+        )
     }
 
     /** clear everything that may be created by renderArticleInfo or renderItemInfo */
@@ -235,8 +250,8 @@ class ArticleFragment : XFragment() {
         return valueAnimator
     }
 
-    private fun fade(hide: Boolean) {
-        fade(hide, moveDown)
+    private fun fadeAway() {
+        fade(false, moveDown)
     }
 
     companion object {

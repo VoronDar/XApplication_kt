@@ -14,7 +14,8 @@ import javax.inject.Inject
  * */
 class AskForUpdateManager @Inject constructor(@set:Inject var preferences: Preferences) {
     fun isNeedToUpdate(entity: RemEntityUpdate, ): Boolean {
-        return preferences.getLong(entity.checkForUpdate) >= UPDATE_INTERVAL_IN_DAYS +
+        val millisInDays = 86400000
+        return preferences.getLong(entity.checkForUpdate) + UPDATE_INTERVAL_IN_DAYS*millisInDays <
                 Calendar.getInstance().timeInMillis
     }
 
@@ -24,7 +25,6 @@ class AskForUpdateManager @Inject constructor(@set:Inject var preferences: Prefe
     }
 
     fun setUpdated(entity:RemEntityUpdate, lastUpdated:Int){
-        Timber.d("set updated $entity with update value = $lastUpdated")
         preferences.set(entity.lastUpdate, lastUpdated.toLong())
         preferences.set(entity.checkForUpdate, JUST_UPDATED + Calendar.getInstance().timeInMillis)
     }

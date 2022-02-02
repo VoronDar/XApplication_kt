@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astery.xapplication.model.entities.Article
-import com.astery.xapplication.model.entities.FeedBackState
 import com.astery.xapplication.repository.Repository
 import com.astery.xapplication.repository.feetback.OnFeedbackListener
 import com.astery.xapplication.ui.pageFeetback.FeedBackStorage
@@ -22,9 +21,15 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
 
 
     /** selected page (article or item) */
-    private val _element = MutableLiveData<Presentable>()
-    override val element: LiveData<Presentable>
+    private val _element = MutableLiveData<Result<Presentable>>()
+    override val element: LiveData<Result<Presentable>>
         get() = _element
+
+
+    private val _presentable = MutableLiveData<Presentable>()
+    override val presentable: LiveData<Presentable>
+        get() = _presentable
+
 
     private val _article = MutableLiveData<Article>()
     val article: LiveData<Article>
@@ -41,13 +46,13 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
         viewModelScope.launch {
             _article.value = article
             val ap = ArticlePresentable(article)
-            _element.value = ap
+            setPresentable(ap)
 
             _feedBackArticleStorage.value =
                 FeedBackStorage(ap.likes, ap.dislikes, ap.feedBackState, this@ArticleViewModel)
 
-            // load items
-            article.items = repository.getItemsForArticle(article.id)
+            // TODO(maybe add an indicator of error)
+            article.items = repository.getItemsForArticle(article.id).getOrNull()
             // reload liveData to update UI
             _article.value = article
         }
@@ -56,24 +61,31 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
 
     /** change presentable (selected page) to article */
     fun selectArticle() {
-        _element.value = ArticlePresentable(article.value!!)
+         setPresentable(ArticlePresentable(article.value!!))
     }
 
     /** change presentable (selected page) to item*/
     fun selectItem(pos: Int) {
         val item = article.value!!.items!![pos]
-        _element.value = ItemPresentable(item)
+        setPresentable(ItemPresentable(item))
 
         if (item.advices == null) {
             viewModelScope.launch {
-                item.advices = repository.getAdvicesForItem(item.id)
-                _element.value = ItemPresentable(item)
+                item.advices = repository.getAdvicesForItem(item.id).getOrNull()
+                if (item.advices?.isNullOrEmpty() == false)
+                    setPresentable(ItemPresentable(item))
             }
         }
         viewModelScope.launch {
             item.image = repository.getImageForItem(item.id)
-            _element.value = ItemPresentable(item)
+            if (item.image != null)
+                setPresentable(ItemPresentable(item))
         }
+    }
+
+    private fun setPresentable(value:Presentable){
+        _element.value = Result.success(value)
+        _presentable.value = value
     }
 
 
@@ -95,7 +107,8 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
             repository.cancelLikeArticle(
                 article.value!!.id,
                 article.value!!.likes,
-                article.value!!.dislikes)
+                article.value!!.dislikes
+            )
         }
     }
 
@@ -105,7 +118,8 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
             repository.dislikeArticle(
                 article.value!!.id,
                 article.value!!.likes,
-                article.value!!.dislikes)
+                article.value!!.dislikes
+            )
         }
     }
 
@@ -115,7 +129,8 @@ class ArticleViewModel @Inject constructor() : ViewModel(), HasPresentable, OnFe
             repository.cancelDislikeArticle(
                 article.value!!.id,
                 article.value!!.likes,
-                article.value!!.dislikes)
+                article.value!!.dislikes
+            )
         }
     }
 

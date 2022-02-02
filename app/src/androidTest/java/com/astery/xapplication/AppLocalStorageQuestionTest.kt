@@ -1,5 +1,6 @@
 package com.astery.xapplication
 
+import android.content.Context
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -31,6 +32,12 @@ import java.util.*
 class AppLocalStorageQuestionTest {
 
     private lateinit var localStorage: LocalStorage
+    private lateinit var instrumentationContext: Context
+
+    @Before
+    fun setup() {
+        instrumentationContext = InstrumentationRegistry.getInstrumentation().context
+    }
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -40,9 +47,9 @@ class AppLocalStorageQuestionTest {
     fun createDb() {
         localStorage = AppLocalStorage(
             Room.inMemoryDatabaseBuilder(
-                InstrumentationRegistry.getInstrumentation().context,
+                instrumentationContext,
                 AppDatabase::class.java
-            ).build()
+            ).build(), instrumentationContext
         )
     }
 

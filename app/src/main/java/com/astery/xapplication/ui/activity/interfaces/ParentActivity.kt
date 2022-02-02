@@ -13,5 +13,5 @@ interface ParentActivity {
     fun showFilters(show:Boolean, fragment: FiltersUsable)
     fun updateFilters(list:List<ArticleTag>)
     /** hide keyboard */
-    fun stopSearching()
+    fun hideSearchKeyboard()
 }
