@@ -44,8 +44,6 @@ class ArticleAdapter(pageCount: Int, context: Context) :
             notifyItemChanged(selectedPos)
 
             listener?.onClick(oldSelected, selectedPos)
-
-
         }
 
     var listener: BlockListener? = null

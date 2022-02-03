@@ -21,7 +21,7 @@
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:textSize="13dp"
-            android:textColor = "#26356B"/>
+            android:textColor = "@color/deselected_calendar_unit_text"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
 
