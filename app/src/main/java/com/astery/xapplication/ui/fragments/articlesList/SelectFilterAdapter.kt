@@ -1,8 +1,10 @@
 package com.astery.xapplication.ui.fragments.articlesList
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.astery.xapplication.databinding.UnitFilterBinding
 import com.astery.xapplication.databinding.UnitSelectFilterBinding
 import com.astery.xapplication.databinding.UnitSelectTagWithTypeBinding
@@ -25,15 +27,20 @@ class SelectFilterAdapter(units: List<ArticleTag>?, context: Context, private va
     }
 
     override fun onBindViewHolder(h: BaseViewHolder, position: Int) {
+
+
         val binding = (h as ViewHolder).binding
         val unit = units!![position]
         val isSelected = selectedTags.contains(units!![position])
         binding.tag = unit
+        binding.drawable = ContextCompat.getDrawable(context, unit.iconId)
         binding.isSelected = isSelected
 
         binding.root.setOnClickListener {
             if (isSelected) selectedTags.remove(unit)
             else selectedTags.add(unit)
+            //
+            //notifyDataSetChanged()
             notifyItemChanged(position)
         }
     }

@@ -43,12 +43,12 @@
     <string name="title_new_event">Add new event</string>
 
 
-    <string name="ar_tag_gender_man">For men</string>
-    <string name="ar_tag_gender_woman">For women</string>
+    <string name="ar_tag_gender_man">Male</string>
+    <string name="ar_tag_gender_woman">Female</string>
 
-    <string name="ar_tag_age_adult">For adults</string>
-    <string name="ar_tag_age_teen">For teens</string>
-    <string name="ar_tag_age_child">For children</string>
+    <string name="ar_tag_age_adult">Adult</string>
+    <string name="ar_tag_age_teen">Teen</string>
+    <string name="ar_tag_age_child">Child</string>
 
     <string name="ar_tag_topic_health">Health</string>
     <string name="ar_tag_topic_relations">Relations</string>
