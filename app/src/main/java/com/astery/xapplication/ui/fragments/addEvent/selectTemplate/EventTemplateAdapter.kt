@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.astery.xapplication.databinding.UnitEventBinding
 import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
@@ -24,9 +25,10 @@ class EventTemplateAdapter(context: Context) :
         val unit = units!![position]
         binding.title = unit.name
         binding.description = unit.body
-        Timber.d("bind item on the pos $position, item = ${unit.image}")
-        if (unit.image != null)
+        if (unit.image != null) {
+            binding.image.isVisible = true
             binding.image.setImageBitmap(unit.image!!)
+        }
     }
 
     override fun onViewDetachedFromWindow(h: BaseViewHolder) {
