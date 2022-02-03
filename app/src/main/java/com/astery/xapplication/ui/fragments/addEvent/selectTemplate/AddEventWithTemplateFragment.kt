@@ -89,9 +89,9 @@ class AddEventWithTemplateFragment : XFragment() {
         loadingState?.doOnResumeUI()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        loadingState?.doOnDestroyUI()
+    override fun onStop() {
+        super.onStop()
+        loadingState?.doOnStopUI()
     }
 
     override fun setViewModelListeners() {

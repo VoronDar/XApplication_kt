@@ -64,9 +64,9 @@ class AdvicesFragment : XFragment() {
         loadingState?.doOnResumeUI()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        loadingState?.doOnDestroyUI()
+    override fun onStop() {
+        super.onStop()
+        loadingState?.doOnStopUI()
     }
 
 
@@ -96,7 +96,6 @@ class AdvicesFragment : XFragment() {
                     ::askForAdvices
                 ), layoutInflater, binding.frame
             )
-
         }
     }
 
