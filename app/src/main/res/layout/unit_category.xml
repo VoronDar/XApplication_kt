@@ -42,7 +42,7 @@
         android:layout_gravity="center_vertical"
         android:id = "@+id/article_name"
         android:layout_margin="16dp"
-        android:text = "@{title}"
+        app:capitalizedText = "@{title}"
         />
     </LinearLayout>
 

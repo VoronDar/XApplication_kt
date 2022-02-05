@@ -43,7 +43,7 @@
                     style="@style/HighLightText"
                     android:layout_height="match_parent"
                     android:layout_width="wrap_content"
-                    android:text="@{viewModel.selectedEvent.first.template.name}" />
+                    app:capitalizedText ="@{viewModel.selectedEvent.first.template.name}" />
 
                 <TextView
                     android:id="@+id/event_description"
@@ -51,7 +51,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
                     android:layout_width="wrap_content"
-                    android:text="@{viewModel.selectedEvent.first.template.body}" />
+                    app:capitalizedText ="@{viewModel.selectedEvent.first.template.body}" />
 
                 <TextView
                     android:id="@+id/event_properties"
