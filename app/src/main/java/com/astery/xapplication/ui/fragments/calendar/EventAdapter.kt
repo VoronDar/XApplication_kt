@@ -35,6 +35,15 @@ class EventAdapter(units: ArrayList<Event?>?, context: Context) :
         }
     }
 
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemCount(): Int {
+        return units?.size?: 0
+    }
+
     inner class ViewHolder(itemView: View) : BaseViewHolder(blockListener, itemView) {
         val image: ImageView = itemView.findViewById(R.id.image)
     }

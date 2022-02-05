@@ -96,7 +96,6 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
             for (i in 1 until _events.value!!.size){
                 viewModelScope.launch {
                     _events.value!![i]?.image = repository.getImageForEventTemplate(EventTemplate(_events.value!![i]!!.templateId))
-                    Timber.d("loaded image for event $i")
                     adapter.notifyItemChanged(i)
                 }
             }
@@ -140,7 +139,7 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
 
         val firstDay:Calendar=GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), 1)
         for (i in Calendar.SUNDAY until firstDay.get(Calendar.DAY_OF_WEEK)){
-            units.add(0, DayUnit(i, false))
+            units.add(0, DayUnit(-1, false))
         }
 
         return units

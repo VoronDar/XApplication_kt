@@ -24,7 +24,6 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
     set(value) {
         val oldValue = selectedDay
         field = value
-        Timber.d("$oldValue, $value")
         notifyItemChanged(units!!.indexOfFirst { it.day == oldValue })
         notifyItemChanged(units!!.indexOfFirst { it.day == value })
     }
@@ -38,11 +37,13 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(h: BaseViewHolder, position: Int) {
         val holder = h as ViewHolder
+
+
         val unit: DayUnit = units!![position]
+
         holder.day.text = unit.day.toString()
         holder.card.isGone = !(unit.enabled)
         if (unit.day == selectedDay) {
-            Timber.i("${holder.card} and $context")
             holder.card.setBackgroundColor(ContextCompat.getColor(context, R.color.neutralSurfaceColor))
             holder.card.strokeColor = ContextCompat.getColor(context, R.color.black)
             holder.day.setTextColor(ContextCompat.getColor(context, R.color.black))
@@ -51,6 +52,15 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
             holder.card.strokeColor = ContextCompat.getColor(context, R.color.calendar_unit_stroke_color)
             holder.day.setTextColor(ContextCompat.getColor(context, R.color.deselected_calendar_unit_text))
         }
+    }
+
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemCount(): Int {
+        return units?.size?: 0
     }
 
     inner class ViewHolder(itemView: View) : BaseViewHolder(blockListener, itemView) {
