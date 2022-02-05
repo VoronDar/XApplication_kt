@@ -2,10 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@id/articlesListFragment"
-        android:icon = "@color/black"
-        android:title="TODO" />
+        android:icon = "@drawable/ic_articles"
+        android:enabled="true"
+        android:title="@string/bottom_articles" />
     <item
         android:id="@id/calendarFragment"
-        android:icon = "@color/black"
-        android:title="TODO" />
+        android:icon = "@drawable/ic_calendar"
+        android:enabled="true"
+        android:title="@string/bottom_events" />
 </menu>

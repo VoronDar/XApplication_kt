@@ -64,6 +64,11 @@
     <string name="button_reload">Reload</string>
 
 
+    <string name="bottom_articles">Articles</string>
+    <string name="bottom_events">Events</string>
+    <string name="bottom_warnings">Warnings</string>
+
+
     <string name="loading_state_loading">Loading…</string>
     <string name="loading_state_nothing">There is no result found</string>
     <string name="loading_state_error">Some data failed to load\n%s</string>
