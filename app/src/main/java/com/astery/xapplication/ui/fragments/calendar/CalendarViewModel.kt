@@ -143,7 +143,7 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
         return units
     }
 
-    fun deleteEvent() {
+    fun deleteSelectedEvent() {
         viewModelScope.launch {
             _events.value = events.value!!.subList(0, selectedEvent.value!!.second) +
                     events.value!!.subList(selectedEvent.value!!.second + 1, events.value!!.size)

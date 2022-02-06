@@ -206,11 +206,7 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
                 return binding
             }
 
-            override fun enable(binding: ViewDataBinding, enable: Boolean) {
-
-            }
-
-            override fun doOnClose() {
+            override fun onClosePanel() {
                 setFilters(selectFilterTypeAdapter.selectedTags)
                 parentActivity.updateFilters(tags)
             }

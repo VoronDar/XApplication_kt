@@ -12,15 +12,3 @@ interface PanelHolder {
     /** get views that should be disabled when the panel opens */
     fun getBlockable():List<Blockable>
 }
-
-interface Blockable{
-    fun setEnabled(enable:Boolean)
-}
-
-class BlockableView(val view:View):Blockable{
-    override fun setEnabled(enable: Boolean) {
-        view.isEnabled = enable
-        //view.focusable = if (enable) View.FOCUSABLE else View.NOT_FOCUSABLE
-        view.isClickable = enable
-    }
-}

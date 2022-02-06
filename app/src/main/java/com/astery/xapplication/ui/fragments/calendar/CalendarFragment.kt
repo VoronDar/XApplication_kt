@@ -15,14 +15,20 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.astery.xapplication.R
+import com.astery.xapplication.databinding.AlertDeleteCardBinding
 import com.astery.xapplication.databinding.FragmentCalendarBinding
 import com.astery.xapplication.model.entities.Event
+import com.astery.xapplication.ui.activity.interfaces.PanelUsable
 import com.astery.xapplication.ui.activity.interfaces.ParentActivity
+import com.astery.xapplication.ui.activity.popupDialogue.Blockable
+import com.astery.xapplication.ui.activity.popupDialogue.BlockableView
+import com.astery.xapplication.ui.activity.popupDialogue.DialogueHolder
 import com.astery.xapplication.ui.adapterUtils.BlockListener
 import com.astery.xapplication.ui.fragments.XFragment
 import com.astery.xapplication.ui.fragments.calendar.calendar_adapter.CalendarAdapter
@@ -32,7 +38,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class CalendarFragment : XFragment() {
+class CalendarFragment : XFragment(), PanelUsable {
     private val binding: FragmentCalendarBinding
         get() = bind as FragmentCalendarBinding
 
@@ -78,6 +84,7 @@ class CalendarFragment : XFragment() {
         }
         cAdapter!!.blockListener = (object : BlockListener {
             override fun onClick(position: Int) {
+                if (!cAdapter!!.isEnable) return
                 viewModel.changeDay(cAdapter!!.units!![position].day)
             }
         })
@@ -93,6 +100,7 @@ class CalendarFragment : XFragment() {
         }
         eAdapter!!.blockListener = (object : BlockListener {
             override fun onClick(position: Int) {
+                if (!eAdapter!!.isEnable) return
                 if (position == 0) {
                     moveToAddNewEvent()
                 } else {
@@ -235,12 +243,7 @@ class CalendarFragment : XFragment() {
     }
 
     private fun deleteEvent() {
-        DeleteEventDialogue(layoutInflater, requireContext())
-            .setOnOkListener {
-                showEventContainer(false)
-                viewModel.deleteEvent()
-            }
-            .show()
+        parentActivity.showPanel(this)
     }
 
     private val changeMonthListener: CalendarMonthNavListener = object : CalendarMonthNavListener() {
@@ -275,6 +278,38 @@ class CalendarFragment : XFragment() {
             true
         } else {
             false
+        }
+    }
+
+    override fun getBlockable(): List<Blockable> {
+        return listOf(
+            BlockableView(binding.deleteIcon),
+            BlockableView(binding.backIcon),
+            BlockableView(binding.eventContent.getATip),
+            BlockableView(binding.noCardInfo),
+            BlockableView(binding.recyclerView),
+            BlockableView(binding.eventRecycler),
+            cAdapter!!,
+            eAdapter!!
+        )
+    }
+
+    override fun getDialogueHolder(): DialogueHolder {
+        return object:DialogueHolder{
+            override fun getBinding(
+                inflater: LayoutInflater,
+                container: ViewGroup?,
+                onClose: () -> Unit
+            ): ViewDataBinding {
+                val binding = AlertDeleteCardBinding.inflate(layoutInflater, container, false)
+                binding.cancel.setOnClickListener{onClose()}
+                binding.submit.setOnClickListener {
+                    showEventContainer(false)
+                    viewModel.deleteSelectedEvent()
+                    onClose()
+                }
+                return binding
+            }
         }
     }
 

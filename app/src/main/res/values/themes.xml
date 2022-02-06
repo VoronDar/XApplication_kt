@@ -28,7 +28,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.XApplication.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.XApplication.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/alert_dialogue_background</item>

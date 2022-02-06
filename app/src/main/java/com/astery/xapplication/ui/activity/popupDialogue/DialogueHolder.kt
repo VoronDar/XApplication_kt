@@ -8,6 +8,6 @@ import androidx.databinding.ViewDataBinding
 interface DialogueHolder {
     /** get fully set binding. When you implement this func you must cal onClose in some listener*/
     fun getBinding(inflater: LayoutInflater, container: ViewGroup?, onClose:()->Unit):ViewDataBinding
-    fun enable(binding:ViewDataBinding, enable:Boolean)
-    fun doOnClose()
+    fun onEnablePanel(binding:ViewDataBinding, enable:Boolean){}
+    fun onClosePanel(){}
 }

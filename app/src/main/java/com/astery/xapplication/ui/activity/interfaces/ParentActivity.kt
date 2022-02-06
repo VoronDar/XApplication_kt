@@ -14,4 +14,5 @@ interface ParentActivity {
     fun updateFilters(list:List<ArticleTag>)
     /** hide keyboard */
     fun hideSearchKeyboard()
+    fun showPanel(caller:PanelUsable)
 }
