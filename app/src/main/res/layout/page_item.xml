@@ -32,6 +32,8 @@
                 android:layout_width="match_parent">
 
             <FrameLayout android:layout_height="200dp"
+                android:id = "@+id/itemFrame"
+                android:layout_marginBottom="20dp"
                 android:layout_width="match_parent">
             <ImageView
                 android:id="@+id/item_image"
@@ -51,7 +53,7 @@
 
             <TextView
                 style="@style/HighLightText"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 app:capitalizedText="@{viewModel.presentable.name}" />
 
             <TextView

@@ -31,7 +31,7 @@ class ArticlesListViewModel @Inject constructor() : ViewModel() {
             }
             for (i in 100..102) {
                 repository.localStorage.addArticle(Article(i, "with items $i", "ara ara", 142, 0))
-            }
+
         }*/
 
 

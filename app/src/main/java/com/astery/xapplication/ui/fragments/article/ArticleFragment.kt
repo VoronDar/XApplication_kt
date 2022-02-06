@@ -127,6 +127,7 @@ class ArticleFragment : XFragment() {
     override fun setViewModelListeners() {
 
         viewModel.article.observe(viewLifecycleOwner) {
+            Timber.d("article items ${it.items}")
             if (it.items != null) {
                 articleAdapter!!.pageCount = it.items!!.size + 1
             }

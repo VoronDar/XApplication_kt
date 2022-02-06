@@ -27,7 +27,7 @@ class ArticleAdapter(pageCount: Int, context: Context) :
      * */
     var pageCount: Int = pageCount
         set(value) {
-            for (i in (field + 1) until value) {
+            for (i in (field + 1) until value+1) {
                 notifyItemInserted(i)
             }
             field = value

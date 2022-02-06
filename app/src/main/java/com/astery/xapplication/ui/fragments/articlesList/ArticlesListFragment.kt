@@ -94,6 +94,7 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
     }
 
     override fun prepareAdapters() {
+        setRootPadding()
         if (articleListAdapter != null) {
             binding.recyclerView.adapter = articleListAdapter!!
             return
@@ -109,6 +110,17 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
             }
         }
     }
+
+    /** page_event used in two places. So, it must have different top padding in different places */
+    private fun setRootPadding() {
+        binding.root.setPadding(
+            0,
+            80,
+            0,
+            0
+        )
+    }
+
 
 
     override fun getFragmentTitle(): String? {

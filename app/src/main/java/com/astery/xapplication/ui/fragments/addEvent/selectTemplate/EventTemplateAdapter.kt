@@ -12,9 +12,15 @@ import com.astery.xapplication.databinding.UnitEventBinding
 import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
+import timber.log.Timber
 
 class EventTemplateAdapter(context: Context) :
     BaseAdapter<EventTemplateAdapter.ViewHolder, EventTemplate>(null, context) {
+
+    init {
+
+        Timber.d("=========================")
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseViewHolder {
         val binding =
@@ -35,8 +41,10 @@ class EventTemplateAdapter(context: Context) :
         }
 
         binding.itemInfo.alpha = 0f
+
         binding.itemName.post {
             val lineCount = binding.itemName.lineCount
+
             binding.itemInfo.maxLines = 3 - lineCount
 
             if (lineCount <= 2)

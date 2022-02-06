@@ -119,6 +119,7 @@ class Repository @Inject constructor(
         )
         if (gotItem.isSuccess) item.image = this.getImageForItem(item.id)
 
+
         if (gotItem.isFailure) return Result.failure(gotItem.exceptionOrNull()!!)
         return Result.success(
             item.clone(
