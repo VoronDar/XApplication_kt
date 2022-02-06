@@ -55,6 +55,7 @@
     <color name = "neutralIconColor">#99ECD4</color>
     <color name = "neutralIconTextColor">#508878</color>
     <color name = "neutralSurfaceColor">#E2F6F0</color>
+    <color name = "neutralBottomMenuColor">#139771</color>
 
 
     <color name="deselect_icon">#AEAEAE</color>

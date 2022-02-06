@@ -88,10 +88,10 @@ android:layout_height="match_parent"
         android:elevation="20dp"
         app:itemRippleColor="@color/neutralIconColor"
         app:layout_anchorGravity="bottom"
-        app:itemTextColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_height="wrap_content"
-        app:itemIconTint = "#000000"
+        app:itemIconTint = "@color/bottomnav_icon_statelist"
+        app:itemTextColor = "@color/bottomnav_icon_statelist"
         app:layout_anchor="@id/layout"
         app:menu="@menu/bottom_menu" />
 

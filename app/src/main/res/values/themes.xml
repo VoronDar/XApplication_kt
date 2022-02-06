@@ -13,6 +13,14 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
 
+        <item name="android:scrollViewStyle">@style/SvStyle</item>
+
+    </style>
+
+    <style name="SvStyle">
+        <item name="android:nestedScrollingEnabled">false</item>
+        <item name="android:overScrollMode">never</item>
+        <item name="android:scrollbars">none</item>
     </style>
 
     <style name="Theme.XApplication.NoActionBar">

@@ -11,7 +11,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.iterator
 import androidx.navigation.NavController
@@ -103,14 +102,14 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
     // MARK: Toolbar changing
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        if (menuMonthListener != null) showMenuNav(!menuMonthListener!!.close, menuMonthListener!!)
+        if (calendarMonthMonthListener != null) showCalendarNav(!calendarMonthMonthListener!!.close, calendarMonthMonthListener!!)
         setMenuListeners(menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     /** hide or reveal iconButtons for calendar **/
-    override fun showMenuNav(show: Boolean, listener: CalendarFragment.MenuNavListener) {
-        menuMonthListener = listener
+    override fun showCalendarNav(show: Boolean, listener: CalendarFragment.CalendarMonthNavListener) {
+        calendarMonthMonthListener = listener
         val toolBar = findViewById<Toolbar>(R.id.toolbar)
         if (toolBar?.menu?.findItem(R.id.action_back) != null) {
             toolBar.menu?.findItem(R.id.action_back)?.isVisible = show
@@ -130,17 +129,17 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
     /** handle clicks on custom menu items */
     private fun setMenuListeners(menu: Menu?) {
         menu?.findItem(R.id.action_back)?.setOnMenuItemClickListener {
-            menuMonthListener?.click(true)
+            calendarMonthMonthListener?.click(true)
             return@setOnMenuItemClickListener true
         }
         menu?.findItem(R.id.action_forward)?.setOnMenuItemClickListener {
-            menuMonthListener?.click(false)
+            calendarMonthMonthListener?.click(false)
             return@setOnMenuItemClickListener true
         }
     }
 
 
-    private var menuMonthListener: CalendarFragment.MenuNavListener? = null
+    private var calendarMonthMonthListener: CalendarFragment.CalendarMonthNavListener? = null
 
     private val searchCommands: ArrayList<SearchCommand> = arrayListOf()
     private val filterCommands: ArrayList<FilterCommand> = arrayListOf()

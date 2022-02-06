@@ -29,7 +29,6 @@ import com.astery.xapplication.ui.fragments.calendar.calendar_adapter.CalendarAd
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.util.*
 
 @AndroidEntryPoint
@@ -57,12 +56,12 @@ class CalendarFragment : XFragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as ParentActivity).showMenuNav(true, changeMonthListener)
+        (activity as ParentActivity).showCalendarNav(true, changeMonthListener)
     }
 
     override fun onStop() {
         super.onStop()
-        (activity as ParentActivity).showMenuNav(false, changeMonthListener)
+        (activity as ParentActivity).showCalendarNav(false, changeMonthListener)
     }
 
     override fun setListeners() {
@@ -125,8 +124,6 @@ class CalendarFragment : XFragment() {
             else if (binding.eventContainer.isVisible) renderEvents()
             // go from page without event to page without events (blink)
             else if (binding.noCardInfo.isVisible && noEvents) renderNoEventsAgain()
-
-            Timber.d((it as ArrayList<Event?>).toString())
             eAdapter?.units = (it as ArrayList<Event?>)
 
         })
@@ -247,7 +244,7 @@ class CalendarFragment : XFragment() {
             .show()
     }
 
-    private val changeMonthListener: MenuNavListener = object : MenuNavListener() {
+    private val changeMonthListener: CalendarMonthNavListener = object : CalendarMonthNavListener() {
         override fun click(back: Boolean) {
             viewModel.changeMonth(!back)
             cAdapter?.units = viewModel.getDayUnitList()
@@ -267,7 +264,7 @@ class CalendarFragment : XFragment() {
     }
 
 
-    abstract class MenuNavListener {
+    abstract class CalendarMonthNavListener {
         var close = false
         abstract fun click(back: Boolean)
     }
