@@ -14,7 +14,6 @@ import com.astery.xapplication.repository.remoteDataStorage.*
 import com.astery.xapplication.ui.loadingState.InternetConnectionException
 import com.astery.xapplication.ui.loadingState.UnexpectedBugException
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -59,11 +58,12 @@ class Repository @Inject constructor(
     suspend fun getImageForArticle(id: Int): Bitmap? {
         return getImage(id, StorageSource.Articles)
     }
+
     suspend fun getImageForItem(id: Int): Bitmap? {
         return getImage(id, StorageSource.Items)
     }
 
-    private suspend fun getImage(id:Int, source:StorageSource):Bitmap?{
+    private suspend fun getImage(id: Int, source: StorageSource): Bitmap? {
         var bitmap = localStorage.getImage(id.toString(), source)
         if (bitmap == null && isOnline()) {
             bitmap = remoteStorage.getImg(source, id.toString())
@@ -97,11 +97,11 @@ class Repository @Inject constructor(
         Timber.d("ask for advices - $itemId")
 
         val result = remoteStorage.getAdvicesForItem(itemId, -1)
-        if (result.isSuccess){
+        if (result.isSuccess) {
             val list = convertFromRemote(result.getOrThrow())
             val fromLocal = localStorage.getAdvicesForItem(itemId)
-            for (i in list){
-                if (fromLocal.contains(i)){
+            for (i in list) {
+                if (fromLocal.contains(i)) {
                     val ad = fromLocal[fromLocal.indexOf(i)]
                     i.feedback = ad.feedback
                 }
@@ -128,7 +128,12 @@ class Repository @Inject constructor(
         if (gotItem.isSuccess) item.image = this.getImageForItem(item.id)
 
         if (gotItem.isFailure) return Result.failure(gotItem.exceptionOrNull()!!)
-        return Result.success(item.clone(name = gotItem.getOrThrow()[0].name, body = gotItem.getOrThrow()[0].body))
+        return Result.success(
+            item.clone(
+                name = gotItem.getOrThrow()[0].name,
+                body = gotItem.getOrThrow()[0].body
+            )
+        )
     }
 
     /*
@@ -147,15 +152,54 @@ class Repository @Inject constructor(
         localStorage.deleteEvent(event)
     }
 
+
     fun getArticles(sequence: String, tags: List<ArticleTag>): PagingSource<Int, Article> {
-        //TODO (make for remote also)
-        if (sequence.isEmpty() && tags.isEmpty()) return localStorage.getArticles()
-        if (sequence.isNotEmpty() && tags.isNotEmpty()) return localStorage.getArticlesWithTagAndKeyWord(
-            tags,
-            sequence
-        )
-        return if (sequence.isNotEmpty()) localStorage.getArticlesWithKeyWord(sequence)
-        else localStorage.getArticlesWithTag(tags)
+        if (sequence.isEmpty() && tags.isEmpty()){
+            return localStorage.getArticles()
+        }
+        if (sequence.isNotEmpty() && tags.isNotEmpty()) {
+            return localStorage.getArticlesWithTagAndKeyWord(
+                tags,
+                sequence
+            )
+        }
+
+        return if (sequence.isNotEmpty()){
+            localStorage.getArticlesWithKeyWord(sequence)
+        }
+        else {
+            localStorage.getArticlesWithTag(tags)
+        }
+    }
+
+    /** get all tags with these tags. save to local
+     * TODO(delete it later and add fulltext search from remote in getArticles())
+     * */
+    suspend fun updateArticlesWithTags(tags: List<ArticleTag>) {
+        if (isOnline()) {
+            for (i in tags) {
+                val remUpdate = ArticleREU(i)
+
+                if (askForUpdateMgr.isNeedToUpdate(remUpdate)) {
+                    val result = remoteStorage.getArticlesWithTag(
+                        i,
+                        askForUpdateMgr.getLastUpdated(remUpdate)
+                    )
+
+                    if (result.isSuccess) {
+                        for (j in convertFromRemote(result.getOrThrow())) localStorage.addArticleWithTag(
+                            j
+                        )
+                        if (result.getOrThrow().isNotEmpty()) {
+                            askForUpdateMgr.setUpdated(
+                                remUpdate,
+                                result.getOrThrow().maxByOrNull { it.lastUpdated }!!.lastUpdated
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     suspend fun reset() {
@@ -174,19 +218,22 @@ class Repository @Inject constructor(
         return rateAdvice(
             id,
             FeedbackResult(FeedbackField.Dislike, FeedbackAction.Do, nowLikes, nowDislikes)
-        )}
+        )
+    }
 
     suspend fun cancelLikeAdvice(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
         return rateAdvice(
             id,
             FeedbackResult(FeedbackField.Like, FeedbackAction.Cancel, nowLikes, nowDislikes)
-        )}
+        )
+    }
 
     suspend fun cancelDislikeAdvice(id: Int, nowLikes: Int, nowDislikes: Int): Boolean {
         return rateAdvice(
             id,
             FeedbackResult(FeedbackField.Dislike, FeedbackAction.Cancel, nowLikes, nowDislikes)
-        )}
+        )
+    }
 
     /** like/dislike advice (or remove them). Update the field in remote, if it was successful - update in local*/
     private suspend fun rateAdvice(id: Int, result: FeedbackResult): Boolean {
@@ -275,7 +322,7 @@ class Repository @Inject constructor(
         localSet: KSuspendFunction1<List<R>, Unit>,
         matcher: T,
         remUpdate: RemEntityUpdate?,
-        isCanBeNothing:Boolean
+        isCanBeNothing: Boolean
     ): Result<List<R>> {
 
         // check if it is need (and it is possible) to get data from remote without looking in local
@@ -321,7 +368,7 @@ class Repository @Inject constructor(
     ): Result<List<R>> {
         val remoteResult = remoteGet(matcher, lastUpdated)
         // save to local if the result is successful
-        var result:Result<List<R>>
+        var result: Result<List<R>>
         if (remoteResult.isSuccess) {
 
             val remoteList = remoteResult.getOrThrow()
@@ -330,7 +377,6 @@ class Repository @Inject constructor(
 
             if (result.getOrThrow().isEmpty() && !isCanBeNothing)
                 result = Result.failure(InternetConnectionException())
-
 
 
             // change values that required for checking for updates (if it required)

@@ -1,10 +1,9 @@
 package com.astery.xapplication.repository.remoteDataStorage
 
-import com.astery.xapplication.model.entities.EventTemplate
+import com.astery.xapplication.model.entities.ArticleTag
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.repository.preferences.PreferenceEntity
 import com.astery.xapplication.repository.preferences.Preferences
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -13,18 +12,18 @@ import javax.inject.Inject
  * TODO(rename almost everything)
  * */
 class AskForUpdateManager @Inject constructor(@set:Inject var preferences: Preferences) {
-    fun isNeedToUpdate(entity: RemEntityUpdate, ): Boolean {
+    fun isNeedToUpdate(entity: RemEntityUpdate): Boolean {
         val millisInDays = 86400000
-        return preferences.getLong(entity.checkForUpdate) + UPDATE_INTERVAL_IN_DAYS*millisInDays <
+        return preferences.getLong(entity.checkForUpdate) + UPDATE_INTERVAL_IN_DAYS * millisInDays <
                 Calendar.getInstance().timeInMillis
     }
 
-    fun getLastUpdated(entity:RemEntityUpdate?):Int{
+    fun getLastUpdated(entity: RemEntityUpdate?): Int {
         if (entity == null) return FIRST_UPDATE.toInt()
         return preferences.getLong(entity.lastUpdate).toInt()
     }
 
-    fun setUpdated(entity:RemEntityUpdate, lastUpdated:Int){
+    fun setUpdated(entity: RemEntityUpdate, lastUpdated: Int) {
         preferences.set(entity.lastUpdate, lastUpdated.toLong())
         preferences.set(entity.checkForUpdate, JUST_UPDATED + Calendar.getInstance().timeInMillis)
     }
@@ -39,17 +38,21 @@ class AskForUpdateManager @Inject constructor(@set:Inject var preferences: Prefe
     }
 }
 
-sealed class RemEntityUpdate(appendix:String) {
-    val checkForUpdate: CheckForUpdatePreferenceEntity = CheckForUpdatePreferenceEntity(this::class.simpleName!! + appendix)
-    val lastUpdate: LastUpdatePreferenceEntity = LastUpdatePreferenceEntity(this::class.simpleName!! + appendix)
+sealed class RemEntityUpdate(appendix: String) {
+    val checkForUpdate: CheckForUpdatePreferenceEntity =
+        CheckForUpdatePreferenceEntity(this::class.simpleName!! + appendix)
+    val lastUpdate: LastUpdatePreferenceEntity =
+        LastUpdatePreferenceEntity(this::class.simpleName!! + appendix)
+
     override fun toString(): String {
         return "RemEntityUpdate(${checkForUpdate.name})"
     }
 
 }
-class EvTemplateREU(category:EventCategory):RemEntityUpdate(category.ordinal.toString())
-class QuestionREU(templateId:Int):RemEntityUpdate(templateId.toString())
 
+class ArticleREU(tag: ArticleTag) : RemEntityUpdate(tag.id.toString())
+class EvTemplateREU(category: EventCategory) : RemEntityUpdate(category.ordinal.toString())
+class QuestionREU(templateId: Int) : RemEntityUpdate(templateId.toString())
 
 
 class CheckForUpdatePreferenceEntity(name: String) : PreferenceEntity {

@@ -1,7 +1,6 @@
 package com.astery.xapplication.model.entities
 
 import android.graphics.Bitmap
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.*
 import com.astery.xapplication.model.entities.converters.ArrayConverter
@@ -16,27 +15,30 @@ import timber.log.Timber
 @Parcelize
 @Entity
 @TypeConverters(ArrayConverter::class, FeedbackStateConverter::class)
-data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
-                   var likes:Int = 0, var dislikes:Int = 0, val feedBack: FeedBackState=FeedBackState.None):
-    Parcelable
-{
+open class Article(
+    @PrimaryKey var id: Int, val name: String, val body: String?,
+    var likes: Int = 0, var dislikes: Int = 0, val feedBack: FeedBackState = FeedBackState.None
+) :
+    Parcelable {
     @Ignore
     var tags: List<ArticleTag>? = null
+
     @Ignore
     var items: List<Item>? = null
+
     @Ignore
     var image: Bitmap? = null
-    set(value) {
-        if (id == 100){
-            Timber.d("THEY ARE CHANGED MY BITMAP $image")
+        set(value) {
+            if (id == 100) {
+                Timber.d("THEY ARE CHANGED MY BITMAP $image")
+            }
+            field = value
         }
-        field = value
-    }
 
     @Ignore
-    var ta:String? = null
+    var ta: String? = null
 
-    init{
+    init {
         // TODO(Sometimes likes or dislikes are less, than zero. I don't know exactly how to handle it. But I made this to make it less visible)
         if (likes < 0) likes = 0
         if (dislikes < 0) dislikes = 0
@@ -44,9 +46,9 @@ data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
 
 
     @Ignore
-    constructor():this(0, "", "", 0,0)
+    constructor() : this(0, "", "", 0, 0)
 
-    fun addTags(tags:List<ArticleTag>):Article{
+    fun addTags(tags: List<ArticleTag>): Article {
         this.tags = tags
         return this
     }
@@ -75,7 +77,7 @@ data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
         result = 31 * result + (body?.hashCode() ?: 0)
         result = 31 * result + likes
         result = 31 * result + dislikes
-        result = 31 * result + (feedBack?.hashCode() ?: 0)
+        result = 31 * result + feedBack.hashCode()
         return result
     }
 
@@ -83,4 +85,4 @@ data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
 
 @Entity
 @Fts4(contentEntity = Article::class)
-data class ArticleFts(val name:String, val body:String?)
+data class ArticleFts(val name: String, val body: String?)
