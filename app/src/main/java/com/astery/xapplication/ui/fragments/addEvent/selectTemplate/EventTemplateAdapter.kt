@@ -7,13 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.astery.xapplication.databinding.UnitEventBinding
 import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
-import java.util.*
 
 class EventTemplateAdapter(context: Context) :
     BaseAdapter<EventTemplateAdapter.ViewHolder, EventTemplate>(null, context) {

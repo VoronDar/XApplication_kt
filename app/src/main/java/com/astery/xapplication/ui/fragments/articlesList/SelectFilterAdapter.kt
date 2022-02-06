@@ -1,20 +1,19 @@
 package com.astery.xapplication.ui.fragments.articlesList
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import com.astery.xapplication.databinding.UnitFilterBinding
 import com.astery.xapplication.databinding.UnitSelectFilterBinding
-import com.astery.xapplication.databinding.UnitSelectTagWithTypeBinding
 import com.astery.xapplication.model.entities.ArticleTag
-import com.astery.xapplication.model.entities.ArticleTagType
-import com.astery.xapplication.ui.activity.popupDialogue.Blockable
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
 
-class SelectFilterAdapter(units: List<ArticleTag>?, context: Context, private val selectedTags:MutableList<ArticleTag>) :
+class SelectFilterAdapter(
+    units: List<ArticleTag>?,
+    context: Context,
+    private val selectedTags: MutableList<ArticleTag>
+) :
     BaseAdapter<SelectFilterAdapter.ViewHolder, ArticleTag>(units, context) {
 
 

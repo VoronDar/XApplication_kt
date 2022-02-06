@@ -3,7 +3,6 @@ package com.astery.xapplication.ui.fragments.addEvent.customizeEvent
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isGone
 import com.astery.xapplication.databinding.UnitAnswerBinding
 import com.astery.xapplication.model.entities.Answer
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter

@@ -11,10 +11,10 @@ import timber.log.Timber
 
 class SpeechToText(val activity: MainActivity) {
 
-    var fragment:SearchUsable? = null
+    var fragment: SearchUsable? = null
 
 
-    fun isRecognitionAvailable():Boolean {
+    fun isRecognitionAvailable(): Boolean {
         val manager: PackageManager = activity.packageManager
         val activities =
             manager.queryIntentActivities(Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0)
@@ -31,7 +31,7 @@ class SpeechToText(val activity: MainActivity) {
         activity.startActivityForResult(intent, VOICE_RECOGNITION_REQUEST)
     }
 
-    fun acceptActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+    fun acceptActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Timber.d("recognition $data $requestCode $resultCode")
         if (requestCode == VOICE_RECOGNITION_REQUEST) {
             if (data != null) {
@@ -47,11 +47,7 @@ class SpeechToText(val activity: MainActivity) {
         }
     }
 
-    companion object{
-
-        const val FILTER_REQUEST = 41
-        const val FILTER_RESULT_OK = 1
-        const val FILTER_TYPE_PARAM = "type"
+    companion object {
         const val VOICE_RECOGNITION_REQUEST = 111
     }
 

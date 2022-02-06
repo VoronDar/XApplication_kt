@@ -1,11 +1,9 @@
 package com.astery.xapplication.repository.localDataStorage.dao
 
-import androidx.paging.DataSource
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.converters.FeedbackStateConverter
-import com.astery.xapplication.repository.FeedbackResult
 
 @TypeConverters(FeedbackStateConverter::class)
 @Dao
@@ -19,31 +17,36 @@ interface ArticleDao {
     suspend fun getItemsByParentId(parentId: Int): List<Item>
 
     @Query("SELECT id, body, name FROM item WHERE id = :itemId")
-    suspend fun getItemBody(itemId: Int):Item?
-            
+    suspend fun getItemBody(itemId: Int): Item?
+
     /** return article with all of its items and advises  */
     @Query("SELECT * FROM Article WHERE id = :articleId")
     @Transaction
     suspend fun getArticleById(articleId: Int): Article
 
-    @Query("SELECT * FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
-            "  AND ArticleAndTag.tagId IN (:tags) GROUP BY Article.ID")
+    @Query(
+        "SELECT * FROM Article INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId" +
+                "  AND ArticleAndTag.tagId IN (:tags) GROUP BY Article.ID"
+    )
     fun getArticlesWithTag(tags: List<Int>): PagingSource<Int, Article>
+
     @Query("SELECT * FROM Article")
     fun getArticles(): PagingSource<Int, Article>
 
 
     @Query("SELECT  * FROM Article JOIN ArticleFts ON Article.name = ArticleFts.name WHERE (ArticleFts MATCH '*' || :key || '*' )")
-    fun getArticlesWithKeyWord(key:String):PagingSource<Int, Article>
+    fun getArticlesWithKeyWord(key: String): PagingSource<Int, Article>
 
 
     /** return articles */
-    @Query("SELECT * FROM Article " +
-            "INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId " +
-            "AND ArticleAndTag.tagId IN (:tags) " +
-            "JOIN ArticleFts ON Article.name = ArticleFts.name WHERE (ArticleFts MATCH '*' || :key || '*')  " +
-            "GROUP BY Article.ID")
-    fun getArticlesWIthTagAndKeyWord(tags: List<Int>, key:String): PagingSource<Int, Article>
+    @Query(
+        "SELECT * FROM Article " +
+                "INNER JOIN ArticleAndTag ON Article.id == ArticleAndTag.articleId " +
+                "AND ArticleAndTag.tagId IN (:tags) " +
+                "JOIN ArticleFts ON Article.name = ArticleFts.name WHERE (ArticleFts MATCH '*' || :key || '*')  " +
+                "GROUP BY Article.ID"
+    )
+    fun getArticlesWIthTagAndKeyWord(tags: List<Int>, key: String): PagingSource<Int, Article>
 
     @Query("SELECT * from advice where itemId = :parentId")
     suspend fun getAdvisesForItem(parentId: Int): List<Advice>
@@ -61,15 +64,14 @@ interface ArticleDao {
     suspend fun addTagRelation(articleAndTag: ArticleAndTag)
 
     @Transaction
-    suspend fun addArticleWithTags(article: Article){
+    suspend fun addArticleWithTags(article: Article) {
         addArticle(article)
-        if (article.tags!= null){
-            for (i in article.tags!!){
+        if (article.tags != null) {
+            for (i in article.tags!!) {
                 addTagRelation(ArticleAndTag(article.id, i.id))
             }
         }
     }
-
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -85,7 +87,7 @@ interface ArticleDao {
     suspend fun updateAdvise(advice: Advice)
 
     @Query("UPDATE advice SET feedback = :feedBackState WHERE id = :adviceId")
-    suspend fun updateAdviceFeedbackState(adviceId:Int, feedBackState: FeedBackState)
+    suspend fun updateAdviceFeedbackState(adviceId: Int, feedBackState: FeedBackState)
 
     @Query("UPDATE advice SET feedback = :feedBackState WHERE id = :id")
     suspend fun updateArticleFeedbackState(id: Int, feedBackState: FeedBackState)
@@ -107,16 +109,16 @@ interface ArticleDao {
 
 
     @Query("UPDATE advice SET likes = :nowLike, feedback = :feedBackState WHERE id = :id")
-    suspend fun likeAdvice(id:Int, nowLike:Int, feedBackState: FeedBackState)
+    suspend fun likeAdvice(id: Int, nowLike: Int, feedBackState: FeedBackState)
 
     @Query("UPDATE advice SET dislikes = :nowLike, feedback = :feedBackState  WHERE id = :id")
-    suspend fun dislikeAdvice(id:Int, nowLike:Int, feedBackState: FeedBackState)
+    suspend fun dislikeAdvice(id: Int, nowLike: Int, feedBackState: FeedBackState)
 
     @Query("UPDATE article SET likes = :nowLike, feedback = :feedBackState  WHERE id = :id")
-    suspend fun likeArticle(id:Int, nowLike:Int, feedBackState: FeedBackState)
+    suspend fun likeArticle(id: Int, nowLike: Int, feedBackState: FeedBackState)
 
     @Query("UPDATE article SET dislikes = :nowLike, feedback = :feedBackState  WHERE id = :id")
-    suspend fun dislikeArticle(id:Int, nowLike:Int, feedBackState: FeedBackState)
+    suspend fun dislikeArticle(id: Int, nowLike: Int, feedBackState: FeedBackState)
 
     @Query("DELETE FROM ArticleAndTag")
     suspend fun deleteArticleAndTagRelations()
@@ -125,11 +127,10 @@ interface ArticleDao {
     suspend fun deleteArticles()
 
     @Transaction
-    suspend fun deleteArticlesWithTags(){
+    suspend fun deleteArticlesWithTags() {
         deleteArticles()
         deleteArticleAndTagRelations()
     }
-
 
 
 }

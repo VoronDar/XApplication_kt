@@ -36,5 +36,5 @@ class CategoryAdapter(units: ArrayList<EventCategory>, context: Context) :
     }
 
 
-    inner class ViewHolder(val binding:UnitCategoryBinding) : BaseViewHolder(blockListener, binding.root) {}
+    inner class ViewHolder(val binding:UnitCategoryBinding) : BaseViewHolder(blockListener, binding.root)
 }

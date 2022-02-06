@@ -11,8 +11,6 @@ import com.astery.xapplication.R
 import com.astery.xapplication.model.entities.Event
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
-import com.astery.xapplication.ui.fragments.calendar.calendar_adapter.CalendarAdapter
-import com.astery.xapplication.ui.utils.setDrawable
 import java.util.*
 
 class EventAdapter(units: ArrayList<Event?>?, context: Context) :
@@ -28,9 +26,14 @@ class EventAdapter(units: ArrayList<Event?>?, context: Context) :
         val holder = h as ViewHolder
         val unit = units?.get(position)
         if (position == 0) return
-        if (unit?.image == null){
-            holder.image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.event_placeholder))
-        } else{
+        if (unit?.image == null) {
+            holder.image.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.event_placeholder
+                )
+            )
+        } else {
             holder.image.setImageBitmap(unit.image)
         }
     }
@@ -41,7 +44,7 @@ class EventAdapter(units: ArrayList<Event?>?, context: Context) :
     }
 
     override fun getItemCount(): Int {
-        return units?.size?: 0
+        return units?.size ?: 0
     }
 
     inner class ViewHolder(itemView: View) : BaseViewHolder(blockListener, itemView) {

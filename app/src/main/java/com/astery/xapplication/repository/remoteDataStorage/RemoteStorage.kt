@@ -29,7 +29,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "UNUSED_PARAMETER")
 class RemoteStorage @Inject constructor(@ApplicationContext val context: Context) {
 
     private val eventTemplateCollection = "EVENT_TEMPLATES"
@@ -135,19 +135,19 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
 
 
     /** universal func to get list of values
-     * @param task - db query
+     * @param snapshot - db query
      * @param will - description for logging
      * @param doOnComplete - func that get task and transfer it to result
      * */
     private suspend fun <R> getValue(
-        task: Task<QuerySnapshot>,
+        snapshot: Task<QuerySnapshot>,
         will: String,
         doOnComplete: (Task<QuerySnapshot>) -> List<R>
     ): Result<List<R>> {
         Timber.d("ask for $will")
         lateinit var result: WrapperResult<R>
         try {
-            task.addOnCompleteListener { task ->
+            snapshot.addOnCompleteListener { task ->
                 try {
                     result = WrapperResult(Result.success(doOnComplete(task)))
                     Timber.d("for $will got ${result.result.getOrThrow().size} elements")
@@ -222,14 +222,14 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
 
 
     suspend fun getImg(source: StorageSource, name: String): Bitmap? {
-        val ONE_MEGABYTE = (1024 * 1024).toLong()
+        val megabite = (1024 * 1024).toLong()
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference
         val child = storageRef.child("${source.getFolderName()}/$name.jpg")
 
         lateinit var wa: WA
         try {
-            child.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytes ->
+            child.getBytes(megabite).addOnSuccessListener { bytes ->
                 wa = WA(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
                 Timber.d("got an image '${source.getFolderName()}/$name.jpg'")
             }.addOnFailureListener {
@@ -269,7 +269,7 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
                     isSuccess = WAA(true)
                 }.await()
             isSuccess.isCompleted
-        } catch(e:java.lang.Exception){
+        } catch (e: java.lang.Exception) {
             Timber.d("failed to update article field - got ${e.localizedMessage}")
             false
         }
@@ -293,8 +293,7 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
                     isSuccess = WAA(true)
                 }.await()
             isSuccess.isCompleted
-        }
-        catch(e:java.lang.Exception){
+        } catch (e: java.lang.Exception) {
             Timber.d("failed to update article field - got ${e.localizedMessage}")
             false
         }

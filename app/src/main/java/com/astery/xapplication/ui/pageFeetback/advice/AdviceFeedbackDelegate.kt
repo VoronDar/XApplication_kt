@@ -5,7 +5,7 @@ import com.astery.xapplication.model.entities.Advice
 import com.astery.xapplication.repository.feetback.OnFeedbackListener
 import com.astery.xapplication.ui.pageFeetback.FeedBackStorage
 
-class AdviceFeetBackDelegate(val i: Advice, val binding:UnitAdviceBinding, val feedbackListener: OnAdviceFeedbackListener?){
+class AdviceFeedbackDelegate(val i: Advice, val binding:UnitAdviceBinding, val feedbackListener: OnAdviceFeedbackListener?){
     fun getValue():FeedBackStorage{
         return FeedBackStorage(i.likes, i.dislikes, i.feedback, object: OnFeedbackListener {
             override fun onLike(){

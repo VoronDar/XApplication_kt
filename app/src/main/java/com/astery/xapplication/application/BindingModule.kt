@@ -17,6 +17,5 @@ import javax.inject.Singleton
 abstract class BindingModule {
     @Binds
     @Singleton
-    //abstract fun bindLocalStorage(localStorage: FakeLocalStorage): LocalStorage
     abstract fun bindLocalStorage(localStorage: AppLocalStorage): LocalStorage
 }

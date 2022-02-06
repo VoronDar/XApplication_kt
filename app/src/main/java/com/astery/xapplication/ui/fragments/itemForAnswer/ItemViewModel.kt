@@ -56,7 +56,7 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
         }
     }
 
-    fun setPresentableValue(value:ItemPresentable){
+    private fun setPresentableValue(value:ItemPresentable){
         _element.value = Result.success(value)
         _presentable.value = value
     }

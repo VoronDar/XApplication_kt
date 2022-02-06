@@ -2,22 +2,21 @@ package com.astery.xapplication.ui.adapterUtils
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
-import com.astery.xapplication.ui.activity.popupDialogue.Blockable
 
 /**
  * abstraction for all adapters
  * */
-abstract class BaseAdapter<T, R> (units: List<R>?, var context:Context):
+abstract class BaseAdapter<T, R>(units: List<R>?, var context: Context) :
     RecyclerView.Adapter<BaseViewHolder>() {
-    var units:List<R>? = null
-    set(value){
-        field = value
-        notifyDataSetChanged()
-    }
+    var units: List<R>? = null
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     open var blockListener: BlockListener? = null
 
-    init{
+    init {
         this.units = units
     }
 

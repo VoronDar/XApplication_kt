@@ -135,7 +135,6 @@ class CalendarFragment : XFragment() {
             }
             showEventContainer(true)
             renderSelectedEventImage(eventPair.first.image)
-            //eventPair.first.isAdvices
         }
     }
 

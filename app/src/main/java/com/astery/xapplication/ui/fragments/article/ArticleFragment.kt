@@ -132,10 +132,10 @@ class ArticleFragment : XFragment() {
             }
             setTitle()
         }
-        viewModel.element.observe(viewLifecycleOwner) { result->
+        viewModel.element.observe(viewLifecycleOwner) { result ->
             fadeAway()
 
-            if (result.isFailure){
+            if (result.isFailure) {
                 // TODO(I have no idea what to do in this case)
                 return@observe
             }
@@ -145,7 +145,7 @@ class ArticleFragment : XFragment() {
             renderImage(presentable)
             clearSpecialInfo()
             when (presentable) {
-                is ArticlePresentable -> renderArticleInfo(presentable)
+                is ArticlePresentable -> renderArticleInfo()
                 is ItemPresentable -> renderItemInfo(presentable)
             }
         }
@@ -172,7 +172,7 @@ class ArticleFragment : XFragment() {
     }
 
     /** render feetback page */
-    private fun renderArticleInfo(article: ArticlePresentable) {
+    private fun renderArticleInfo() {
         binding.page.pageFeedback.root.isVisible = true
         binding.page.pageFeedback.feedBackStorage = viewModel.feedBackArticleStorage.value
     }

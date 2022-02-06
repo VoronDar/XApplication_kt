@@ -12,7 +12,6 @@ import com.astery.xapplication.R
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
 import com.google.android.material.card.MaterialCardView
-import timber.log.Timber
 import java.util.*
 
 /**

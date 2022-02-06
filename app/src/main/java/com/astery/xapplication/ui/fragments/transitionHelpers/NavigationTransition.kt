@@ -1,6 +1,6 @@
 package com.astery.xapplication.ui.fragments.transitionHelpers
 
-sealed class NavigationTransition {}
+sealed class NavigationTransition
 
 class SharedAxisTransition:NavigationTransition() {
     var axis = 0

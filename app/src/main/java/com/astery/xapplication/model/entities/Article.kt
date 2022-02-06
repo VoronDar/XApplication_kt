@@ -75,7 +75,7 @@ data class Article(@PrimaryKey var id: Int, val name: String, val body: String?,
         result = 31 * result + (body?.hashCode() ?: 0)
         result = 31 * result + likes
         result = 31 * result + dislikes
-        result = 31 * result + (feedBack?.hashCode() ?: 0)
+        result = 31 * result + feedBack.hashCode()
         return result
     }
 

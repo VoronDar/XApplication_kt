@@ -9,7 +9,7 @@ import com.astery.xapplication.repository.RemoteEntity
  * (due to firestore features. It requires variables as vars and also it can't work with enums))
  * I added these remote classes because I don't want to mess the original ones with some variables.
  * */
-class EventTemplateFromRemote() : EventTemplate(0, "", "", EventCategory.Dating),
+class EventTemplateFromRemote : EventTemplate(0, "", "", EventCategory.Dating),
     RemoteEntity<EventTemplate> {
     var category:Int = EventCategory.Mood.ordinal
     override var lastUpdated:Int = 0

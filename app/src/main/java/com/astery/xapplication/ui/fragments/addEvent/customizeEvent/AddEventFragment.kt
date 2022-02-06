@@ -5,11 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.core.view.isGone
-import androidx.databinding.BindingAdapter
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +13,6 @@ import com.astery.xapplication.R
 import com.astery.xapplication.databinding.FragmentAddEventBinding
 import com.astery.xapplication.model.entities.EventTemplate
 import com.astery.xapplication.ui.fragments.XFragment
-import com.astery.xapplication.ui.fragments.article.Presentable
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,16 +59,16 @@ class AddEventFragment : XFragment() {
     }
 
     override fun setListeners() {
-        binding.submit.setOnClickListener{ viewModel.addEvent() }
+        binding.submit.setOnClickListener { viewModel.addEvent() }
     }
 
     override fun setViewModelListeners() {
         viewModel.loadQuestions()
-        viewModel.questions.observe(viewLifecycleOwner){
+        viewModel.questions.observe(viewLifecycleOwner) {
             questionsAdapter?.units = it
         }
-        viewModel.addEventState.observe(viewLifecycleOwner){
-            if (it == AddEventViewModel.JobState.Success){
+        viewModel.addEventState.observe(viewLifecycleOwner) {
+            if (it == AddEventViewModel.JobState.Success) {
                 moveNext()
             }
         }
@@ -89,7 +84,7 @@ class AddEventFragment : XFragment() {
 
     }
 
-    private fun renderImage(bitmap: Bitmap?){
+    private fun renderImage(bitmap: Bitmap?) {
         binding.eventImage.isGone = bitmap == null
         if (bitmap != null) binding.eventImage.setImageBitmap(bitmap)
     }
@@ -99,7 +94,7 @@ class AddEventFragment : XFragment() {
     }
 
 
-    private fun moveNext(){
+    private fun moveNext() {
         setTransition(SharedAxisTransition().setAxis(MaterialSharedAxis.Z))
         if (viewModel.event?.isAdvices == true)
             move(AddEventFragmentDirections.actionAddEventFragment2ToEndEventFragment(viewModel.event!!))
