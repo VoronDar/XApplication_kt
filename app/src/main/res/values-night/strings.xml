@@ -1,0 +1,88 @@
+<resources>
+    <string name="app_name">XApplication</string>
+    <string name="action_settings">Settings</string>
+
+
+    <string name="item_image_CD">Decorating image for this page</string>
+    <string name="event_more_info">Give more info about this event:</string>
+    <string name="submit">Submit</string>
+    <string name="add_new_event_contratulation">You\'ve added a new event!</string>
+    <string name="well_done">Well done!</string>
+    <string name="ignore">Ignore</string>
+
+    <string name="calendar_date">%d %s, %d</string>
+
+    <string name="calendar_january">January</string>
+    <string name="calendar_february">February</string>
+    <string name="calendar_march">March</string>
+    <string name="calendar_april">April</string>
+    <string name="calendar_may">May</string>
+    <string name="calendar_june">June</string>
+    <string name="calendar_july">July</string>
+    <string name="calendar_august">August</string>
+    <string name="calendar_september">September</string>
+    <string name="calendar_october">October</string>
+    <string name="calendar_november">November</string>
+    <string name="calendar_december">December</string>
+
+    <string name="calendar_monday">Mo</string>
+    <string name="calendar_tuesday">Tu</string>
+    <string name="calendar_wednesday">We</string>
+    <string name="calendar_thursday">Th</string>
+    <string name="calendar_friday">Fr</string>
+    <string name="calendar_saturday">Sa</string>
+    <string name="calendar_sunday">Su</string>
+
+
+    <string name="calendar_no_event_info">You haven\'t added any events</string>
+    <string name="calendar_no_event_action">Add an event</string>
+
+
+    <string name="title_calendar">%s, %d</string>
+    <string name="title_tips">Tips</string>
+    <string name="title_new_event">Add new event</string>
+
+
+    <string name="ar_tag_gender_man">Male</string>
+    <string name="ar_tag_gender_woman">Female</string>
+
+    <string name="ar_tag_age_adult">Adult</string>
+    <string name="ar_tag_age_teen">Teen</string>
+    <string name="ar_tag_age_child">Child</string>
+
+    <string name="ar_tag_topic_health">Health</string>
+    <string name="ar_tag_topic_relations">Relations</string>
+    <string name="ar_tag_topic_sex">Sex</string>
+
+    <string name="ar_tag_type_gender">Gender</string>
+    <string name="ar_tag_type_age">Age</string>
+    <string name="ar_tag_type_topic">Topic</string>
+    <string name="filters">Filters</string>
+
+
+    <string name="button_accept">Accept</string>
+    <string name="button_reload">Reload</string>
+
+
+    <string name="bottom_articles">Articles</string>
+    <string name="bottom_events">Events</string>
+    <string name="bottom_warnings">Warnings</string>
+
+
+    <string name="loading_state_loading">Loading…</string>
+    <string name="loading_state_nothing">There is no result found</string>
+    <string name="loading_state_error">Some data failed to load\n%s</string>
+
+    <string name="loading_state_error_internet">Please check your internet connection</string>
+    <string name="loading_state_error_bug">Please try again later</string>
+
+
+    <string-array name="event_category">
+        <item>Mood</item>
+        <item>Medicine</item>
+        <item>Feels</item>
+        <item>Relations</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

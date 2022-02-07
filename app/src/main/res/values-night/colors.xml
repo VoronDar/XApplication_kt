@@ -8,23 +8,22 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="onBackground">#000000</color>
-
-    <color name="appBar">#FFFFFFFF</color>
-    <color name="background">#FFFFFFFF</color>
+    <color name="onBackground">#ffffff</color>
 
 
+    <color name="appBar">#1D241D</color>
+    <color name="background">#333936</color>
 
-    <color name="items_number">#E2F6F0</color>
-    <color name="page_text_deselected">#0E2205</color>
-    <color name="article_text">#5E5C69</color>
-    <color name="important_article_text">#393939</color>
+    <color name="items_number">#2B574A</color>
+    <color name="page_text_deselected">#000000</color>
+    <color name="article_text">#9C9C9C</color>
+    <color name="important_article_text">#DCDCDC</color>
     <color name="more_info_text">#B3000000</color>
 
 
-    <color name="button_text">#3C6D5F</color>
+    <color name="button_text">#79C6B0</color>
 
-    <color name="divider_color">#BCCCED</color>
+    <color name="divider_color">#1C1C1C</color>
 
     <!-- delete them -->
     <color name="warning_advice"></color>
@@ -39,29 +38,31 @@
     <color name="tag_even">#CEF6CA</color>
     <color name="tag_text_color">#B3000000</color>
 
-    <color name="tag_selected_text_color">#000000</color>
-    <color name="tag_unselected_text_color">#99000000</color>
+    <color name="tag_selected_text_color">#FFFFFF</color>
+    <color name="tag_unselected_text_color">#99AEAEAE</color>
+
 
     <color name="ripple_color">#3360B59D</color>
 
     <color name="selected_card_color">#E7EAFF</color>
     <color name="card_corner">#59000000</color>
-    <color name="calendar_weekend">#892555</color>
-    <color name="calendar_week">#26356B</color>
+    <color name="calendar_weekend">#FF88C1</color>
+    <color name="calendar_week">#6183FB</color>
     <color name="calendar_unit_stroke_color">#CDD8FF</color>
 
     <color name = "neutralIconColor">#99ECD4</color>
     <color name = "neutralIconTextColor">#508878</color>
-    <color name = "neutralSurfaceColor">#E2F6F0</color>
-    <color name = "neutralBottomMenuColor">#046B4D</color>
-
-
-    <color name = "noEventCardBackground">@color/white</color>
+    <color name = "neutralSurfaceColor">#549A85</color>
+    <color name = "neutralBottomMenuColor">#26CD9D</color>
 
 
     <color name="deselect_icon">#AEAEAE</color>
-    <color name="like_icon">#808ED7</color>
-    <color name="dislike_icon">#EB7A9C</color>
+    <color name="like_icon">#B0BCFF</color>
+    <color name="dislike_icon">#FFAED5</color>
+
+
+
+    <color name = "noEventCardBackground">#2E2E2E</color>
 
 
     <color name="advice_background_do">#669BD378</color>

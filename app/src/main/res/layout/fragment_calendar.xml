@@ -40,23 +40,23 @@
                 android:text = "@string/calendar_sunday"/>
             <TextView
                 style="@style/CalendarText"
-                android:textColor="@color/calendar_week"
+                android:textColor="@color/button_text"
                 android:text = "@string/calendar_monday"/>
             <TextView
                 style="@style/CalendarText"
-                android:textColor="@color/calendar_week"
+                android:textColor="@color/button_text"
                 android:text = "@string/calendar_tuesday"/>
             <TextView
                 style="@style/CalendarText"
-                android:textColor="@color/calendar_week"
+                android:textColor="@color/button_text"
                 android:text = "@string/calendar_wednesday"/>
             <TextView
                 style="@style/CalendarText"
-                android:textColor="@color/calendar_week"
+                android:textColor="@color/button_text"
                 android:text = "@string/calendar_thursday"/>
             <TextView
                 style="@style/CalendarText"
-                android:textColor="@color/calendar_week"
+                android:textColor="@color/button_text"
                 android:text = "@string/calendar_friday"/>
             <TextView
                 style="@style/CalendarText"

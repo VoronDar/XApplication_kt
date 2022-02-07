@@ -27,7 +27,7 @@
 
         <TextView
             style="@style/advice"
-            android:textColor="@{isSelected ? @color/selected_ansser :  @color/article_text}"
+            android:textColor="@{isSelected ? @color/important_article_text :  @color/article_text}"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"

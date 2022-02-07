@@ -12,6 +12,7 @@ import com.astery.xapplication.model.entities.Event
 import com.astery.xapplication.ui.activity.popupDialogue.Blockable
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
+import com.google.android.material.card.MaterialCardView
 import java.util.*
 
 class EventAdapter(units: ArrayList<Event?>?, context: Context) :
@@ -58,5 +59,6 @@ class EventAdapter(units: ArrayList<Event?>?, context: Context) :
 
     inner class ViewHolder(itemView: View) : BaseViewHolder(blockListener, itemView) {
         val image: ImageView = itemView.findViewById(R.id.image)
+        val card: MaterialCardView = itemView.findViewById(R.id.card)
     }
 }

@@ -35,6 +35,7 @@ import com.astery.xapplication.ui.fragments.calendar.CalendarFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.util.*
 
 
 /**
@@ -95,7 +96,8 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
 
 
     override fun changeTitle(title: String?) {
-        supportActionBar?.title = title
+        supportActionBar?.title = title?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(
+            Locale.getDefault()) else it.toString() }
         Timber.i(supportActionBar?.title.toString())
     }
 

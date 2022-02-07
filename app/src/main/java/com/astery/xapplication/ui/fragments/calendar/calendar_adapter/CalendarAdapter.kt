@@ -45,13 +45,13 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
         holder.day.text = unit.day.toString()
         holder.card.isGone = !(unit.enabled)
         if (unit.day == selectedDay) {
-            holder.card.setBackgroundColor(ContextCompat.getColor(context, R.color.neutralSurfaceColor))
+            holder.card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.neutralSurfaceColor))
             holder.card.strokeColor = ContextCompat.getColor(context, R.color.black)
             holder.day.setTextColor(ContextCompat.getColor(context, R.color.black))
         } else{
-            holder.card.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-            holder.card.strokeColor = ContextCompat.getColor(context, R.color.calendar_unit_stroke_color)
-            holder.day.setTextColor(ContextCompat.getColor(context, R.color.deselected_calendar_unit_text))
+            holder.card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.appBar))
+            holder.card.strokeColor = ContextCompat.getColor(context, R.color.divider_color)
+            holder.day.setTextColor(ContextCompat.getColor(context, R.color.onBackground))
         }
     }
 
