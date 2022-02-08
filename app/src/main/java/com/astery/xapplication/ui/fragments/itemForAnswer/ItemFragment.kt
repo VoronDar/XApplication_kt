@@ -78,11 +78,10 @@ class ItemFragment : XFragment() {
         loadingState?.doOnResumeUI()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        loadingState?.doOnDestroyUI()
+    override fun onStop() {
+        super.onStop()
+        loadingState?.doOnStopUI()
     }
-
 
     /** page_event used in two places. So, it must have different top padding in different places */
     private fun setRootPadding() {
