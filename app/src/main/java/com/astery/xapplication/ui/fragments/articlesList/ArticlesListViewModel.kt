@@ -1,5 +1,7 @@
 package com.astery.xapplication.ui.fragments.articlesList
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -19,29 +21,20 @@ class ArticlesListViewModel @Inject constructor() : ViewModel() {
     @set:Inject
     lateinit var repository: Repository
 
-    private var articlesFlow: Flow<PagingData<Article>>? = null
+    // Я знаю, что так нельзя делать. Но пока я не сделаю полнотекстовый поиск из fb оно будет вот настолько криво
+    private val _articlesFlow:MutableLiveData<Flow<PagingData<Article>>> = MutableLiveData()
+    val articlesFlow: LiveData<Flow<PagingData<Article>>?>
+    get() = _articlesFlow
 
 
-    fun requestFlow(searchSequence: String, filters: List<ArticleTag>): Flow<PagingData<Article>> {
-
-        /*
-        viewModelScope.launch {
-            for (i in 500001..500003) {
-                repository.localStorage.addArticle(Article(i, "name $i", "body", 12, 12))
-            }
-            for (i in 100..102) {
-                repository.localStorage.addArticle(Article(i, "with items $i", "ara ara", 142, 0))
-            }
-        }*/
+    fun requestFlow(searchSequence: String, filters: List<ArticleTag>){
 
 
-        //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)
-        articlesFlow = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12)) {
-            repository.getArticles(cleanSearchSequence(searchSequence), filters)
-        }.flow
-        //articlesFlow = Pager(PagingConfig(4)){ FirestorePagingSource(FirebaseFirestore.getInstance()) }.flow.cachedIn(viewModelScope)
-
-        return articlesFlow!!
+            //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)
+            _articlesFlow.value = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12)) {
+                repository.getArticles(cleanSearchSequence(searchSequence), filters)
+            }.flow
+        }
     }
 
     private fun cleanSearchSequence(searchSequence: String): String {

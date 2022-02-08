@@ -115,6 +115,26 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
     override fun setViewModelListeners() {
         prepareAdapters()
         requestArticleFlow()
+
+        viewModel.articlesFlow.observe(viewLifecycleOwner) { flow ->
+            lifecycleScope.launch {
+                flow?.collectLatest { source ->
+                    articleListAdapter?.addOnPagesUpdatedListener {
+                        if (articleListAdapter?.itemCount == 0) {
+                            loadingState = LoadingStateView.addViewToViewGroup(
+                                LoadingStateNothing(),
+                                layoutInflater,
+                                binding.frame
+                            )
+                        } else {
+                            LoadingStateView.removeView()
+                            binding.recyclerView.isVisible = true
+                        }
+                    }
+                    articleListAdapter?.submitData(source)
+                }
+            }
+        }
     }
 
     // а вот тут у нас обитает дикий костыль. Если вернуться назад на страницу paging adapter откажется показывать что-либо вообще
@@ -153,26 +173,9 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
             layoutInflater,
             binding.frame
         )
-
-        lifecycleScope.launch {
-            viewModel.requestFlow(keywords, tags).collectLatest { source ->
-                articleListAdapter?.addOnPagesUpdatedListener {
-                    if (articleListAdapter?.itemCount == 0) {
-                        loadingState = LoadingStateView.addViewToViewGroup(
-                            LoadingStateNothing(),
-                            layoutInflater,
-                            binding.frame
-                        )
-                    } else {
-                        LoadingStateView.removeView()
-                        // TODO(a???? I've got Nullpointer there)
-                        if (_bind != null) binding.recyclerView.isVisible = true
-                    }
-                }
-                articleListAdapter?.submitData(source)
-            }
-        }
+        viewModel.requestFlow(keywords, tags)
     }
+
 
     override fun getBlockable(): List<Blockable> {
         return listOf(articleListAdapter!!)

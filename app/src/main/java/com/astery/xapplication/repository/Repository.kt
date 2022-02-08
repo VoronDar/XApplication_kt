@@ -152,15 +152,54 @@ class Repository @Inject constructor(
         localStorage.deleteEvent(event)
     }
 
+
     fun getArticles(sequence: String, tags: List<ArticleTag>): PagingSource<Int, Article> {
-        //TODO (make for remote also)
-        if (sequence.isEmpty() && tags.isEmpty()) return localStorage.getArticles()
-        if (sequence.isNotEmpty() && tags.isNotEmpty()) return localStorage.getArticlesWithTagAndKeyWord(
-            tags,
-            sequence
-        )
-        return if (sequence.isNotEmpty()) localStorage.getArticlesWithKeyWord(sequence)
-        else localStorage.getArticlesWithTag(tags)
+        if (sequence.isEmpty() && tags.isEmpty()){
+            return localStorage.getArticles()
+        }
+        if (sequence.isNotEmpty() && tags.isNotEmpty()) {
+            return localStorage.getArticlesWithTagAndKeyWord(
+                tags,
+                sequence
+            )
+        }
+
+        return if (sequence.isNotEmpty()){
+            localStorage.getArticlesWithKeyWord(sequence)
+        }
+        else {
+            localStorage.getArticlesWithTag(tags)
+        }
+    }
+
+    /** get all tags with these tags. save to local
+     * TODO(delete it later and add fulltext search from remote in getArticles())
+     * */
+    suspend fun updateArticlesWithTags(tags: List<ArticleTag>) {
+        if (isOnline()) {
+            for (i in tags) {
+                val remUpdate = ArticleREU(i)
+
+                if (askForUpdateMgr.isNeedToUpdate(remUpdate)) {
+                    val result = remoteStorage.getArticlesWithTag(
+                        i,
+                        askForUpdateMgr.getLastUpdated(remUpdate)
+                    )
+
+                    if (result.isSuccess) {
+                        for (j in convertFromRemote(result.getOrThrow())) localStorage.addArticleWithTag(
+                            j
+                        )
+                        if (result.getOrThrow().isNotEmpty()) {
+                            askForUpdateMgr.setUpdated(
+                                remUpdate,
+                                result.getOrThrow().maxByOrNull { it.lastUpdated }!!.lastUpdated
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     suspend fun reset() {
