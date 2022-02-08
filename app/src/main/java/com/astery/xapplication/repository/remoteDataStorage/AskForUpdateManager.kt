@@ -1,5 +1,6 @@
 package com.astery.xapplication.repository.remoteDataStorage
 
+import com.astery.xapplication.model.entities.ArticleTag
 import com.astery.xapplication.model.entities.values.EventCategory
 import com.astery.xapplication.repository.preferences.PreferenceEntity
 import com.astery.xapplication.repository.preferences.Preferences
@@ -49,6 +50,7 @@ sealed class RemEntityUpdate(appendix: String) {
 
 }
 
+class ArticleREU(tag: ArticleTag) : RemEntityUpdate(tag.id.toString())
 class EvTemplateREU(category: EventCategory) : RemEntityUpdate(category.ordinal.toString())
 class QuestionREU(templateId: Int) : RemEntityUpdate(templateId.toString())
 

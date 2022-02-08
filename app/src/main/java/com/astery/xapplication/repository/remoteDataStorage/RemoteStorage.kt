@@ -5,10 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.astery.xapplication.model.entities.*
 import com.astery.xapplication.model.entities.values.EventCategory
-import com.astery.xapplication.model.remote.AdviceFromRemote
-import com.astery.xapplication.model.remote.EventTemplateFromRemote
-import com.astery.xapplication.model.remote.ItemFromRemote
-import com.astery.xapplication.model.remote.QuestionFromRemote
+import com.astery.xapplication.model.remote.*
 import com.astery.xapplication.repository.FeedbackAction
 import com.astery.xapplication.repository.FeedbackField
 import com.astery.xapplication.repository.FeedbackResult
@@ -100,6 +97,34 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
         }
     }
 
+
+    /** temporary getting all articles with special tag*/
+    suspend fun getArticlesWithTag(tag: ArticleTag, lastUpdated: Int): Result<List<ArticleFromRemote>> {
+        val collection = Firebase.firestore
+            .collection(articleCollection)
+            .whereGreaterThan("lastUpdated", lastUpdated)
+
+        val query = when(tag){
+            GenderTag.Man -> collection.whereEqualTo("tagMan", true)
+            GenderTag.Woman -> collection.whereEqualTo("tagWoman", true)
+
+            AgeTag.Adult -> collection.whereEqualTo("tagAdult", true)
+            AgeTag.Teen -> collection.whereEqualTo("tagTeen", true)
+            AgeTag.Child -> collection.whereEqualTo("tagChild", true)
+
+            else -> return Result.failure(UnexpectedBugException())
+
+        }
+
+        val will = "articles with tag = ${tag.id}"
+
+        return getValue(query.get(), will) { task ->
+            val res = ArrayList(task.result.toObjects(ArticleFromRemote::class.java))
+            extrudeId(res as ArrayList<RemoteEntity<Article>>, task)
+            return@getValue res
+        }
+    }
+
     /** lastUpdated means nothing. Return list with zero or one item*/
     suspend fun getItemById(itemId: Int, lastUpdated: Int): Result<List<ItemFromRemote>> {
         Timber.d("ask for item with itemId = $itemId")
@@ -117,8 +142,8 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
                         result =
                             if (res == null) WrapperResult(Result.failure(UnexpectedBugException()))
                             else WrapperResult(Result.success(listOf(res)))
-                    } catch (e: FirebaseFirestoreException) {
-                        Timber.d("got firestore exception ${e.localizedMessage}, ${e.code}")
+                    } catch (e: Exception) {
+                        Timber.d("got exception ${e.localizedMessage}")
                         result = WrapperResult(Result.failure(InternetConnectionException()))
                     }
                 }
@@ -132,67 +157,7 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
             return Result.failure(UnexpectedBugException())
         }
     }
-
-
-    /** universal func to get list of values
-     * @param snapshot - db query
-     * @param will - description for logging
-     * @param doOnComplete - func that get task and transfer it to result
-     * */
-    private suspend fun <R> getValue(
-        snapshot: Task<QuerySnapshot>,
-        will: String,
-        doOnComplete: (Task<QuerySnapshot>) -> List<R>
-    ): Result<List<R>> {
-        Timber.d("ask for $will")
-        lateinit var result: WrapperResult<R>
-        try {
-            snapshot.addOnCompleteListener { task ->
-                try {
-                    result = WrapperResult(Result.success(doOnComplete(task)))
-                    Timber.d("for $will got ${result.result.getOrThrow().size} elements")
-                } catch (e: FirebaseFirestoreException) {
-                    Timber.d("for $will got exception ${e.localizedMessage}, ${e.code}")
-                    result = WrapperResult(Result.failure(UnexpectedBugException()))
-                }
-            }.addOnCanceledListener {
-                Timber.d("for $will - cancelled")
-                result = gotFailure(will, null)
-            }.addOnFailureListener {
-                Timber.d("for $will got exception ${it.localizedMessage}")
-                result = gotFailure(will, it)
-            }.await()
-        } catch (e: Exception) {
-            Timber.d("for $will got exception ${e.localizedMessage} ${e::class.simpleName}")
-            result = gotFailure(will, e)
-        }
-
-        return result.result
-    }
-
-    private fun <T> gotFailure(will: String, e: Exception?): WrapperResult<T> {
-        Timber.d("tried to get $will")
-        return WrapperResult(Result.failure(UnexpectedBugException()))
-    }
-
-
-    /** get id from task. Transform invalid id. It's not possible to attach questions and image to events with invalid id
-     * */
-    private fun <T> extrudeId(
-        res: ArrayList<RemoteEntity<T>>,
-        task: Task<QuerySnapshot>
-    ) {
-        for (i in res.indices) {
-            try {
-                res[i].id = task.result.documents[i].id.replace(" ", "").toInt()
-            } catch (e: Exception) {
-                res[i].id = task.result.documents[i].id.hashCode()
-                Timber.e("id of an event template is invalid. Got ${task.result.documents[i].id}. Expected Int. Transformed to ${res[i].id}")
-            }
-        }
-    }
-
-
+    
     suspend fun getQuestionsForTemplate(
         templateId: Int,
         lastUpdated: Int
@@ -298,6 +263,66 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
             false
         }
     }
+
+    /** universal func to get list of values
+     * @param task - db query
+     * @param will - description for logging
+     * @param doOnComplete - func that get task and transfer it to result
+     * */
+    private suspend fun <R> getValue(
+        task: Task<QuerySnapshot>,
+        will: String,
+        doOnComplete: (Task<QuerySnapshot>) -> List<R>
+    ): Result<List<R>> {
+        Timber.d("ask for $will")
+        lateinit var result: WrapperResult<R>
+        try {
+            task.addOnCompleteListener { task ->
+                try {
+                    result = WrapperResult(Result.success(doOnComplete(task)))
+                    Timber.d("for $will got ${result.result.getOrThrow().size} elements")
+                } catch (e: FirebaseFirestoreException) {
+                    Timber.d("for $will got exception ${e.localizedMessage}, ${e.code}")
+                    result = WrapperResult(Result.failure(UnexpectedBugException()))
+                }
+            }.addOnCanceledListener {
+                Timber.d("for $will - cancelled")
+                result = gotFailure(will, null)
+            }.addOnFailureListener {
+                Timber.d("for $will got exception ${it.localizedMessage}")
+                result = gotFailure(will, it)
+            }.await()
+        } catch (e: Exception) {
+            Timber.d("for $will got exception ${e.localizedMessage} ${e::class.simpleName}")
+            result = gotFailure(will, e)
+        }
+
+        return result.result
+    }
+
+    private fun <T> gotFailure(will: String, e: Exception?): WrapperResult<T> {
+        Timber.d("tried to get $will")
+        return WrapperResult(Result.failure(UnexpectedBugException()))
+    }
+
+
+    /** get id from task. Transform invalid id. It's not possible to attach questions and image to events with invalid id
+     * */
+    private fun <T> extrudeId(
+        res: ArrayList<RemoteEntity<T>>,
+        task: Task<QuerySnapshot>
+    ) {
+        for (i in res.indices) {
+            try {
+                res[i].id = task.result.documents[i].id.replace(" ", "").toInt()
+            } catch (e: Exception) {
+                res[i].id = task.result.documents[i].id.hashCode()
+                Timber.e("id of an event template is invalid. Got ${task.result.documents[i].id}. Expected Int. Transformed to ${res[i].id}")
+            }
+        }
+    }
+
+
 }
 
 // because lateinit can't be used with nullable
