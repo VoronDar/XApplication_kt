@@ -165,7 +165,8 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
                         )
                     } else {
                         LoadingStateView.removeView()
-                        binding.recyclerView.isVisible = true
+                        // TODO(a???? I've got Nullpointer there)
+                        if (_bind != null) binding.recyclerView.isVisible = true
                     }
                 }
                 articleListAdapter?.submitData(source)

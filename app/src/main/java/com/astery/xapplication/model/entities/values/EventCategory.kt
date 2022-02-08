@@ -10,31 +10,25 @@ enum class EventCategory {
     /** happy, sad, lonely, etc */
     Mood{
         override fun getDrawableId(): Int {
-            return R.drawable.dating
+            return R.drawable.category_mood
         }
     },
     /** pills, massages, etc */
     Medicine {
         override fun getDrawableId(): Int {
-            return R.drawable.dating
+            return R.drawable.category_medicine
         }
     },
     /** mainly pain */
     Feels {
         override fun getDrawableId(): Int {
-            return R.drawable.dating
-        }
-    },
-    MenstrualCycle {
-        override fun getDrawableId(): Int {
-            return R.drawable.dating
+            return R.drawable.category_feels
         }
     },
     /** unique events in you relations, sex */
     Dating {
-
         override fun getDrawableId(): Int {
-            return R.drawable.dating
+            return R.drawable.category_dating
         }
     };
 

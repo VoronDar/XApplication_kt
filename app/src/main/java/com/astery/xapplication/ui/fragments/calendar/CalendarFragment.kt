@@ -126,6 +126,7 @@ class CalendarFragment : XFragment() {
             // go from page without event to page without events (blink)
             else if (binding.noCardInfo.isVisible && noEvents) renderNoEventsAgain()
 
+            Timber.d((it as ArrayList<Event?>).toString())
             eAdapter?.units = (it as ArrayList<Event?>)
 
         })
@@ -209,7 +210,7 @@ class CalendarFragment : XFragment() {
             binding.eventContent.itemImage.setImageDrawable(
                 ContextCompat.getDrawable(
                     requireContext(),
-                    R.drawable.dating
+                    R.drawable.event_placeholder
                 )
             )
     }

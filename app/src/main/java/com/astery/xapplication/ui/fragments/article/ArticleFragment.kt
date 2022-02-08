@@ -160,7 +160,7 @@ class ArticleFragment : XFragment() {
         else binding.page.itemImage.setImageDrawable(
             ContextCompat.getDrawable(
                 context!!,
-                R.drawable.dating
+                R.drawable.article_placeholder
             )
         )
     }

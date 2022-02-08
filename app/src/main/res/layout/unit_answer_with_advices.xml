@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -39,7 +40,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@{unit.question}" />
+                    app:capitalizedText="@{unit.question}" />
                     <TextView
                         android:id="@+id/answer"
                         style="@style/ImportantArticleText"
@@ -47,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="20dp"
-                        android:text="@{unit.answer}"
+                        app:capitalizedText="@{unit.answer}"
                         android:textColor="@color/black" />
             </LinearLayout>
 

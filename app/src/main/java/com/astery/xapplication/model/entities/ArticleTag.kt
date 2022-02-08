@@ -12,6 +12,7 @@ interface ArticleTag{
     val id:Int
     /** string resource id */
     val nameId:Int
+    val iconId:Int
 
 
     companion object{
@@ -54,14 +55,15 @@ enum class ArticleTagType{
             return AgeTag.values() as Array<ArticleTag>
         }
         override fun getNameId(): Int = R.string.ar_tag_type_age
-    },
+    }
+    /*,
     Topic {
         override fun getTagsForType(): Array<ArticleTag> {
             return TopicTag.values() as Array<ArticleTag>
         }
 
         override fun getNameId(): Int = R.string.ar_tag_type_topic
-    };
+    } */;
 
     abstract fun getTagsForType():Array<ArticleTag>
     abstract fun getNameId():Int
@@ -73,10 +75,12 @@ enum class GenderTag:ArticleTag {
     Woman{
          override val id = 0
          override val nameId = R.string.ar_tag_gender_woman
+            override val iconId = R.drawable.tag_woman
          },
     Man{
         override val id = 1
         override val nameId = R.string.ar_tag_gender_man
+        override val iconId = R.drawable.tag_man
     };
 }
 
@@ -86,24 +90,32 @@ enum class AgeTag:ArticleTag{
     Adult{
         override val id = 101
         override val nameId = R.string.ar_tag_age_adult
+        override val iconId = R.drawable.tag_adult
     }, Teen{
         override val id = 102
         override val nameId = R.string.ar_tag_age_teen
+        override val iconId = R.drawable.tag_teen
     },Child{
         override val id = 103
         override val nameId = R.string.ar_tag_age_child
+        override val iconId = R.drawable.tag_child
     }
 }
 
+/* TODO(I'll make you later)
 enum class TopicTag:ArticleTag{
     Health{
         override val id = 10001
         override val nameId = R.string.ar_tag_topic_health
+        override val iconId = R.drawable.event_placeholder
     }, Relations{
         override val id = 10002
         override val nameId = R.string.ar_tag_topic_relations
+        override val iconId = R.drawable.event_placeholder
     },Sex{
         override val id = 10003
         override val nameId = R.string.ar_tag_topic_sex
+        override val iconId = R.drawable.event_placeholder
     }
 }
+ */

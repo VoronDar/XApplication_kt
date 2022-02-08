@@ -67,6 +67,7 @@ class ItemFragment : XFragment() {
     }
 
 
+
     override fun onPause() {
         super.onPause()
         loadingState?.doOnPauseUI()
@@ -102,13 +103,14 @@ class ItemFragment : XFragment() {
     override fun setViewModelListeners() {
         askForItemBody()
         viewModel.element.observe(viewLifecycleOwner) {
-            Timber.d("result ${it.isSuccess}")
             if (it.isSuccess) {
                 renderItemInfo(it.getOrThrow() as ItemPresentable)
                 renderImage(it.getOrThrow())
                 binding.parent.isVisible = true
                 LoadingStateView.removeView()
-            } else loadingState = LoadingStateView.addViewToViewGroup(LoadingStateError(it.exceptionOrNull()!! as LoadingErrorReason,::askForItemBody), layoutInflater, binding.frame)
+            } else loadingState = LoadingStateView.addViewToViewGroup(
+                LoadingStateError(it.exceptionOrNull()!! as LoadingErrorReason,::askForItemBody),
+                layoutInflater, binding.frame)
         }
     }
 

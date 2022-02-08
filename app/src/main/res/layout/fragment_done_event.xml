@@ -17,6 +17,7 @@
         android:id = "@+id/item_image"
         android:layout_width="match_parent"
         android:layout_height="220dp"
+        android:src = "@drawable/article_placeholder"
         android:scaleType="centerCrop"
         android:contentDescription="@string/item_image_CD" />
     <TextView
