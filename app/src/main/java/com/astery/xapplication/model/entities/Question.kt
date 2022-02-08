@@ -40,6 +40,12 @@ open class Question(
         this.selectedAnswer = selectedAnswer
     }
 
+    @Ignore
+    constructor(item:Item):this(0, "", 0){
+        this.selectedAnswer = Answer()
+        this.selectedAnswer!!.item = item
+    }
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
