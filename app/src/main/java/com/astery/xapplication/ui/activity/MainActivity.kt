@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.astery.xapplication.R
 import com.astery.xapplication.model.entities.ArticleTag
 import com.astery.xapplication.ui.activity.interfaces.FiltersUsable
+import com.astery.xapplication.ui.activity.interfaces.PanelUsable
 import com.astery.xapplication.ui.activity.interfaces.ParentActivity
 import com.astery.xapplication.ui.activity.interfaces.SearchUsable
 import com.astery.xapplication.ui.activity.popupDialogue.Blockable
@@ -34,6 +35,7 @@ import com.astery.xapplication.ui.fragments.calendar.CalendarFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.util.*
 
 
 /**
@@ -94,7 +96,8 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
 
 
     override fun changeTitle(title: String?) {
-        supportActionBar?.title = title
+        supportActionBar?.title = title?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(
+            Locale.getDefault()) else it.toString() }
         Timber.i(supportActionBar?.title.toString())
     }
 
@@ -102,19 +105,12 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
     // MARK: Toolbar changing
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        if (menuMonthListener != null) showMenuNav(!menuMonthListener!!.close, menuMonthListener!!)
+        if (calendarMonthMonthListener != null) showCalendarNav(
+            !calendarMonthMonthListener!!.close,
+            calendarMonthMonthListener!!
+        )
         setMenuListeners(menu)
         return super.onCreateOptionsMenu(menu)
-    }
-
-    /** hide or reveal iconButtons for calendar **/
-    override fun showMenuNav(show: Boolean, listener: CalendarFragment.MenuNavListener) {
-        menuMonthListener = listener
-        val toolBar = findViewById<Toolbar>(R.id.toolbar)
-        if (toolBar?.menu?.findItem(R.id.action_back) != null) {
-            toolBar.menu?.findItem(R.id.action_back)?.isVisible = show
-            toolBar.menu?.findItem(R.id.action_forward)?.isVisible = show
-        }
     }
 
 
@@ -129,17 +125,31 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
     /** handle clicks on custom menu items */
     private fun setMenuListeners(menu: Menu?) {
         menu?.findItem(R.id.action_back)?.setOnMenuItemClickListener {
-            menuMonthListener?.click(true)
+            calendarMonthMonthListener?.click(true)
             return@setOnMenuItemClickListener true
         }
         menu?.findItem(R.id.action_forward)?.setOnMenuItemClickListener {
-            menuMonthListener?.click(false)
+            calendarMonthMonthListener?.click(false)
             return@setOnMenuItemClickListener true
         }
     }
 
 
-    private var menuMonthListener: CalendarFragment.MenuNavListener? = null
+    private var calendarMonthMonthListener: CalendarFragment.CalendarMonthNavListener? = null
+
+    /** hide or reveal iconButtons for calendar **/
+    override fun showCalendarNav(
+        show: Boolean,
+        listener: CalendarFragment.CalendarMonthNavListener
+    ) {
+        calendarMonthMonthListener = listener
+        val toolBar = findViewById<Toolbar>(R.id.toolbar)
+        if (toolBar?.menu?.findItem(R.id.action_back) != null) {
+            toolBar.menu?.findItem(R.id.action_back)?.isVisible = show
+            toolBar.menu?.findItem(R.id.action_forward)?.isVisible = show
+        }
+    }
+
 
     private val searchCommands: ArrayList<SearchCommand> = arrayListOf()
     private val filterCommands: ArrayList<FilterCommand> = arrayListOf()
@@ -190,7 +200,7 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
         recyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         findViewById<View>(R.id.add_filter).setOnClickListener {
-            popupDialoguePanel.openPanel(fragment.getDialogueHolder(), fragment.getBlockable())
+            showPanel(fragment)
         }
 
     }
@@ -245,7 +255,10 @@ class MainActivity : AppCompatActivity(), ParentActivity, PanelHolder {
                 }
             }
         )
+    }
 
+    override fun showPanel(caller: PanelUsable) {
+        popupDialoguePanel.openPanel(caller.getDialogueHolder(), caller.getBlockable())
     }
 
     override fun hideSearchKeyboard() {

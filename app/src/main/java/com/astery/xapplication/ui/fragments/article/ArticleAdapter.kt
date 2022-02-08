@@ -27,7 +27,7 @@ class ArticleAdapter(pageCount: Int, context: Context) :
      * */
     var pageCount: Int = pageCount
         set(value) {
-            for (i in (field + 1) until value) {
+            for (i in (field + 1) until value+1) {
                 notifyItemInserted(i)
             }
             field = value
@@ -93,12 +93,12 @@ class ArticleAdapter(pageCount: Int, context: Context) :
     }
 
     /** scroll recycler view, so the selected page always on screen*/
-    private fun slideSelector(oldSelected:Int){
+    private fun slideSelector(oldSelected: Int) {
         val buffer = 3
-        val position:Int =
+        val position: Int =
             if (oldSelected < selectedPos) {
                 if ((pageCount - 1) - selectedPos > buffer) selectedPos + buffer
-                else pageCount-1
+                else pageCount - 1
             } else {
                 if ((selectedPos + 1) > buffer) selectedPos - buffer
                 else 0
@@ -110,7 +110,7 @@ class ArticleAdapter(pageCount: Int, context: Context) :
         BaseViewHolder(blockListener, binding.root) {
         init {
             binding.root.setOnClickListener {
-                selectedPos = adapterPosition
+                selectedPos = absoluteAdapterPosition
             }
         }
     }

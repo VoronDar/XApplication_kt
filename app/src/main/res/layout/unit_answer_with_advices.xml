@@ -49,7 +49,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="20dp"
                         app:capitalizedText="@{unit.answer}"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/onBackground" />
             </LinearLayout>
 
 

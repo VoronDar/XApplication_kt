@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 open class BaseViewHolder(blockListener: BlockListener?, itemView: View) : RecyclerView.ViewHolder(itemView) {
     init {
         itemView.setOnClickListener {
-            blockListener?.onClick(adapterPosition)
+            blockListener?.onClick(absoluteAdapterPosition)
         }
     }
 }

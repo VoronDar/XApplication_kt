@@ -1,10 +1,6 @@
 package com.astery.xapplication.repository.localDataStorage.dao
 
-import androidx.room.*
-import com.astery.xapplication.model.entities.Question
-import com.astery.xapplication.model.entities.Answer
-import com.astery.xapplication.model.entities.AnswerAndEvent
-import com.astery.xapplication.model.entities.EventTemplate
+import androidx.room.Dao
 
 @Dao
 interface DesireDao {

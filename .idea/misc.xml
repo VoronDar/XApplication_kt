@@ -5,18 +5,25 @@
       <map>
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/advice_background.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/advice_background_do.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/advice_background_dont.xml" value="0.30092592592592593" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/advice_background_good.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/advice_background_try.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/alert_dialogue_background.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/article_placeholder.xml" value="0.30092592592592593" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/bottomnav_icon_statelist.xml" value="0.23854166666666668" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/dialog_panel.xml" value="0.22604166666666667" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/event_placeholder.xml" value="0.30092592592592593" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_add.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_articles.xml" value="0.30092592592592593" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_back.xml" value="0.3769230769230769" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_baseline_keyboard_voice_24.xml" value="0.24322916666666666" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_baseline_keyboard_voice_24.xml" value="0.30092592592592593" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_baseline_notifications_none_24.xml" value="0.24166666666666667" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.31296296296296294" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_calendar.xml" value="0.30092592592592593" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_delete.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_dislike.xml" value="0.3769230769230769" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_filled_dislike.xml" value="0.25" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_filled_like.xml" value="0.18" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_filled_dislike.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_filled_like.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_forward.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/User/AndroidStudioProjects/XApplication2/app/src/main/res/drawable/ic_like.xml" value="0.3769230769230769" />

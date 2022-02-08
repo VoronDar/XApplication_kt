@@ -33,11 +33,10 @@ interface EventsDao {
     suspend fun addEventTemplates(templates: List<EventTemplate>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addEvent(event: Event):Long
+    suspend fun addEvent(event: Event): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addEvents(events: List<Event>)
-
 
 
     @Query("SELECT * from question WHERE eventTemplateId = :parentId")
@@ -48,21 +47,21 @@ interface EventsDao {
 
     /** get just answers */
     @Query("SELECT Answer.* from AnswerAndEvent inner Join Answer on eventId == :eventId AND Answer.id == answerId")
-    suspend fun getAnswersForEvent(eventId:Int):List<Answer>
+    suspend fun getAnswersForEvent(eventId: Int): List<Answer>
 
     /** get just answers id  */
     @Query("SELECT Answer.id from Answer WHERE Answer.parent_id == :questionId")
-    suspend fun getAnswersIdForQuestion(questionId:Int):List<Int>
+    suspend fun getAnswersIdForQuestion(questionId: Int): List<Int>
 
     /** get just answers */
     @Query("SELECT Answer.* from Answer WHERE Answer.parent_id == :questionId")
-    suspend fun getAnswersForQuestion(questionId:Int):List<Answer>
+    suspend fun getAnswersForQuestion(questionId: Int): List<Answer>
 
     @Transaction
-    suspend fun getAnswersAndQuestionsForEvent(eventId: Int):List<Question>{
-        val questions:ArrayList<Question> = ArrayList()
+    suspend fun getAnswersAndQuestionsForEvent(eventId: Int): List<Question> {
+        val questions: ArrayList<Question> = ArrayList()
         val list = getAnswersForEvent(eventId)
-        for (i in list){
+        for (i in list) {
             questions.add(getQuestion(i.questionId))
             questions.last().selectedAnswer = i
         }
@@ -70,9 +69,9 @@ interface EventsDao {
     }
 
     @Transaction
-    suspend fun getAnswersAndQuestionsForTemplate(templateId: Int):List<Question>{
+    suspend fun getAnswersAndQuestionsForTemplate(templateId: Int): List<Question> {
         val questions = getQuestionsForEventTemplate(templateId)
-        for (i in questions){
+        for (i in questions) {
             i.answers = getAnswersForQuestion(i.id)
         }
         return questions
@@ -90,16 +89,18 @@ interface EventsDao {
 
     /** update answerId in AnswerAndEventRelation*/
     @Transaction
-    suspend fun updateAnswerAndEvent(eventId: Int, question: Question){
+    suspend fun updateAnswerAndEvent(eventId: Int, question: Question) {
         // get all answers for this question, find relation for one of these answer, replace
         val answers = getAnswersIdForQuestion(question.id)
-        updateAnswerAndEvent(getAnswerAndEventRelation(eventId, answers)
-            .copy(answerId = question.selectedAnswer!!.id))
+        updateAnswerAndEvent(
+            getAnswerAndEventRelation(eventId, answers)
+                .copy(answerId = question.selectedAnswer!!.id)
+        )
     }
 
     /** get one relation for event and list of answers */
     @Query("SELECT * from ANSWERANDEVENT WHERE eventId == :eventId AND answerId in (:answersId)")
-    suspend fun getAnswerAndEventRelation(eventId: Int, answersId: List<Int>):AnswerAndEvent
+    suspend fun getAnswerAndEventRelation(eventId: Int, answersId: List<Int>): AnswerAndEvent
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateAnswerAndEvent(relation: AnswerAndEvent)
@@ -111,9 +112,9 @@ interface EventsDao {
     suspend fun addQuestions(questions: List<Question?>)
 
     @Transaction
-    suspend fun addQuestionsWithAnswers(questions:List<Question>){
+    suspend fun addQuestionsWithAnswers(questions: List<Question>) {
         addQuestions(questions)
-        for (i in questions){
+        for (i in questions) {
             if (i.answers != null) addAnswers(i.answers!!)
         }
     }
@@ -178,7 +179,7 @@ interface EventsDao {
     suspend fun deleteEvents()
 
     @Query("DELETE from Event WHERE id == :id")
-    suspend fun deleteEvent(id:Int)
+    suspend fun deleteEvent(id: Int)
 
     @Query("DELETE from AnswerAndEvent")
     suspend fun deleteAnswerAndEventRelations()
@@ -188,11 +189,13 @@ interface EventsDao {
 
     @Query("DELETE from EventTemplate")
     suspend fun deleteEventTemplates()
+
     @Query("DELETE from EventTemplate WHERE id == :id")
-    suspend fun deleteEventTemplate(id:String)
+    suspend fun deleteEventTemplate(id: String)
 
     @Query("DELETE from Answer")
     suspend fun deleteAnswers()
+
     @Query("DELETE from Question")
     suspend fun deleteQuestions()
 }

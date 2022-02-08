@@ -4,7 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.util.DisplayMetrics
 import android.view.View
-import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.view.isGone
@@ -64,9 +64,11 @@ class DialoguePanel(val activity: PanelHolder) {
             return
         }
 
-        dialogueHolder?.enable(binding!!, false)
-        panel.removeAllViews()
-        animatePanel(0f, dp(500), 0.6f, 0f, ::onClose)
+        dialogueHolder?.onEnablePanel(binding!!, false)
+        animatePanel(0f, dp(800), 0.6f, 0f){
+            panel.removeAllViews()
+            onClose()
+        }
     }
 
     private fun onClose() {
@@ -74,11 +76,11 @@ class DialoguePanel(val activity: PanelHolder) {
         enableAllViews(true)
         isOpened = false
         binding?.unbind()
-        dialogueHolder?.doOnClose()
+        dialogueHolder?.onClosePanel()
     }
 
     private fun onOpen() {
-        dialogueHolder?.enable(binding!!, true)
+        dialogueHolder?.onEnablePanel(binding!!, true)
     }
 
     private fun animatePanel(
@@ -103,8 +105,8 @@ class DialoguePanel(val activity: PanelHolder) {
         }
         val animator = AnimatorSet()
         animator.play(alphaAnimator).with(transitionAnimator)
-        animator.interpolator = AccelerateInterpolator()
-        animator.duration = 200
+        animator.interpolator = DecelerateInterpolator()
+        animator.duration = 250
         animator.start()
     }
 

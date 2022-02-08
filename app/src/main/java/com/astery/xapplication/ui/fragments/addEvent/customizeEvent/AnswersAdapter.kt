@@ -3,13 +3,11 @@ package com.astery.xapplication.ui.fragments.addEvent.customizeEvent
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isGone
 import com.astery.xapplication.databinding.UnitAnswerBinding
 import com.astery.xapplication.model.entities.Answer
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
 import com.astery.xapplication.ui.adapterUtils.BlockListener
-import timber.log.Timber
 
 /**
  * answers for questions
@@ -27,11 +25,15 @@ class AnswersAdapter(units: List<Answer>?, context: Context, question: QuestionU
 
     var selectedAnswer: Int = 0
         set(value) {
-            val oldValue = selectedAnswer
+            //val oldValue = selectedAnswer
             field = value
+            /*
             Timber.d("$oldValue, $value")
             notifyItemChanged(oldValue)
             notifyItemChanged(selectedAnswer)
+
+             */
+            notifyDataSetChanged()
         }
 
 

@@ -40,7 +40,7 @@
     <TextView
         style="@style/ArticleText"
         android:fontFamily="@font/opensans_regular"
-        android:textColor="@color/more_info_text"
+        android:textColor="@color/article_text"
         android:layout_marginLeft="75dp"
         android:textSize="18dp"
         android:layout_marginRight="75dp"

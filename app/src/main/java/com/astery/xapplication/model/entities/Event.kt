@@ -16,12 +16,15 @@ import java.util.*
 @Parcelize
 @Entity
 @TypeConverters(ArrayConverter::class, DateConverter::class, EventDescriptionConverter::class)
-data class Event(@PrimaryKey(autoGenerate = true) var id: Int?,
-                 @ColumnInfo(name = "template_id") val templateId: Int,
-                 val date: Date
-): Parcelable{
-    @Ignore var image:Bitmap? = null
-    @Ignore var template: EventTemplate? = null
+data class Event(
+    @PrimaryKey(autoGenerate = true) var id: Int?,
+    @ColumnInfo(name = "template_id") val templateId: Int,
+    val date: Date
+) : Parcelable {
+    @Ignore
+    var image: Bitmap? = null
+    @Ignore
+    var template: EventTemplate? = null
 
 
     /**
@@ -32,7 +35,7 @@ data class Event(@PrimaryKey(autoGenerate = true) var id: Int?,
         get() {
             if (template == null || template!!.questions == null) return false
             for (question in template!!.questions!!) {
-                if (question.selectedAnswer?.itemId == null) continue
+                if (question.selectedAnswer?.itemId == null || question.selectedAnswer?.itemId == 0) continue
                 return true
             }
             return false

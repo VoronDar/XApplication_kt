@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.astery.xapplication.databinding.UnitFilterBinding
 import com.astery.xapplication.databinding.UnitSelectTagWithTypeBinding
 import com.astery.xapplication.model.entities.ArticleTag
 import com.astery.xapplication.model.entities.ArticleTagType
@@ -15,10 +14,10 @@ import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
 class SelectFilterTypeAdapter(units: List<ArticleTagType>?, context: Context) :
     BaseAdapter<SelectFilterTypeAdapter.ViewHolder, ArticleTagType>(units, context) {
     var selectedTags: MutableList<ArticleTag> = mutableListOf()
-    set(value){
-        field = value
-        notifyDataSetChanged()
-    }
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseViewHolder {
@@ -33,10 +32,12 @@ class SelectFilterTypeAdapter(units: List<ArticleTagType>?, context: Context) :
         val binding = (h as ViewHolder).binding
         binding.tagType = units!![position]
 
-        val selectFiltersAdapter = SelectFilterAdapter(units!![position].getTagsForType().toList(), context, selectedTags)
+        val selectFiltersAdapter =
+            SelectFilterAdapter(units!![position].getTagsForType().toList(), context, selectedTags)
         binding.recyclerView.adapter = selectFiltersAdapter
         // TODO(make as a grid)
-        binding.recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         binding.recyclerView.isNestedScrollingEnabled = false
         binding.recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
 

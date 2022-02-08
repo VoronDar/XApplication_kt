@@ -9,7 +9,7 @@ import com.astery.xapplication.repository.RemoteEntity
  * (due to firestore features. It requires variables as vars and also it can't work with enums))
  * I added these remote classes because I don't want to mess the original ones with some variables.
  * */
-class AdviceFromRemote() : Advice(),
+class AdviceFromRemote : Advice(),
     RemoteEntity<Advice> {
     var aType:Int = AdviceType.Alert.ordinal
     override var lastUpdated: Int = 0

@@ -77,10 +77,6 @@ class Repository @Inject constructor(
         localStorage.addEvent(event)
     }
 
-    suspend fun getArticle(articleId: Int): Article {
-        return localStorage.getArticle(articleId)
-    }
-
     suspend fun getItemsForArticle(articleId: Int): Result<List<Item>> {
         return getValues(
             localStorage::getItemsForArticle,
@@ -97,7 +93,7 @@ class Repository @Inject constructor(
         Timber.d("ask for advices - $itemId")
 
         val result = remoteStorage.getAdvicesForItem(itemId, -1)
-        if (result.isSuccess) {
+        return if (result.isSuccess) {
             val list = convertFromRemote(result.getOrThrow())
             val fromLocal = localStorage.getAdvicesForItem(itemId)
             for (i in list) {
@@ -107,12 +103,8 @@ class Repository @Inject constructor(
                 }
             }
             localStorage.addAdvices(list)
-            return Result.success(list)
-        } else return Result.failure(result.exceptionOrNull()!!)
-    }
-
-    suspend fun getEventDescription(eventId: Int): List<Question> {
-        return localStorage.getQuestionsAndSelectedAnswersForEvent(eventId)
+            Result.success(list)
+        } else Result.failure(result.exceptionOrNull()!!)
     }
 
     /** we have itemId, and advices. We need body, name and image. Get item from db, combine*/
@@ -126,6 +118,7 @@ class Repository @Inject constructor(
             isCanBeNothing = false
         )
         if (gotItem.isSuccess) item.image = this.getImageForItem(item.id)
+
 
         if (gotItem.isFailure) return Result.failure(gotItem.exceptionOrNull()!!)
         return Result.success(
@@ -316,7 +309,6 @@ class Repository @Inject constructor(
      */
 
     // TODO(сделать так,чтобы у тех, кто пришел с ошибкой сбрасывался remUpdate)
-    // TODO(проверить почему загрузка данных, если нажать второй раз - идет бесконечно)
     private suspend fun <T, R> getValues(
         localGet: KSuspendFunction1<T, List<R>>,
         remoteGet: KSuspendFunction2<T, Int, Result<List<RemoteEntity<R>>>>,

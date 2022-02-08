@@ -9,17 +9,17 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import com.astery.xapplication.R
+import com.astery.xapplication.ui.activity.popupDialogue.Blockable
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
 import com.astery.xapplication.ui.adapterUtils.BaseViewHolder
 import com.google.android.material.card.MaterialCardView
-import timber.log.Timber
 import java.util.*
 
 /**
  * days of week
  * */
 class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
-    BaseAdapter<CalendarAdapter.ViewHolder, DayUnit>(units, context ) {
+    BaseAdapter<CalendarAdapter.ViewHolder, DayUnit>(units, context ), Blockable {
     var selectedDay: Int = 0
     set(value) {
         val oldValue = selectedDay
@@ -27,6 +27,7 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
         notifyItemChanged(units!!.indexOfFirst { it.day == oldValue })
         notifyItemChanged(units!!.indexOfFirst { it.day == value })
     }
+    var isEnable:Boolean = true
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(viewGroup.context)
@@ -44,13 +45,13 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
         holder.day.text = unit.day.toString()
         holder.card.isGone = !(unit.enabled)
         if (unit.day == selectedDay) {
-            holder.card.setBackgroundColor(ContextCompat.getColor(context, R.color.neutralSurfaceColor))
+            holder.card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.neutralSurfaceColor))
             holder.card.strokeColor = ContextCompat.getColor(context, R.color.black)
             holder.day.setTextColor(ContextCompat.getColor(context, R.color.black))
         } else{
-            holder.card.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-            holder.card.strokeColor = ContextCompat.getColor(context, R.color.calendar_unit_stroke_color)
-            holder.day.setTextColor(ContextCompat.getColor(context, R.color.deselected_calendar_unit_text))
+            holder.card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.appBar))
+            holder.card.strokeColor = ContextCompat.getColor(context, R.color.divider_color)
+            holder.day.setTextColor(ContextCompat.getColor(context, R.color.onBackground))
         }
     }
 
@@ -61,6 +62,10 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
 
     override fun getItemCount(): Int {
         return units?.size?: 0
+    }
+
+    override fun setEnabled(enable: Boolean) {
+        isEnable = enable
     }
 
     inner class ViewHolder(itemView: View) : BaseViewHolder(blockListener, itemView) {

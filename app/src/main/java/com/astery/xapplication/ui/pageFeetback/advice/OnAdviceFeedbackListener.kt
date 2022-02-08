@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
-/** expansion of onFeetbackListener for advice (basic listener doesn't suit advices.
+/** expansion of onFeedbackListener for advice (basic listener doesn't suit advices.
  * Because there are many advices for one view model)
  * It stores there because there are many fragments that have advices
  * */

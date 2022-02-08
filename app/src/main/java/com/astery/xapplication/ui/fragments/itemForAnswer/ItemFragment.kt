@@ -121,7 +121,7 @@ class ItemFragment : XFragment() {
     }
 
     private fun renderImage(item:Presentable){
-        binding.itemImage.isGone = item.image == null
+        binding.itemFrame.isGone = item.image == null
         if (item.image != null) binding.itemImage.setImageBitmap(item.image)
     }
 

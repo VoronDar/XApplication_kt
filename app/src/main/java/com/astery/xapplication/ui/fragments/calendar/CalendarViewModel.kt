@@ -12,41 +12,37 @@ import com.astery.xapplication.repository.Repository
 import com.astery.xapplication.ui.fragments.calendar.calendar_adapter.DayUnit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor(): ViewModel() {
-    @set:Inject lateinit var repository: Repository
+class CalendarViewModel @Inject constructor() : ViewModel() {
+    @set:Inject
+    lateinit var repository: Repository
 
     private val _selectedDay: MutableLiveData<Calendar> = MutableLiveData<Calendar>()
-    val selectedDay:LiveData<Calendar>
+    val selectedDay: LiveData<Calendar>
         get() = _selectedDay
 
 
     private val _events: MutableLiveData<List<Event?>>
-    val events:LiveData<List<Event?>>
+    val events: LiveData<List<Event?>>
         get() = _events
 
     /** int there is a position in events list */
     private val _selectedEvent: MutableLiveData<Pair<Event, Int>>
-    val selectedEvent:LiveData<Pair<Event, Int>>
+    val selectedEvent: LiveData<Pair<Event, Int>>
         get() = _selectedEvent
-
 
 
     init {
         _selectedDay.value = GregorianCalendar.getInstance()
         _events = MutableLiveData<List<Event?>>()
         _selectedEvent = MutableLiveData<Pair<Event, Int>>()
-
-        
-        Timber.i("calendar value ${selectedDay.value}")
     }
 
-    fun setSelectedEvent(position:Int){
+    fun setSelectedEvent(position: Int) {
         viewModelScope.launch {
             val event = events.value!![position]!!
             event.template = repository.getDescriptionForEvent(event)
@@ -54,7 +50,7 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
         }
     }
 
-    fun reset(){
+    fun reset() {
         viewModelScope.launch { repository.reset() }
     }
 
@@ -89,13 +85,14 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
     }
 
     /** get events for this day  */
-    fun updateEvents(adapter:EventAdapter) {
+    fun updateEvents(adapter: EventAdapter) {
         viewModelScope.launch {
             _events.value = addFirstItem(repository.getEventsByDay(selectedDay.value!!))
             // load images for all units (except first - it is not event, it is add button)
-            for (i in 1 until _events.value!!.size){
+            for (i in 1 until _events.value!!.size) {
                 viewModelScope.launch {
-                    _events.value!![i]?.image = repository.getImageForEventTemplate(EventTemplate(_events.value!![i]!!.templateId))
+                    _events.value!![i]?.image =
+                        repository.getImageForEventTemplate(EventTemplate(_events.value!![i]!!.templateId))
                     adapter.notifyItemChanged(i)
                 }
             }
@@ -103,8 +100,8 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
     }
 
     /** add empty unit in events list (it used for adding more events)  */
-    private fun addFirstItem(units: List<Event?>): List<Event?>{
-        val list:ArrayList<Event?> = ArrayList(units)
+    private fun addFirstItem(units: List<Event?>): List<Event?> {
+        val list: ArrayList<Event?> = ArrayList(units)
         list.add(0, null)
         return list
     }
@@ -132,23 +129,24 @@ class CalendarViewModel @Inject constructor(): ViewModel() {
     /** get units for calendar */
     fun getDayUnitList(): ArrayList<DayUnit> {
         val units = ArrayList<DayUnit>()
-        val cal:Calendar = selectedDay.value!!
+        val cal: Calendar = selectedDay.value!!
         for (i in 1..cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
             units.add(DayUnit(i, true))
         }
 
-        val firstDay:Calendar=GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), 1)
-        for (i in Calendar.SUNDAY until firstDay.get(Calendar.DAY_OF_WEEK)){
+        val firstDay: Calendar =
+            GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), 1)
+        for (i in Calendar.SUNDAY until firstDay.get(Calendar.DAY_OF_WEEK)) {
             units.add(0, DayUnit(-1, false))
         }
 
         return units
     }
 
-    fun deleteEvent() {
+    fun deleteSelectedEvent() {
         viewModelScope.launch {
             _events.value = events.value!!.subList(0, selectedEvent.value!!.second) +
-                    events.value!!.subList(selectedEvent.value!!.second+1, events.value!!.size)
+                    events.value!!.subList(selectedEvent.value!!.second + 1, events.value!!.size)
             repository.deleteEvent(selectedEvent.value!!.first)
         }
     }

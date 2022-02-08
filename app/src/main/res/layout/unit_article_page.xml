@@ -13,7 +13,7 @@
     android:layout_marginBottom="20dp"
     android:background="@{selected ? @drawable/round_button_selected : @drawable/round_button }"
     app:capitalizedText = "@{String.valueOf(pos)}"
-    android:textColor="@{selected ? @color/black : @color/page_text_deselected}"
+    android:textColor="@{selected ? @color/onBackground : @color/page_text_deselected}"
     android:gravity="center"
     android:layout_height="30dp">
 
