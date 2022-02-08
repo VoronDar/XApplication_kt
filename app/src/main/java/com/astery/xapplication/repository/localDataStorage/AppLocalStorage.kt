@@ -260,6 +260,7 @@ class AppLocalStorage @Inject constructor(
         id: Int,
         result: FeedbackResult
     ) {
+
         when (result.field) {
             FeedbackField.Like -> appDatabase.articleDao().likeArticle(
                 id,

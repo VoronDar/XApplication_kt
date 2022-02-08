@@ -5,7 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.view.isGone
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +21,7 @@ import com.astery.xapplication.ui.fragments.article.Presentable
 import com.astery.xapplication.ui.fragments.transitionHelpers.SharedAxisTransition
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -102,6 +107,4 @@ class AddEventFragment : XFragment() {
         else
             move(AddEventFragmentDirections.actionAddEventFragment2ToCalendarFragment())
     }
-
-
 }

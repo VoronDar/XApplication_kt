@@ -142,8 +142,8 @@ class RemoteStorage @Inject constructor(@ApplicationContext val context: Context
                         result =
                             if (res == null) WrapperResult(Result.failure(UnexpectedBugException()))
                             else WrapperResult(Result.success(listOf(res)))
-                    } catch (e: FirebaseFirestoreException) {
-                        Timber.d("got firestore exception ${e.localizedMessage}, ${e.code}")
+                    } catch (e: Exception) {
+                        Timber.d("got exception ${e.localizedMessage}")
                         result = WrapperResult(Result.failure(InternetConnectionException()))
                     }
                 }

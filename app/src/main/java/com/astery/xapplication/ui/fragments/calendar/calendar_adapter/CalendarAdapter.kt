@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import com.astery.xapplication.R
 import com.astery.xapplication.ui.adapterUtils.BaseAdapter
@@ -23,7 +24,6 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
     set(value) {
         val oldValue = selectedDay
         field = value
-        Timber.d("$oldValue, $value")
         notifyItemChanged(units!!.indexOfFirst { it.day == oldValue })
         notifyItemChanged(units!!.indexOfFirst { it.day == value })
     }
@@ -37,17 +37,30 @@ class CalendarAdapter(units: ArrayList<DayUnit>?, context: Context) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(h: BaseViewHolder, position: Int) {
         val holder = h as ViewHolder
+
+
         val unit: DayUnit = units!![position]
+
         holder.day.text = unit.day.toString()
         holder.card.isGone = !(unit.enabled)
         if (unit.day == selectedDay) {
-            Timber.i("${holder.card} and $context")
-            holder.card.setBackgroundColor(context.resources.getColor(R.color.selected_card_color))
-            holder.card.strokeColor = context.resources.getColor(R.color.black)
+            holder.card.setBackgroundColor(ContextCompat.getColor(context, R.color.neutralSurfaceColor))
+            holder.card.strokeColor = ContextCompat.getColor(context, R.color.black)
+            holder.day.setTextColor(ContextCompat.getColor(context, R.color.black))
         } else{
-            holder.card.setBackgroundColor(context.resources.getColor(R.color.white))
-            holder.card.strokeColor = context.resources.getColor(R.color.calendar_unit_stroke_color)
+            holder.card.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+            holder.card.strokeColor = ContextCompat.getColor(context, R.color.calendar_unit_stroke_color)
+            holder.day.setTextColor(ContextCompat.getColor(context, R.color.deselected_calendar_unit_text))
         }
+    }
+
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemCount(): Int {
+        return units?.size?: 0
     }
 
     inner class ViewHolder(itemView: View) : BaseViewHolder(blockListener, itemView) {

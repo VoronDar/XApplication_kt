@@ -12,8 +12,8 @@ interface ArticleTag {
     val id: Int
 
     /** string resource id */
-    val nameId: Int
-
+    val nameId:Int
+    val iconId:Int
 
     companion object {
         fun convertToIdList(list: List<ArticleTag>): List<Int> {
@@ -73,14 +73,17 @@ enum class ArticleTagType {
 }
 
 
-enum class GenderTag : ArticleTag {
-    Woman {
-        override val id = 0
-        override val nameId = R.string.ar_tag_gender_woman
-    },
-    Man {
+
+enum class GenderTag:ArticleTag {
+    Woman{
+         override val id = 0
+         override val nameId = R.string.ar_tag_gender_woman
+            override val iconId = R.drawable.tag_woman
+         },
+    Man{
         override val id = 1
         override val nameId = R.string.ar_tag_gender_man
+        override val iconId = R.drawable.tag_man
     };
 }
 
@@ -89,13 +92,13 @@ enum class AgeTag : ArticleTag {
     Adult {
         override val id = 101
         override val nameId = R.string.ar_tag_age_adult
-    },
-    Teen {
+    }, Teen{
         override val id = 102
         override val nameId = R.string.ar_tag_age_teen
-    },
-    Child {
+        override val iconId = R.drawable.tag_teen
+    },Child{
         override val id = 103
         override val nameId = R.string.ar_tag_age_child
+        override val iconId = R.drawable.tag_child
     }
 }

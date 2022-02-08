@@ -50,7 +50,7 @@ class AddEventViewModel @Inject constructor(): ViewModel() {
             event = Event(null, template!!.id, selectedDay!!.time)
             event?.template = EventTemplate()
             event?.template!!.questions = _questions
-            Timber.d("$event")
+            event?.template!!.image = template!!.image
 
             repository.addEvent(event!!)
             _addEventState.value = JobState.Success

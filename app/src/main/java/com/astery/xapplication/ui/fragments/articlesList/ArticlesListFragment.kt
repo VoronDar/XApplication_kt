@@ -88,10 +88,7 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
         loadingState?.doOnResumeUI()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        loadingState?.doOnDestroyUI()
-    }
+
 
     override fun prepareAdapters() {
         if (articleListAdapter != null) {
@@ -176,7 +173,6 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
             layoutInflater,
             binding.frame
         )
-
         viewModel.requestFlow(keywords, tags)
     }
 
@@ -227,6 +223,7 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
 
     override fun onStop() {
         super.onStop()
+        LoadingStateView.removeView()
         parentActivity.showSearchBar(false, this)
         parentActivity.showFilters(false, this)
     }

@@ -9,6 +9,7 @@ import com.astery.xapplication.databinding.UnitArticleBinding
 import com.astery.xapplication.model.entities.Article
 import com.astery.xapplication.ui.activity.popupDialogue.Blockable
 import com.astery.xapplication.ui.pageFeetback.FeedBackStorage
+import timber.log.Timber
 
 class ArticlesListAdapter(val viewModel: ArticlesListViewModel, val recyclerView: RecyclerView) :
     PagingDataAdapter<Article, ArticlesListAdapter.ViewHolder>(ArticleDiffUtils()), Blockable {
@@ -26,8 +27,6 @@ class ArticlesListAdapter(val viewModel: ArticlesListViewModel, val recyclerView
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        // TODO(null pointer exception)
         if (getItem(position) != null) {
             holder.bind(getItem(position)!!)
 
@@ -56,6 +55,9 @@ class ArticlesListAdapter(val viewModel: ArticlesListViewModel, val recyclerView
     inner class ViewHolder(private val binding: UnitArticleBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(article: Article) {
+
+            Timber.d("got article with feedback = ${article.feedBack}")
+
             binding.article = article
             binding.feedBackStorage = FeedBackStorage(article.likes, article.dislikes)
 

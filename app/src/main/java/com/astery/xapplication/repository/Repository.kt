@@ -247,6 +247,7 @@ class Repository @Inject constructor(
     private suspend fun rateArticle(id: Int, result: FeedbackResult): Boolean {
         if (!isOnline()) return false
         val isComplete = remoteStorage.updateArticleField(id, result)
+        Timber.d("tried to rate article $id. isSuccess - $isComplete")
         if (isComplete) localStorage.updateArticleField(id, result)
         return isComplete
     }

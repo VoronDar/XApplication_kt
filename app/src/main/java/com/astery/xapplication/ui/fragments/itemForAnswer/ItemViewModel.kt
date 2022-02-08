@@ -15,6 +15,7 @@ import com.astery.xapplication.ui.pageFeetback.advice.OnAdviceFeedbackListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +37,7 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
     /** load required parts of item:body and name */
     fun loadItemBody() {
         viewModelScope.launch {
+            Timber.d("ask for body")
             if (item == null) {
                 _element.value = Result.failure(UnexpectedBugException())
                 cancel()
@@ -44,7 +46,7 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
 
             val it = repository.setItemBody(item!!)
             if (it.isSuccess) {
-                _element.value = Result.success(ItemPresentable(it.getOrThrow()))
+                setPresentableValue(ItemPresentable(it.getOrThrow()))
                 feedbackListener = OnAdviceFeedbackListener(listOf(Question(it.getOrThrow())), viewModelScope, repository)
             }
             else
@@ -52,7 +54,11 @@ class ItemViewModel @Inject constructor() : ViewModel(), HasPresentable {
 
             _presentable.value = element.value!!.getOrNull()
         }
+    }
 
+    fun setPresentableValue(value:ItemPresentable){
+        _element.value = Result.success(value)
+        _presentable.value = value
     }
 
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -39,7 +39,7 @@
                 android:layout_height="200dp"
                 android:contentDescription="@string/item_image_CD"
                 android:scaleType="centerCrop"
-                android:src="@drawable/dating" />
+                android:src="@drawable/article_placeholder" />
 
 
             <include layout="@layout/page_feetback"
@@ -52,12 +52,12 @@
             <TextView
                 style="@style/HighLightText"
                 android:layout_marginTop="30dp"
-                android:text="@{viewModel.presentable.name}" />
+                app:capitalizedText="@{viewModel.presentable.name}" />
 
             <TextView
                 style="@style/ArticleText"
                 android:layout_marginTop="30dp"
-                android:text="@{viewModel.presentable.description}" />
+                app:capitalizedText="@{viewModel.presentable.description}" />
 
             <LinearLayout
                 android:id="@+id/tips_layout"

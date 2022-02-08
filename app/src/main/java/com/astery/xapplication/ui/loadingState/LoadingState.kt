@@ -12,6 +12,7 @@ import androidx.core.animation.doOnCancel
 import androidx.core.content.ContextCompat
 import com.astery.xapplication.R
 import com.astery.xapplication.databinding.LoadingStateIconBinding
+import timber.log.Timber
 
 /** base class for all loading states. Implements template pattern\n
  * the meaning of each loadingState you can see in the figma design: components: Loading State
@@ -24,7 +25,8 @@ sealed class LoadingStateView {
     /** should be called when fragment/activity calls onResume() */
     open fun doOnResumeUI() {}
 
-    open fun doOnDestroyUI(){ removeView() }
+    /** should be called when fragment calls onStop() */
+    open fun doOnStopUI(){ removeView() }
 
 
 
@@ -76,6 +78,7 @@ sealed class LoadingStateView {
          * You should not call it in onDestroy(), use doOnDestroy() instead
          * */
         fun removeView(){
+            Timber.d("remove loading state view")
             lastContainer?.removeView(lastBinding?.root)
             lastBinding?.unbind()
             lastContainer = null

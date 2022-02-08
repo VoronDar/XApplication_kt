@@ -36,7 +36,7 @@
             android:padding="20dp"
             android:layout_width="match_parent"
             android:layout_weight="1"
-            android:text = "@{advice.body}"
+            app:capitalizedText = "@{advice.body}"
             />
 
         <include layout="@layout/page_feetback"

@@ -29,9 +29,6 @@ class ArticlesListViewModel @Inject constructor() : ViewModel() {
 
     fun requestFlow(searchSequence: String, filters: List<ArticleTag>){
 
-        viewModelScope.launch {
-            if (filters.isEmpty()) repository.updateArticlesWithTags(ArticleTag.getAllTags())
-            else repository.updateArticlesWithTags(filters)
 
             //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)
             _articlesFlow.value = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12)) {

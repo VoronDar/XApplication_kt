@@ -11,7 +11,8 @@
 
 
 
-    <color name="items_number">#F0EEFF</color>
+    <color name="items_number">#E2F6F0</color>
+    <color name="page_text_deselected">#0E2205</color>
     <color name="article_text">#CC4B4957</color>
     <color name="important_article_text">#5E5C69</color>
     <color name="more_info_text">#B3000000</color>
@@ -56,6 +57,11 @@
     <color name = "neutralSurfaceColor">#E2F6F0</color>
 
 
+    <color name="deselect_icon">#AEAEAE</color>
+    <color name="like_icon">#808ED7</color>
+    <color name="dislike_icon">#EB7A9C</color>
+
+
     <color name="advice_background_do">#669BD378</color>
     <color name="advice_background_dont">#66D37878</color>
     <color name="advice_background_try">#66D3CA78</color>
@@ -67,4 +73,5 @@
     <color name="advice_text_try">#534E23</color>
 
     <color name="icon_tint">#808080</color>
+    <color name="deselected_calendar_unit_text">#26356B</color>
 </resources>
