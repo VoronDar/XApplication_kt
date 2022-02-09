@@ -140,7 +140,10 @@ class ArticlesListFragment : XFragment(), SearchUsable, FiltersUsable {
                             )
                         } else {
                             LoadingStateView.removeView()
-                            binding.recyclerView.isVisible = true
+                            if (_bind != null) {
+                                binding.recyclerView.scrollTo(0,0)
+                                binding.recyclerView.isVisible = true
+                            }
                         }
                     }
                     articleListAdapter?.submitData(source)

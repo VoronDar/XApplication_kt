@@ -80,7 +80,7 @@ class TestTemplate {
         id: Int = this.id,
         name: String = this.name,
         body: String = this.body,
-        eventCategory: EventCategory = this.eventCategory,
+        eventCategory: EventCategory = this.eventCategory!!,
         questions: List<Question>? = this.questions,
         image: Bitmap? = this.image
     ): EventTemplate {

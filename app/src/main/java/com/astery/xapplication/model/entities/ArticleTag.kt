@@ -1,7 +1,6 @@
 package com.astery.xapplication.model.entities
 
 import com.astery.xapplication.R
-import timber.log.Timber
 
 /**
  * tags that can be used to search articles
@@ -21,12 +20,10 @@ interface ArticleTag {
             for (i in list) {
                 result.add(i.id)
             }
-            Timber.d("convert to id ${result}")
             return result
         }
 
         fun convertFromIdList(list: List<Int>): MutableList<ArticleTag> {
-            Timber.d("convert from id ${list}")
             val result = ArrayList<ArticleTag>()
             for (i in ArticleTagType.values()) {
                 K@ for (k in i.getTagsForType()) {
@@ -92,6 +89,7 @@ enum class AgeTag : ArticleTag {
     Adult {
         override val id = 101
         override val nameId = R.string.ar_tag_age_adult
+        override val iconId = R.drawable.tag_adult
     }, Teen{
         override val id = 102
         override val nameId = R.string.ar_tag_age_teen

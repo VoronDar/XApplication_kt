@@ -307,8 +307,6 @@ class Repository @Inject constructor(
      * @return list with values. throwable in Result.failure must be extended from LoadingErrorReason
      *
      */
-
-    // TODO(сделать так,чтобы у тех, кто пришел с ошибкой сбрасывался remUpdate)
     private suspend fun <T, R> getValues(
         localGet: KSuspendFunction1<T, List<R>>,
         remoteGet: KSuspendFunction2<T, Int, Result<List<RemoteEntity<R>>>>,
@@ -320,7 +318,6 @@ class Repository @Inject constructor(
 
         // check if it is need (and it is possible) to get data from remote without looking in local
         if (isOnline() && (remUpdate == null || askForUpdateMgr.isNeedToUpdate(remUpdate))) {
-
             val l = getFromRemoteAndSave(
                 matcher,
                 remoteGet,
@@ -329,6 +326,7 @@ class Repository @Inject constructor(
                 askForUpdateMgr.getLastUpdated(remUpdate),
                 isCanBeNothing
             )
+
             // if (the latest data are always got from remote initialy it's not required to look in local)
             if (remUpdate == null) return l
         }

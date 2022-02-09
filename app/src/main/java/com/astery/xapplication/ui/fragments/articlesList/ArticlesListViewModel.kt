@@ -22,17 +22,22 @@ class ArticlesListViewModel @Inject constructor() : ViewModel() {
     lateinit var repository: Repository
 
     // Я знаю, что так нельзя делать. Но пока я не сделаю полнотекстовый поиск из fb оно будет вот настолько криво
-    private val _articlesFlow:MutableLiveData<Flow<PagingData<Article>>> = MutableLiveData()
+    private val _articlesFlow: MutableLiveData<Flow<PagingData<Article>>> = MutableLiveData()
     val articlesFlow: LiveData<Flow<PagingData<Article>>?>
-    get() = _articlesFlow
+        get() = _articlesFlow
 
 
-    fun requestFlow(searchSequence: String, filters: List<ArticleTag>){
+    fun requestFlow(searchSequence: String, filters: List<ArticleTag>) {
+
+        viewModelScope.launch {
+
+            repository.updateArticlesWithTags(if (filters.isNotEmpty()) filters else ArticleTag.getAllTags())
 
             //TODO(сделать сортировку по дате/важности (когда-нибудь). Важность расчитывается из 2 пунктов - соотношение лайков к дизлайкам и количество оценок всего)
             _articlesFlow.value = Pager(PagingConfig(pageSize = PAGED_SIZE, maxSize = 12)) {
                 repository.getArticles(cleanSearchSequence(searchSequence), filters)
             }.flow
+
         }
     }
 

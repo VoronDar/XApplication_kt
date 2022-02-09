@@ -236,6 +236,11 @@ class ArticleFragment : XFragment() {
         }
         if (hide) {
             valueAnimator.doOnEnd {
+
+                binding.page.parent.verticalScrollbarPosition = 0
+                binding.page.parent.scrollTo(0,0)
+
+
                 isChangingPage = false
                 if (moveDown) {
                     binding.page.parent.translationY = startTranslationY + factor
